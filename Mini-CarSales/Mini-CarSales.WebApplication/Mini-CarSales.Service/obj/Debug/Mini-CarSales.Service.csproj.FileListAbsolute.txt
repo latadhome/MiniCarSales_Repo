@@ -1,0 +1,11 @@
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini_CarSales.Service.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini_CarSales.Service.pdb
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\obj\Debug\Mini-CarSales.Service.csprojResolveAssemblyReference.cache
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\obj\Debug\Mini_CarSales.Service.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\obj\Debug\Mini_CarSales.Service.pdb
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini_CarSales.Models.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini_CarSales.Repository.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini_CarSales.Models.pdb
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini_CarSales.Repository.pdb
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini-CarSales.Common.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Service\bin\Debug\Mini-CarSales.Common.pdb

@@ -1,0 +1,5 @@
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Common\obj\Debug\Mini-CarSales.Common.csprojResolveAssemblyReference.cache
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Common\bin\Debug\Mini-CarSales.Common.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Common\bin\Debug\Mini-CarSales.Common.pdb
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Common\obj\Debug\Mini-CarSales.Common.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.Common\obj\Debug\Mini-CarSales.Common.pdb

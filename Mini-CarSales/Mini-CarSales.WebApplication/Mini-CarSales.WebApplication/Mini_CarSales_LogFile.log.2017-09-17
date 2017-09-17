@@ -1,0 +1,8 @@
+2017-09-17 18:16:26,906 [7] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :
+2017-09-17 18:18:57,183 [6] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.The ModelName field is required.The EngineName field is required.The Type field is required.
+2017-09-17 18:26:19,270 [17] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.The ModelName field is required.The EngineName field is required.The Type field is required.
+2017-09-17 18:27:27,078 [16] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.The ModelName field is required.The EngineName field is required.The Type field is required.
+2017-09-17 18:30:29,858 [28] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.The ModelName field is required.The EngineName field is required.The Type field is required.
+2017-09-17 19:39:21,483 [5] ERROR WebApplication1.Controllers.HomeController - GetData :Invalid object name 'Vehicles'.
+2017-09-17 19:39:48,393 [21] ERROR WebApplication1.Controllers.HomeController - GetData :Invalid object name 'Vehicles'.
+2017-09-17 20:18:33,445 [20] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.The ModelName field is required.The EngineName field is required.The Type field is required.
