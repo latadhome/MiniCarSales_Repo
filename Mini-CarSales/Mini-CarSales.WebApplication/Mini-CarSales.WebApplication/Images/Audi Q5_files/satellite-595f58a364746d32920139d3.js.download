@@ -1,0 +1,60 @@
+(function(parent) {
+
+  parent._fbFunctions={};
+
+  var _=parent._fbFunctions;
+
+  _.checkString=function(checkString, onlyPathBool)
+  {
+
+    var wPath = window.location.pathname;
+    var wHash = window.location.hash;
+
+    if(typeof(onlyPathBool) === "undefined") onlyPathBool = false;
+
+    if(onlyPathBool) {
+
+        if(wPath.indexOf(checkString) > -1) return true;
+
+    } else {
+
+        if(wPath.indexOf(checkString) > -1 || (wHash.length > 0 && wHash.indexOf(checkString) > -1)) return true;
+
+    }
+
+    return false;
+
+  }
+    
+
+  _.checkDomain=function(checkString)
+  {
+
+    var wHost = window.location.hostname;
+    if(wHost.indexOf(checkString) > -1) return true;
+
+    return false;
+
+  }
+  
+
+  _.modell=function()
+  {
+
+    // !TBD! currently no modell info in datalayer, parsing from windows hash
+
+    // expected value: "q2", "a3", "a7"
+    // take the second last item out of window hash for the modell
+    // e.g. "s8-plus" from "#page=/de/brand/de/neuwagen/a8/s8-plus/motor.html"
+    var v1 = "";
+
+    if(v1 = window.location.pathname.split("/")) {
+        i = v1.length - 2;
+        return v1[i].toLowerCase();
+    } else {
+        return "";
+    }
+
+  }
+
+}(window))

@@ -1,0 +1,80 @@
+﻿@model Mini_CarSales.Models.VehicleDetails
+
+
+<div class="container" style="padding-top:1em">
+
+    @using (Html.BeginForm())
+    {
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="text-align:center"><h2>Edit Vehicle</h2></div>
+            <div class="panel-body">
+
+                <table class="table table-striped">
+                    <tr>
+                        <td class="col-lg-1"><b>@Html.LabelFor(x => x.Id)</b></td>
+                        <td class="col-lg-4">@Html.TextBoxFor(x => x.Id, new { @readonly = "readonly" })</td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+                    <tr>
+                        <td class="col-lg-1"><b>@Html.LabelFor(x => x.VehicleType)</b></td>
+                        <td class="col-lg-4">@Html.TextBoxFor(x => x.VehicleType, new { @readonly = "readonly" })</td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+                    <tr>
+                        <td class="col-lg-1"><b>Make</b></td>
+                        <td class="col-lg-4">@Html.TextBoxFor(x => x.MakeName, new { @readonly = "readonly" }) </td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="col-lg-1"><b>Model</b></td>
+                        <td class="col-lg-4">@Html.TextBoxFor(x => x.ModelName, new { @readonly = "readonly" })</td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="col-lg-1"><b>Engine</b></td>
+                        <td class="col-lg-4">@Html.TextBoxFor(x => x.EngineName, new { @readonly = "readonly" })  </td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+                    @if (Model.VehicleTypeId ==1)
+                    {
+                        <tr>
+                            <td class="col-lg-1"><b>Doors</b></td>
+                            <td class="col-lg-4">@Html.TextBoxFor(x => x.Doors) @Html.ValidationMessageFor(x => x.Doors, null, new { style = "color:red" })</td>
+                            <td class="col-lg-7"></td>
+                        </tr>
+                    }
+                  
+                   
+                    <tr>
+                        <td class="col-lg-1"><b>Wheels</b></td>
+                        <td class="col-lg-4">@Html.TextBoxFor(x => x.Wheels) @Html.ValidationMessageFor(x => x.Wheels, null, new { style = "color:red" })</td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+                    <tr>
+                        <td class="col-lg-1"><b>Type</b></td>
+                        <td class="col-lg-4">@Html.TextBoxFor(x => x.Type) @Html.ValidationMessageFor(x => x.Type, null, new { style = "color:red" })</td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+
+                </table>
+
+                </div>
+            </div>
+            <div class="panel-footer ">
+                <button class="col-lg-offset-8 btn btn-success" formaction="post" style="height:50px;width:150px" onclick="location.href='@Url.Action("Index", "Home")'">
+                    Save
+                </button>
+                <button class="btn btn-success" style="height:50px;width:150px">
+                    Cancel
+                </button>
+                @*<button formaction="EditVehicle" onclick="alert("Not Implemented")">Save Changes</button>
+                <button formaction="Index">Cancel</button>*@
+            </div>
+    }
+
+
+
+
+            </div>

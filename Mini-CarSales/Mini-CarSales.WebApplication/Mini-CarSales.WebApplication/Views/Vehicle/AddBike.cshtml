@@ -1,0 +1,311 @@
+﻿@*<link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.css" rel="stylesheet" />*@
+<link href="~/Content/CustomStyles.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/CustomScript.js"></script>
+
+<div ng-app="VehicleApp" ng-controller="VehicleController">
+
+    <div>
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="text-align:center"><h2>Add New Bike</h2></div>
+            <div class="panel-body">
+
+                @*<span ng-init="default.isNewVehicle=false"></span>*@
+                <table class="table table-striped table-hover" ng-init="vehicleTypeId=vehicleDetails.2">
+                    <tr>
+
+                    <tr>
+                        <td class="col-lg-2"> <b>Type</b>  </td>
+                        <td class="col-lg-3">
+                            <input type="text" style="height:35px;width:265px;background-color:gainsboro" value="Bike" ng-readonly="true" placeholder="Add New Manufacturer" />
+
+                        </td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+
+                    
+                    <!--Make Start-->
+                    <tr ng-if="!default.isNewVehicle">
+                        <td class="col-lg-2"> <b>Make</b> </td>
+                        <td class="col-lg-3" ng-if="!default.isnewMake">
+
+                            @*<select name="vehicleTypes" id="vehicleTypes" class="form-control" ng-model="vehicleDetails.MakeId">
+
+                                    <option ng-repeat="option in makes | filter:{VehicleId: vehicleTypeId}:true" value="{{option.Id}}">{{option.Name}}</option>
+                                </select>*@
+                            <select name="vehicleTypes" id="vehicleTypes" class="form-control" ng-model="vehicleDetails.MakeId">
+
+                                <option ng-repeat="option in makes | filter:makefilter" value="{{option.Id}}">{{option.Name}}</option>
+                            </select>
+                        </td>
+                        <td ng-if="default.isnewMake" ng-init="vehicleDetails.MakeId=0;vehicleDetails.ModelName='';vehicleDetails.EngineName=''">
+                            <br />
+                            <table class="table borderless">
+
+                                <tr>
+                                    <td class="col-lg-2"><b>Make</b> </td>
+                                    <td class="col-lg-3">
+                                        <input type="text" style="height:35px;width:230px" ng-model="vehicleDetails.MakeName" placeholder="Add New Manufacturer" />
+                                    </td>
+                                    <td class="col-lg-7"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-lg-2"> <b>Model</b> </td>
+                                    <td class="col-lg-3">
+                                        <input type="text" style="height:35px;width:230px" ng-model="vehicleDetails.ModelName" placeholder="Add New Model" />
+                                    </td>
+                                    <td class="col-lg-7"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-lg-2"> <b>Engine</b> </td>
+                                    <td class="col-lg-3">
+                                        <input type="text" style="height:35px;width:230px" ng-model="vehicleDetails.EngineName" placeholder="Add New Engine" />
+                                    </td>
+                                    <td class="col-lg-7"></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="col-lg-2">
+                            <input id="chkMake" type="checkbox" ng-model="default.isnewMake" /><b>Add New</b>
+                        </td>
+
+                        <td class="col-lg-5" ng-if="!default.isnewMake"></td>
+                    </tr>
+                    <!--Make End-->
+                    <!--Model Start-->
+                    <tr ng-if="!default.isnewMake && !default.isNewVehicle">
+                        <td class="col-lg-2"> <b>Model</b> </td>
+                        <td class="col-lg-3" ng-if="!default.isnewModel">
+                            @*<select name="vehicleTypes" id="vehicleTypes" class="form-control" ng-model="vehicleDetails.ModelId">
+                                    <option ng-repeat="option in models|filter:{'MakeId':vehicleDetails.MakeId}:true" value="{{option.Id}}">{{option.Name}}</option>
+                                </select>*@
+                            <select name="vehicleTypes" id="vehicleTypes" class="form-control" ng-model="vehicleDetails.ModelId">
+                                <option ng-repeat="option in models|filter:modelfilter" value="{{option.Id}}">{{option.Name}}</option>
+                            </select>
+                        </td>
+                        <td ng-if="default.isnewModel" ng-init="vehicleDetails.ModelId=0;vehicleDetails.EngineName=''">
+                            <br />
+                            <table class="table borderless">
+
+
+                                <tr>
+                                    <td class="col-lg-2"><b>Model</b> </td>
+                                    <td class="col-lg-3">
+                                        <input type="text" style="height:35px;width:230px" ng-model="vehicleDetails.ModelName" placeholder="Add New Model" />
+                                    </td>
+                                    <td class="col-lg-7"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-lg-2"> <b>Engine</b> </td>
+                                    <td class="col-lg-3">
+                                        <input type="text" style="height:35px;width:230px" ng-model="vehicleDetails.EngineName" placeholder="Add New Engine" />
+                                    </td>
+                                    <td class="col-lg-7"></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="col-lg-2">
+                            <input id="chkMake" type="checkbox" ng-model="default.isnewModel" /><b>Add New</b>
+                        </td>
+
+                        <td class="col-lg-5" ng-if="!default.isnewModel"></td>
+                    </tr>
+                    <!--Model End-->
+                    <!--Engine Start-->
+                    <tr ng-if="!default.isnewMake && !default.isNewVehicle&&!default.isnewModel">
+                        <td class="col-lg-2"> <b>Engine</b> </td>
+                        <td class="col-lg-3" ng-if="!default.isnewEngine">
+                            @*<select name="vehicleTypes" id="vehicleTypes" class="form-control" ng-model="vehicleDetails.EngineId">
+                                    <option ng-repeat="option in engines|filter:{'ModelId': vehicleDetails.ModelId}:true" value="{{option.Id}}">{{option.Name}}</option>
+                                </select>*@
+                            <select name="vehicleTypes" id="vehicleTypes" class="form-control" ng-model="vehicleDetails.EngineId">
+                                <option ng-repeat="option in engines|filter:enginefilter:true" value="{{option.Id}}">{{option.Name}}</option>
+                            </select>
+                        </td>
+                        <td ng-if="default.isnewEngine" ng-init="vehicleDetails.EngineId=0">
+                            <br />
+                            <table class="table borderless">
+                                <tr>
+                                    <td class="col-lg-2"> <b>Engine</b> </td>
+                                    <td class="col-lg-3">
+                                        <input type="text" style="height:35px;width:230px" ng-model="vehicleDetails.EngineName" placeholder="Add New Engine" />
+                                    </td>
+                                    <td class="col-lg-7"></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="col-lg-2">
+                            <input id="chkMake" type="checkbox" ng-model="default.isnewEngine" /><b>Add New</b>
+                        </td>
+
+                        <td class="col-lg-5" ng-if="!default.isnewEngine"></td>
+                    </tr>
+                    <!--Engine Start-->
+
+                    @*<tr>
+                        <td class="col-lg-2"> <b>Doors</b> </td>
+                        <td class="col-lg-3">
+                            <input type="text" style="height:35px;width:270px" ng-model="vehicleDetails.Doors" placeholder="Add No Of Doors" />
+                        </td>
+                        <td class="col-lg-7"></td>
+                    </tr>*@
+                    <tr>
+                        <td class="col-lg-2"> <b>Wheels</b> </td>
+                        <td class="col-lg-3">
+                            <input type="text" style="height:35px;width:270px" ng-model="vehicleDetails.Wheels" placeholder="Add No Of Wheels" />
+                        </td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="col-lg-2"> <b>BodyType</b> </td>
+                        <td class="col-lg-3">
+                            <input type="text" style="height:35px;width:270px" ng-model="vehicleDetails.Type" placeholder="Add Body Type" />
+                        </td>
+                        <td class="col-lg-7"></td>
+                    </tr>
+
+                </table>
+                <div ng-hide="true">
+                    {{vehicleTypeId = 2;makeId = vehicleDetails.MakeId;modelId=vehicleDetails.ModelId}}
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Upload Image</label>
+                            <div class="input-group ">
+                                <span class="input-group-btn">
+                                    <span class="btn btn-default btn-file">
+                                        Browse… <input type="file" id="imgInp">
+                                    </span>
+                                </span>
+                                <input id="imgId" type="text" class="form-control" ng-model="imagePath">
+                            </div>
+                            <img id='img-upload' class="col-lg-offset-2 img-responsive" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer ">
+                <button class="col-lg-offset-10 btn btn-success" style="height:50px;width:150px" ng-click="save()">
+                    Save
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<script>
+    var app = angular.module("VehicleApp", [])
+                     .controller("VehicleController", function ($scope, $http, $window) {
+                         $scope.vehicleTypeId = 0;
+                         $scope.makeId = 0;
+                         $scope.modelId = 0;
+                         $scope.engineId = 0;
+                         $scope.default = { isnewMake: false, isNewVehicle: false, isnewModel: false, isnewEngine: false }
+                         $scope.vehicleTypes;
+                         $scope.imagePath = '';
+                         $scope.type = '';
+                         $scope.vehicleDetails = {
+                                                  VehicleType: 'Bike', VehicleTypeId: 2, MakeId: 0, MakeName: '', ModelId: 0, ModelName: '',
+                                                  EngineId: 0, EngineName: '', Doors: 0, Wheels: 0, Type: '', ImagePath:''
+                         };
+                         LoadData();
+                         @*Alert("TempData="+@TempData["VehicleType"]);*@
+                         $scope.makefilter = function(make)
+                         {
+                             
+                                 if(make.VehicleId == 2)
+                                 {
+                                     return make;
+                                     //alert("Bingo" + $scope.vehicleTypeId);
+                                 }
+                         }
+                         $scope.modelfilter = function (model)
+                         {
+                                 if ($scope.makeId != 0) {
+                                     if (model.MakeId == $scope.makeId)
+                                     {
+                                         return model;
+                                     }
+                                 }
+                             }
+
+                         $scope.enginefilter = function (engine) {
+                             if ($scope.modelId != 0) {
+                                 if (engine.ModelId == $scope.modelId) {
+                                     return engine;
+                                 }
+                             }
+                         }
+
+
+                         function LoadData()
+                         {
+                             //alert("Inside Load Data");
+                             var get = $http({
+                                 method: "GET",
+                                 url: "/Home/GetData",
+                                 dataType: 'json'
+                             }).then(function mySuccess(response) {
+                                 $scope.vehicleTypes = response.data.VehicleTypes;
+                                 $scope.makes = response.data.Makes;
+                                 $scope.models = response.data.Models;
+                                 $scope.engines = response.data.Engines;
+                                // alert("Victory" + response.data.VehicleTypes + "$scope.vehicleTypes =" + $scope.vehicleTypes[0].Name);
+                             }, function myError(response) {
+                                 alert("Failed ");
+                             });
+
+                         }
+
+
+                         $scope.save = function () {
+
+                             $scope.vehicleDetails.vehicleTypeId = 2;
+                             $scope.vehicleDetails.vehicleType = 'Bike';
+                             $scope.vehicleDetails.Doors = 0;
+                             if ($scope.vehicleDetails.vehicleTypeId != 0)
+                             
+                             if ($scope.vehicleDetails.MakeId != 0) {
+                                 $scope.vehicleDetails.MakeName = $scope.makes[$scope.vehicleDetails.MakeId - 1].Name;
+                             }
+                             if ($scope.vehicleDetails.ModelId != 0) {
+                                 $scope.vehicleDetails.ModelName = $scope.models[$scope.vehicleDetails.ModelId - 1].Name;
+                             }
+                             $scope.vehicleDetails.ImagePath = "~/Images/" + document.getElementById("imgId").value;
+                             if ($scope.vehicleDetails.EngineId != 0) {
+                                 $scope.vehicleDetails.EngineName = $scope.engines[$scope.vehicleDetails.EngineId - 1].Name;
+                             }
+
+                            // alert("$scope.vehicleType=" + $scope.vehicleDetails.vehicleType + "VehicleId=" + $scope.vehicleDetails.vehicleTypeId)
+
+                             var post = $http({
+                                 method: "POST",
+                                 url: "/api/VehicleApi/AddVehicleDetails",
+                                 dataType: 'json',
+                                 data: $scope.vehicleDetails,
+                                 headers: { "Content-Type": "application/json" }
+                             }).then(function mySuccess(response) {
+                                 if (response.data == false)
+                                 {
+                                     alert("Error While Adding Vehicle Please Check Error Log File");
+                                 }
+                                 else {
+                                     $window.location.assign("/Home/Index");
+                                 }
+                             }, function myError(response) {
+                                 alert("Failed ");
+                             });
+
+                         }
+
+                })
+</script>

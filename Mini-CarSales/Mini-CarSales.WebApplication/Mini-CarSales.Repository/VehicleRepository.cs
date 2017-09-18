@@ -237,6 +237,175 @@ namespace Mini_CarSales.Repository
         }
 
         /// <summary>
+        /// Update Vehicle Details
+        /// </summary>
+        /// <param name="vehicle"> Vehicle Details</param>
+        /// <returns> Operation Status</returns>
+        public bool UpdateVehicle(VehicleDetails vehicle)
+        {
+            bool isSuccess = false;
+            string sqlQuery = string.Empty;
+            try
+            {
+                this.Open();
+                if (vehicle.VehicleType == "Car")
+                {
+                    sqlQuery = "Update VehicleDetails set Doors=" + vehicle.Doors + ",Wheels=" + vehicle.Wheels + ",Type='" + vehicle.Type + "' where Id = " + vehicle.Id;
+                }
+                else
+                {
+                    sqlQuery = "Update VehicleDetails set Wheels=" + vehicle.Wheels + ",Type='" + vehicle.Type + "' where Id = " + vehicle.Id;
+                }
+
+                SqlCommand cmd = new SqlCommand(sqlQuery, this.GetConnection);
+
+                int count;
+                count = cmd.ExecuteNonQuery();
+                if (count >= 1)
+                {
+                    isSuccess = true;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                this.Dispose();
+            }
+
+            return isSuccess;
+        }
+
+        /// <summary>
+        /// Get Vehicle Details
+        /// </summary>
+        /// <param name="id">Vehicle id</param>
+        /// <returns> Success Status </returns>
+        public VehicleDetails GetVehicleDetails(int id)
+        {
+            VehicleDetails vehicleItem = null;
+
+            try
+            {
+                this.Open();
+                SqlCommand cmd = new SqlCommand("getVehicle", this.GetConnection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@Id", id));
+
+                using (SqlDataReader userReader = cmd.ExecuteReader())
+                {
+                    if (userReader.HasRows)
+                    {
+                        vehicleItem = new VehicleDetails();
+
+                        int idOrdinal = userReader.GetOrdinal("Id");
+                        int vehicleIDOrdinal = userReader.GetOrdinal("VehicleID");
+                        int vehicleTypeOrdinal = userReader.GetOrdinal("VehicleType");
+                        int makeIdOrdinal = userReader.GetOrdinal("MakeId");
+                        int makeNameOrdinal = userReader.GetOrdinal("MakeName");
+                        int modelIdOrdinal = userReader.GetOrdinal("ModelId");
+                        int modelNameOrdinal = userReader.GetOrdinal("ModelName");
+                        int engineIdOrdinal = userReader.GetOrdinal("EngineId");
+                        int engineNameOrdinal = userReader.GetOrdinal("EngineName");
+                        int doorsOrdinal = userReader.GetOrdinal("Doors");
+                        int wheelsOrdinal = userReader.GetOrdinal("Wheels");
+                        int typeOrdinal = userReader.GetOrdinal("Type");
+                        int imagePathOrdinal = userReader.GetOrdinal("ImagePath");
+
+                        while (userReader.Read())
+                        {
+                            if (!userReader.IsDBNull(idOrdinal))
+                            {
+                                vehicleItem.Id = userReader.GetInt32(idOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(vehicleIDOrdinal))
+                            {
+                                vehicleItem.VehicleTypeId = userReader.GetInt32(vehicleIDOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(vehicleTypeOrdinal))
+                            {
+                                vehicleItem.VehicleType = userReader.GetString(vehicleTypeOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(makeIdOrdinal))
+                            {
+                                vehicleItem.MakeId = userReader.GetInt32(makeIdOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(makeNameOrdinal))
+                            {
+                                vehicleItem.MakeName = userReader.GetString(makeNameOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(modelIdOrdinal))
+                            {
+                                vehicleItem.ModelId = userReader.GetInt32(modelIdOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(modelNameOrdinal))
+                            {
+                                vehicleItem.ModelName = userReader.GetString(modelNameOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(engineIdOrdinal))
+                            {
+                                vehicleItem.EngineId = userReader.GetInt32(engineIdOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(engineNameOrdinal))
+                            {
+                                vehicleItem.EngineName = userReader.GetString(engineNameOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(doorsOrdinal))
+                            {
+                                vehicleItem.Doors = userReader.GetInt32(doorsOrdinal);
+                            }
+                            if (!userReader.IsDBNull(wheelsOrdinal))
+                            {
+                                vehicleItem.Wheels = userReader.GetInt32(wheelsOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(typeOrdinal))
+                            {
+                                vehicleItem.Type = userReader.GetString(typeOrdinal);
+                            }
+
+                            if (!userReader.IsDBNull(imagePathOrdinal))
+                            {
+                                vehicleItem.ImagePath = userReader.GetString(imagePathOrdinal);
+
+                                if (vehicleItem.ImagePath == string.Empty)
+                                {
+                                    vehicleItem.ImagePath = "~/Images/DefaultBike.jpg";
+                                }
+                            }
+                            else
+                            {
+                                vehicleItem.ImagePath = "~/Images/DefaultBike.jpg";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                this.Dispose();
+            }
+
+            return vehicleItem;
+
+        }
+
+        /// <summary>
         /// Sample Method To Retrive Data From DB
         /// </summary>
         /// <returns> Data Required</returns>

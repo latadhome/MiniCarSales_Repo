@@ -1,0 +1,252 @@
+(function(parent) {
+  
+  parent._query={};
+  
+  var _=parent._query;
+  
+  
+  _.printDeep=function(obj,prefix)
+  {
+    if(typeof(prefix)=='undefined')prefix="-";
+    var t=typeof(obj);
+    if (t=="string"||t=="number"||t=="boolean")
+    {
+      console.log(prefix+": %c"+obj,"color:blue")
+    }
+    else if(obj instanceof Array)
+    {
+      for (var i=0;i<obj.length;i++)
+      {
+        console.log("---")
+        _.printDeep(obj[i],prefix+"["+i+"]");
+      }
+    }
+    else
+    {
+      for (var k in obj)
+      {
+        _.printDeep(obj[k],prefix+"."+k)
+      }
+    }
+  }
+  
+  _.getFirstItemByValue=function(obj,val)
+  {
+    function rec(obj,prefix)
+    {
+      var t=typeof(obj);
+      if (t=="string"||t=="number"||t=="boolean")
+      {
+        var p=false;
+        //console.log("p")
+	if(typeof(val.test)=="undefined"&&obj==val)p=true;
+        if(typeof(val.test)=="function"&&val.test(obj))p=true;
+        if(p)console.log(prefix+": %c"+obj,"color:blue")
+      }
+      else if(obj instanceof Array)
+      {
+        for (var i=0;i<obj.length;i++)
+        {
+          rec(obj[i],prefix+"["+i+"]");
+        }
+      }
+      else
+      {
+        for (var k in obj)
+        {
+          rec(obj[k],prefix+"."+k)
+        }
+      }
+    }
+    rec(obj,"")
+  }
+   
+  _.searchByValue=function(obj,val)
+  {
+    function rec(obj,prefix)
+    {
+      var t=typeof(obj);
+      if (t=="string"||t=="number"||t=="boolean")
+      {
+        var p=false;
+        //console.log("p")
+				if(typeof(val.test)=="undefined"&&obj==val)p=true;
+        if(typeof(val.test)=="function"&&val.test(obj))p=true;
+        if(p)console.log(prefix+": %c"+obj,"color:blue")
+      }
+      else if(obj instanceof Array)
+      {
+        for (var i=0;i<obj.length;i++)
+        {
+          rec(obj[i],prefix+"["+i+"]");
+        }
+      }
+      else
+      {
+        for (var k in obj)
+        {
+          rec(obj[k],prefix+"."+k)
+        }
+      }
+    }
+    rec(obj,"")
+  }
+ 
+  _.getProductById=function(arr,id)
+  {
+    for(var i=0;i<arr.length;i++)
+    {
+      if(typeof(arr[i].productInfo)!=="undefined" && typeof(arr[i].productInfo.productID)!=="undefined" && arr[i].productInfo.productID==id)
+      {
+        return arr[i];
+      }
+    }
+    return null;
+  }
+
+  
+  _.filterProductsByCartAction=function(arr,c)
+  {
+    var items=[];
+    try {
+      for(var i=0;i<arr.length;i++)
+      {
+        var item=arr[i];
+        if(typeof(c.test)=='undefined'&&item.attributes.cartAction==c)items.push(item);
+        if(typeof(c.test)=='function'&&c.test(item.attributes.cartAction))items.push(item);
+      }
+    }catch(e){}
+    return items;
+  }
+  
+  _.getCartItemBySubcategory=function(c)
+  {
+    try {
+      for(var i=0;i<window.webAnalyticsData.cart.item.length;i++)
+      {
+        var item=window.digitalData.cart.item[i];
+        if(typeof(c.test)=='undefined'&&item.category.subCategory1==c)return item;
+        if(typeof(c.test)=='function'&&c.test(item.category.subCategory1))return item;
+      }
+    }catch(e){}
+    return undefined;
+  }
+  
+  
+  _.getCartItemByProductType=function(c)
+  {
+    try {
+      for(var i=0;i<window.webAnalyticsData.cart.item.length;i++)
+      {
+        var item=window.digitalData.cart.item[i];
+        if(typeof(c.test)=='undefined'&&item.category.productType==c)return item;
+        if(typeof(c.test)=='function'&&c.test(item.category.productType))return item;
+      }
+    }catch(e){}
+    return undefined;
+  }
+  
+  _.getCartItemsByProductType=function(c)
+  {
+    try {
+      var items=[];
+      for(var i=0;i<window.webAnalyticsData.cart.item.length;i++)
+      {
+        var item=window.digitalData.cart.item[i];
+        if(typeof(c.test)=='undefined'&&item.category.productType==c)items.push(item);
+        if(typeof(c.test)=='function'&&c.test(item.category.productType))items.push(item);
+      }
+      return items;
+    }catch(e){}
+    return undefined;
+  }
+
+  _.getProductNameOfProduct=function(item)
+  {
+    try{
+      return item.productInfo.productName;
+    }catch(e){
+      _satellite.notify("Floodlight getProductNameOfProduct Error:"+e)
+      return '';
+    }
+  }
+  _.getMBVOfProduct=function(item)
+  {
+    try{
+      return item.productInfo.productMbvId;
+    }catch(e){
+      _satellite.notify("Floodlight getMBVOfProduct Error:"+e)
+      return '';
+    }
+  }
+  _.getParamByName=function(name,url)
+  {
+      if (!url) {
+        url = window.location.href;
+      }
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+  
+  
+  _.getModelLine=function()
+  { 
+    try {
+      //var item=_.getCartItemByProductType("trimline");
+      //return item.productInfo.productName.trim().split(" ")[0];
+      var name=_.getCartItemByProductType("trimline").productInfo.productName;
+      var reg=/(.*\d)/g;
+      var f=name.match(reg)[0];
+      f=f.replace(/\s/g,"");
+      return f;
+    } catch(e) {
+      return undefined;
+    }
+  }
+  
+  _.getModelMbv=function()
+  { 
+    try {
+      var item=_.getCartItemByProductType("trimline");
+      return item.productInfo.productMbvId;
+    } catch(e) {
+      return undefined;
+    }
+  }
+  
+  _.getDerivatInfo=function(motorcode)
+  {
+    if(typeof(window.__derivats)=="undefined")
+    {
+      window.tms.error(["Missing window.__derivats"]);
+      return undefined;
+    }
+    
+    return window.__derivats[motorcode];
+  }
+  
+  _.getDerivatInfoOfPage=function()
+  {
+    var d=undefined;
+    try
+    {
+      d=_.getCartItemByProductType("engine");
+      if(typeof(d)!=="undefined")
+      {
+        var mbv=d.productInfo.productMbvId.substring(4,0);
+        return _.getDerivatInfo(mbv);
+      }
+    }
+    catch(e)
+    {
+      window.tms.error(e);
+    }
+    return d;
+  }
+  
+}(window))
+

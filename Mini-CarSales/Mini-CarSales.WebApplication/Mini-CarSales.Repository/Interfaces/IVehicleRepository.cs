@@ -33,6 +33,20 @@ namespace Mini_CarSales.Repository.Interfaces
         bool AddVehicleDetails(VehicleDetails vehicle);
 
         /// <summary>
+        /// Get Vehicle Details
+        /// </summary>
+        /// <param name="id">Vehicle id</param>
+        /// <returns> Success Status </returns>
+        VehicleDetails GetVehicleDetails(int id);
+
+        /// <summary>
+        /// Update Vehicle Details
+        /// </summary>
+        /// <param name="vehicle"> Vehicle Details</param>
+        /// <returns> Operation Status</returns>
+        bool UpdateVehicle(VehicleDetails vehicle);
+
+        /// <summary>
         /// Sample Method To Retrive Data From DB
         /// </summary>
         /// <returns> Data Required</returns>

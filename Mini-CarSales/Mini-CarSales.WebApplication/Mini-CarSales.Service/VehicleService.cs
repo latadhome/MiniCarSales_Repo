@@ -75,6 +75,46 @@ namespace Mini_CarSales.Service
         }
 
         /// <summary>
+        /// Get Vehicle Details
+        /// </summary>
+        /// <param name="id">Vehicle id</param>
+        /// <returns> Success Status </returns>
+        public VehicleDetails GetVehicleDetails(int id)
+        {
+            VehicleDetails vehicle = null;
+            try
+            {
+                vehicle = this.vehicleRepository.GetVehicleDetails(id);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return vehicle;
+        }
+
+        /// <summary>
+        /// Update Vehicle Details
+        /// </summary>
+        /// <param name="vehicle"> Vehicle Details</param>
+        /// <returns> Operation Status</returns>
+        public bool UpdateVehicle(VehicleDetails vehicle)
+        {
+            bool isSuccess = false;
+            try
+            {
+                isSuccess = this.vehicleRepository.UpdateVehicle(vehicle);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return isSuccess;
+        }
+
+        /// <summary>
         /// Sample Method To Retrive Data From DB
         /// </summary>
         /// <returns> Data Required</returns>

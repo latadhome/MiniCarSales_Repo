@@ -1,0 +1,4408 @@
+/*! release#17.55.1.3 */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("bundle.configurator", [], factory);
+	else if(typeof exports === 'object')
+		exports["bundle.configurator"] = factory();
+	else
+		root["bundle.configurator"] = factory();
+})(this, function() {
+return webpackJsonpbundle__name_([4],{
+
+/***/ 11:
+/*!***********************************************!*\
+  !*** ./js/app/configurator/dpu-controller.js ***!
+  \***********************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxparams: 11 */
+/* jshint maxlen: 160 */
+/*global Promise,SETUPS,mss*/
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! jquery */ 1), 
+	__webpack_require__(/*! events */ 0), 
+	__webpack_require__(/*! configurator/dpu-api */ 3), 
+	__webpack_require__(/*! configurator/dpu-model */ 31), 
+	__webpack_require__(/*! core/content */ 15), 
+	__webpack_require__(/*! core/layer/api */ 10), 
+	__webpack_require__(/*! configurator/transfer */ 70), 
+	__webpack_require__(/*! configurator/conflict */ 71), 
+	__webpack_require__(/*! module/startlayer */ 72), 
+	__webpack_require__(/*! module/carline-mapping */ 73), 
+	__webpack_require__(/*! configurator/user-configurations */ 74)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function (jQuery, EVENTS, DPU_API, DPU_MODEL, CONTENT, LAYER_API, TRANSFER_LAYER, CONFLICT_LAYER, START_LAYER, CARLINE_MAPPING, USER_CONFIGURATIONS) { //eslint-disable-line max-params
+		"use strict";
+		var
+		//Private Methods
+			__ = {},
+			_initialized = false,
+			exports = {
+				__: __
+			};
+		/**
+		 * private exports methods
+		 */
+		//Version and Carinfo.json loaded?
+		__.dataInitialized = false;
+		__.initMaxTries = 20;
+		__.oDefaults = {
+			sSelectorDelegateClick: '.nm-j-configurator-delegate-click',
+			sSelectorDelegateChangeCount: '.nm-quantity',
+			sSelectorChangeSelect: '.nm-md-bicolor-chooser-interior',
+			sSelectorDelegateNewClick: '.nm-configuration-new',
+			sSelectorPrintBtn: '.nm-configuration-print',
+			sSelectorLoadAudiCode: '.nm-j-load-audicode',
+			sSelectorLoadPrString: '.nm-j-load-prstring'
+		};
+		__.startLayerActivated = false;
+		__.openedLayer = null;
+		__.configurationContinued = false;
+		__.addEvents = function () {
+			//=========== Configuration Events ===
+			//handle click on configuration item
+			__.legacyEventBus.on("click.configuration.item", __.oDefaults.sSelectorDelegateClick, {
+				'triggerAction': 'click'
+			}, __.handleConfigurationItemChanges);
+			//handle change Events (numeric stepper or input fields)
+			__.legacyEventBus.on("change.configuration.count", __.oDefaults.sSelectorDelegateChangeCount, {
+				'triggerAction': 'changeCount'
+			}, __.handleConfigurationItemChanges);
+			//handle change Events from bicolor select
+			__.legacyEventBus.on("change.configuration.select", __.oDefaults.sSelectorChangeSelect, {
+				'triggerAction': 'dropDown'
+			}, __.handleConfigurationItemChanges);
+			//start new (==reset to default) configuration and open implicit startlayer
+			__.legacyEventBus.on('click.configuration.new', __.oDefaults.sSelectorDelegateNewClick, __.handleNewConfigurationClick);
+			__.addModeSwitchEventAfterReset();
+			//=========== Layer Events ===
+			//handle Conflict layer close (Cancel or submit)
+			__.eventBus.on(EVENTS.CONFLICT_CLOSE, __.handleConflictClose);
+			//handle Transfer layer close (transfer abort)
+			__.eventBus.on(EVENTS.TRANSFER_CLOSE, __.handleTransferClose);
+			//handle Startlayer close
+			__.eventBus.on(EVENTS.STARTLAYER_CLOSE, __.handleStartlayerClose);
+			__.legacyEventBus.on('click.nemo.configurator.print', __.oDefaults.sSelectorPrintBtn, __.callPrint);
+			__.eventBus.on(EVENTS.FORM_FINISHED, __.receiveAudicodeForm);
+			__.legacyEventBus.on('click.nemo.loadbyaudicode', __.oDefaults.sSelectorLoadAudiCode, __.receiveAudicodeLink);
+			__.legacyEventBus.on('click.nemo.loadbyprstring', __.oDefaults.sSelectorLoadPrString, __.receivePrstringLink);
+		};
+		__.callPrint = function (event_) {
+			__.eventBus.emit(EVENTS.CONFIG_PDF);
+			// _cancelEvent(event);
+			// #api-dpu-001.5
+			var url = SETUPS.get('nemo.core.configurator.dpu.oAjaxRESTConfigurationURIPrint'),
+				$link = jQuery(this),
+				context = DPU_API.getContext(),
+				subsessionParam = DPU_API.getSubsessionID() ? ('&subsession=' + DPU_API.getSubsessionID()) : '',
+				prstring = DPU_API.getPrString();
+			url = url + '?context=' + context + subsessionParam + '&ids=' + encodeURIComponent(prstring);
+			$link.attr({
+				'href': url,
+				'target': '_blank'
+			});
+			return true;
+		};
+		/**
+		 * check if a clicked Item is a selected RaidoButton
+		 */
+		__.isSelectedRadioButton = function ($clickedItem_) {
+			var $configuratorElement = $clickedItem_.closest('.nm-j-configurator-item');
+			if (($configuratorElement.is(".nm-j-configurator-status_11010, .nm-j-configurator-status_100110") && !$configuratorElement.is(".nm-md-bicolor-chooser-el-options")) && $clickedItem_.hasClass("nm-checkbox-3")) {
+				return true;
+			}
+			return false;
+		};
+		__.isPreselectedConflictItem = function ($clickedItem_) {
+			var $configuratorElement, status, _sClassName;
+			if (!DPU_API.getConflicts()) {
+				return false;
+			} else {
+				$configuratorElement = $clickedItem_.closest('.nm-j-configurator-item');
+				_sClassName = $configuratorElement.get(0).className;
+				if (_sClassName.indexOf("nm-j-configurator-status_") === -1) {
+					return false;
+				} else {
+					status = _sClassName.split('nm-j-configurator-status_')[1].split(' ')[0];
+					return (status.length === 5 && status[3] === "1");
+				}
+			}
+		};
+		/**
+		 * Handle Mouseclicks on any Configuration Item on the page
+		 * and  * handle count changes for a configurator item (e.g. via numeric stepper or input field)
+		 */
+		__.handleConfigurationItemChanges = function (event_) {
+			__.cancelEvent(event_);
+			var _$clickedItem = jQuery(event_.target);
+			//disable click on already selected radio button
+			if (__.isSelectedRadioButton(_$clickedItem) || __.isPreselectedConflictItem(_$clickedItem)) {
+				// console.log("item is already preselected!!",_$clickedItem);
+				return false;
+			}
+			var _$element = _$clickedItem.closest('.nm-j-configurator-item');
+			var _sId = _$element.attr('data-configurator-id');
+			var isRadioGroup = !!_$element.attr('data-configurator-group');
+			//count for nummeric stepper or input fields
+			var _count = _$element.find(__.oDefaults.sSelectorDelegateChangeCount).val();
+			//DPU action (itemAdd || itemRemove)
+			var requestAction;
+			var userAction = event_.data.triggerAction || "no-GUI-action-defined";
+			var isInConfiguration = DPU_API.isInCurrentConfiguration(_sId);
+			switch (userAction) {
+				//handle item count changes (numeric stepper or input fields)
+			case "changeCount":
+				//cancel item count changes for items that are noch selected
+				if (!isInConfiguration) {
+					return false;
+				}
+				requestAction = 'itemAdd';
+				break;
+				//handle configuration clicks
+			case 'click':
+				if (__.isSelectableItem(_$element) === false) {
+					return;
+				}
+				// is the element part of the current configuration? => itemRemove
+				requestAction = isInConfiguration ? 'itemRemove' : 'itemAdd';
+				break;
+			case "dropDown":
+				_$element = jQuery(this);
+				_sId = _$element.val();
+				isInConfiguration = DPU_API.isInCurrentConfiguration(_sId);
+				// is the element part of the current configuration? => itemRemove
+				requestAction = isInConfiguration ? 'itemRemove' : 'itemAdd';
+				break;
+			default:
+				// console.warn("unhandled configuration click!!!", event_);
+				return;
+			}
+			var _change = {
+				id: _sId,
+				count: _count,
+				action: requestAction
+			};
+			//add infos to change object
+			var changeEventdata = jQuery.extend(true, _change, {
+				'triggerAction': userAction,
+				'$element': _$element
+			});
+			/**
+			 * dispatch beginning of an AJAX request
+			 * e.g. for showing loadingindicator
+			 */
+			__.eventBus.emit(EVENTS.CONFIG_CHANGEREQUEST_START, changeEventdata);
+			//trigger Ajax request for change of configuration (using Promise)
+			__.triggerChangeRequest(_change);
+		};
+		/**
+		 * handle AudiCode Form Data
+		 * @param {event} event_
+		 * @param {object} data_ - custom event data
+		 */
+		__.receiveAudicodeForm = function (data_) {
+			__.cancelEvent(this);
+			if (!!data_.id && data_.id.indexOf('audicode') > -1) {
+				__.lockPrString(DPU_API.getPrString());
+				var promise = Promise.resolve(data_.response); //exports.loadConfigurationByAudiCode(data_.response.audicode.id);
+				promise.then(function (config) {
+					var lockChanged = __.detectConfigurationChanges(DPU_API.getPrString());
+					if (lockChanged) {
+						throw new TypeError("receiveAudicodeForm:configuration changed while processing, loaded configuration was rejected");
+					} else {
+						exports.handleExternalConfiguration(config, {
+							startType: 'audicode-input'
+						});
+					}
+				}).then(undefined, function (err) {
+					 //console.warn(err);
+					//__.showError('nm_error_unknown');
+					__.eventBus.emit(EVENTS.ERROR, [window.i18n['standard-audicode-error'], err.message]);
+				});
+			} else {
+				// console.log('receiveAudicodeForm Error: data_', data_);
+			}
+		};
+		/**
+		 * handle click in AudiCode link
+		 * @param {event} event_ - click event
+		 */
+		__.receiveAudicodeLink = function (event_) {
+			// console.log('CarlineMapping::receiveAudicodeLink()');
+			__.cancelEvent(event_);
+			__.lockPrString(DPU_API.getPrString());
+			var $link = jQuery(this),
+				audicode = $link.attr('data-audicode'),
+				promise = exports.loadConfigurationByAudiCode(audicode);
+			promise.then(function (config) {
+				var lockChanged = __.detectConfigurationChanges(DPU_API.getPrString());
+				if (lockChanged) {
+					throw new TypeError("receiveAudicodeLink:configuration changed while processing, loaded chonfiguration was rejected");
+				} else {
+					exports.handleExternalConfiguration(config, {
+						startType: 'audicode-link'
+					});
+				}
+			}).then(undefined, function (err) {
+				 console.warn(err);
+				//__.showError('nm_error_unknown');
+			});
+		};
+		exports.generateAudiCode = function (params) {
+			return DPU_MODEL.generateAudiCode(params);
+		};
+		/**
+		 * handle click in prstring link
+		 * @param {event} event_ - click event
+		 */
+		__.receivePrstringLink = function (event_) {
+			//console.log('CarlineMapping::receivePrstringLink()');
+			__.cancelEvent(event_);
+			__.lockPrString(DPU_API.getPrString());
+			var $link = jQuery(this),
+				prstring = $link.attr('data-prstring'),
+				promise = exports.loadConfigurationByPrString(prstring);
+			promise.then(function (config) {
+				var lockChanged = __.detectConfigurationChanges(DPU_API.getPrString());
+				if (lockChanged) {
+					throw new TypeError("receivePrstringLink: configuration changed while processing, loaded chonfiguration was rejected");
+				} else {
+					exports.handleExternalConfiguration(config, {
+						startType: 'prstring-link'
+					});
+				}
+			}).then(undefined, function (err) {
+				 console.warn(err);
+				//__.showError('nm_error_unknown');
+			});
+		};
+		/*
+		 * store current prtring to detect configuration changes later
+		 */
+		__.lockPrString = function (prString_) {
+			__.lockedPrString = prString_;
+		};
+		/**
+		 * detect changes in the configuration
+		 * (compare current prString with locked/stored prString)
+		 */
+		__.detectConfigurationChanges = function (prString_) {
+			return (__.lockedPrString !== prString_);
+		};
+		/**
+		 * adopt externally (e.g. via AudiCode,PrString or Trampoline Page) loaded configurations
+		 * @param {object} data - loaded configuration object
+		 */
+		exports.handleExternalConfiguration = function (data, options) {
+			var promise;
+			//check for errors within the loaded configuration/response
+			if (!data || (!!(data && data.audicode && data.audicode.success === false)) || !!(data && data.errorMessage)) {
+				var errMsg;
+
+				if(!!((data.audicode && !data.audicode.success) && (!!data.audicode && !!data.audicode['other-url']))) {
+					window.location.href = data.audicode['other-url'];
+					return;
+				}
+				if (data && data.audicode && data.audicode.message) {
+					errMsg = data.audicode.message;
+				} else if (data && data.errorMessage) {
+					errMsg = data.errorMessage;
+				} else if (data && data.header && !!data.header.errormessages) {
+					errMsg = data.header.errormessages.join(",");
+				} else {
+					errMsg = "unknown_error";
+				}
+				throw new TypeError(errMsg);
+			}
+			//configuration reload (e.g. by changing price rate)
+			if (!options.startType) {
+				promise = DPU_MODEL.adoptConfiguration(data);
+				return promise.then(function (success) {
+					__.handleConfigurationUpdate(success);
+				}).catch(function (err) {
+					__.configurationUpdateErrors(err);
+				});
+			}
+			__.startLayerActivated = true;
+			//don´show startlayer on loaded user carline configurations
+			if (options.startType === 'user-configuration') {
+				__.startLayerActivated = false;
+			}
+			//check if carline id matches the current page´s carline ID
+			if (CARLINE_MAPPING.isMatchingConfiguration(data)) {
+				promise = DPU_MODEL.adoptConfiguration(data);
+				return promise.then(function (success) {
+					__.setConfigurationStartType(options.startType);
+					__.handleConfigurationUpdate(success);
+				}).catch(function (err) {
+					__.configurationUpdateErrors(err);
+				});
+			} else {
+				//use trampoline page to redirect page
+				// console.warn("carline does not match with the current page => using trampoline page to redirect...");
+				var subsession = DPU_API.getSubsessionID();
+				if (!!data.subsession) {
+					subsession = data.subsession;
+				}
+				if (!!data.header && !!data.header.subsession) {
+					subsession = data.header.subsession;
+				}
+				return new Promise(function () {
+					CARLINE_MAPPING.useTrampoline(data, subsession, options.startType);
+					promise = Promise.reject("using trampoline page");
+				}).catch(function (err) {
+					console.err("Trampoline failed", err);
+				});
+			}
+		};
+		__.setConfigurationStartType = function (startType_) {
+			DPU_MODEL.setConfigurationStartType(startType_);
+		};
+		/**
+		 * handle configuration model update
+		 * (check for conflicts, update DOM etc.)
+		 */
+		__.handleConfigurationUpdate = function (success_) {
+			// console.log("UPDATE:", success_);
+			__.eventBus.emit(EVENTS.CONFIG_UPDATE);
+			/** @TODO chekc if configuration update is needed!!!
+				if ( !! success_) {
+					__.eventBus.trigger(EVENTS.CONFIG_UPDATE);
+				} else {
+					console.log("No change of configuration");
+				} //*/
+			__.checkLayerQueue();
+		};
+		/**
+		 * check for Layer to open/close after each configuration response
+		 * or Closing of Start- and TransferLayers
+		 * @returns {boolean} - queue finished (no new Layer opened)
+		 */
+		__.checkLayerQueue = function (initialCall_) {
+			var conflicts, transfers;
+			transfers = DPU_API.getTransfers();
+			conflicts = DPU_API.getConflicts();
+			//configuration started! => configuration has not yet been continued, id not an active user click and is not initial configuration
+			var noConflictsOrTransfers = (!transfers && !conflicts);
+			var startType = DPU_API.getConfigurationStartType();
+			if (__.startLayerActivated && noConflictsOrTransfers && !DPU_API.isContinuedConfiguration() && startType !== 'default' && startType !== 'configuration-change') {
+				__.startLayerActivated = false;
+				//show implictit startlayer on configuration reset 'new configuration' button
+				if (startType === 'configuration-reset') {
+					__.handleStartLayerDemand();
+					return false;
+				}
+				// configuration has been started by adopting a loaded configuration (e.g. audicode,prstring,carstore)
+				else {
+					//fix template data
+					var data = {
+						'configuration': DPU_API.getConfiguration(),
+						'assets': DPU_API.getConfigurationAssets(),
+						'ms_url': DPU_API.getRenderUrl(),
+						'start_type': startType
+					};
+					__.handleStartLayerDemand(data);
+					return false;
+				}
+			}
+			__.unHandleStartLayerDemand();
+			//check for conflicts and transfers durcing configuration
+			//start openening new Layer
+			//open transfer Layer (only after session was started)
+			if (transfers && DPU_API.isContinuedConfiguration()) {
+				// console.log("Configuration has Transfers", transfers);
+				TRANSFER_LAYER.handleTransfer(transfers);
+				return false;
+			}
+			//open conflict Layer
+			if (conflicts) {
+				// console.log("Configuration has Conflicts", conflicts);
+				CONFLICT_LAYER.handleConflict(conflicts);
+				return false;
+			}
+			return true;
+		};
+		/**
+		 * show startlayer if demanded
+		 * @param {object|null} data - startlayer content (e.g. loaded configuration info)
+		 */
+		__.handleStartLayerDemand = function (data) {
+			var promise = START_LAYER.handleStartLayer(data);
+			promise.then(function () {
+				// console.log("Showing startlayer as requested...");
+			}, function (err) {
+				// console.log("handleStartLayerDemand Error", err.message);
+			});
+		};
+		__.unHandleStartLayerDemand = function () {
+			START_LAYER.unHandleStartLayer();
+		};
+		/**
+		 * conflict layer was closed
+		 * (conflict was submitted or cancelled => send submit/cancelURL to the DPU)
+		 */
+		__.handleConflictClose = function (data_) {
+			var startTime = new Date();
+			// console.log("Conflict submit or cancel started at " + startTime.toTimeString(), data_.url);
+			var promise = DPU_MODEL.requestTransferOrConflictResolve(data_.url);
+			//handle successfulResponse or Error and allways ==> onAjaxCompleted
+			promise.then(__.handleConfigurationUpdate).catch(__.configurationUpdateErrors).then(function () {
+				__.onAjaxCompleted(startTime);
+			});
+		};
+		/**
+		 * transfer layer was closed
+		 * (transfer was adopted or cancelled)
+		 */
+		__.handleTransferClose = function (data_) {
+			//delete transfer object from Model
+			DPU_MODEL.transferCompleted();
+			//transfer was adopted?
+			if (!data_ || !data_.url) {
+				__.checkLayerQueue();
+			} else {
+				//transfer was cancelled=>call DPU with abort url
+				var startTime = new Date();
+				// console.log("Transfer-abort started at " + startTime.toTimeString(), data_.url);
+				var promise = DPU_MODEL.requestTransferOrConflictResolve(data_.url);
+				//handle successfulResponse or Error and allways ==> onAjaxCompleted
+				promise.then(__.handleConfigurationUpdate).catch(__.configurationUpdateErrors).then(function () {
+					__.onAjaxCompleted(startTime);
+				});
+			}
+		};
+		/**
+		 * startlayer layer was closed
+		 * (check for following  transfer or conflict layer to be opened)
+		 */
+		__.handleStartlayerClose = function () {
+			__.checkLayerQueue();
+		};
+		/**
+		 * add a prnumber to the configuration
+		 * @param {string} prNumber
+		 * @returns {Promise}
+		 */
+		exports.addToConfiguration = function (prNumber) {
+			var change = {
+				action: "itemAdd",
+				count: null,
+				id: prNumber
+			};
+			var changeEventdata = {};
+			__.eventBus.emit(EVENTS.CONFIG_CHANGEREQUEST_START, changeEventdata);
+			return __.triggerChangeRequest(change);
+		};
+		/**
+		 * remove a prnumber from the configuration
+		 * @param {String} prNumber - the prNumber to remove
+		 * @returns {Promise} change request result
+		 */
+		exports.removeFromConfiguration = function (prNumber) {
+			var change = {
+				action: "itemRemove",
+				count: null,
+				id: prNumber
+			};
+			var changeEventdata = {};
+			__.eventBus.emit(EVENTS.CONFIG_CHANGEREQUEST_START, changeEventdata);
+			return __.triggerChangeRequest(change);
+		};
+		/**
+		 * function to trigger AJAX request and handle Promise callbacks
+		 * @param {object} change object {id:pr-Number,action:'itemAdd'||'removeItem',count:value}
+		 */
+		__.triggerChangeRequest = function (change_) {
+			var startTime = new Date();
+			// console.log("Request started at " + startTime.toTimeString(), change_);
+			//trigger Ajax request for change of configuration (returns Promise)
+			var promise = DPU_MODEL.requestConfigurationChange(change_);
+			//handle successfulResponse or Error and allways ==> onAjaxCompleted
+			return promise.then(function (response) {
+				__.updateItemSelectionMethod(change_, 'active');
+				__.setConfigurationStartType('configuration-change');
+				__.handleConfigurationUpdate(response);
+			}).catch(__.configurationUpdateErrors).then(function () {
+				__.onAjaxCompleted(startTime);
+			});
+		};
+		/*
+		 * update item´s selection method after successful DPU response
+		 * selection methods are an important tracking indicator
+		 * @param {string} id_ - item id (prnumber)
+		 * @param {string} dpuAction_ - itemAdd'||'removeItem'
+		 * @param {string} selectionMethod_ - slection method ('pre','active','conflict')
+		 */
+		__.updateItemSelectionMethod = function (change_, selectionMethod_) {
+			var id, dpuAction;
+			id = change_.id;
+			dpuAction = change_.action;
+			//only track active configuration add and ignore remove
+			if (dpuAction === "itemAdd") {
+				//set item´s selection method to 'active'
+				DPU_MODEL.setItemSelectionMethod(id, selectionMethod_);
+				//DPU_MODEL.setItemSelectionMethod(id, isConflictAlternative?'conflict':selectionMethod_);
+			} else {
+				//clear item´s selectionMethod attribute
+				DPU_MODEL.setItemSelectionMethod(id, '');
+			}
+		};
+		/**
+		 * all preselected items in the carinfo.json get a
+		 * 'selectionMethod' attribute with the value of 'pre'
+		 */
+		__.updatePreselectedItems = function () {
+			var items = DPU_API.getItems();
+			jQuery.each(items, function (key, value) {
+				//item is preselected => add selection method
+				if (!!value.status && value.status.length === 5 && value.status.substr(3, 1) === "1") {
+					DPU_MODEL.setItemSelectionMethod(key, 'pre');
+				}
+			});
+		};
+		/**
+		 * handle ALL configuration Errors during Promises!!
+		 */
+		__.configurationUpdateErrors = function (err) {
+			var message,errorHeadline = window.i18n[err.name] || window.i18n['standard-configuration-error'];
+			console.error("Configuration Error", err);
+			message=err.id?DPU_API.getErrorMessage(err.id):null;
+			if(message){
+				__.eventBus.emit(EVENTS.ERROR,message);
+			}
+			else{
+				if(!!err.statuscode && err.statuscode === 300) {
+					__.eventBus.emit(EVENTS.ERROR, err.message||errorHeadline);
+				}
+				else{
+					__.eventBus.emit(EVENTS.ERROR,[errorHeadline,err.message]);
+				}
+			}
+		};
+		/**
+		 * check if an item´s DOM-status code (nm-j-configurator-status_) is selectable on click-event
+		 * @param  {jQuery-Element} $element_ configurator item
+		 * @returns {boolean}
+		 */
+		__.isSelectableItem = function ($element_) {
+			var _sClassStatus = DPU_API.getDOMStatusCode($element_),
+			_aStatusCodes = _sClassStatus.split(''),
+			mss = window.mss || null;
+			//radiogroup = !!$element_.attr('data-configurator-group');
+			//forced selectable? (event is status would not allow a selection)
+			if ($element_.hasClass("nm-j-configurator-item-forceselectable")) {
+				return true;
+			}
+			// check available flag
+			if (_aStatusCodes[0] === '0') {
+				return false;
+			}
+			// check changeable flag
+			if (_aStatusCodes[1] === '0') {
+				return false;
+			}
+			// check standard and selected flag
+			if (_aStatusCodes[4] === '1' && _aStatusCodes[3] === '1' && !!mss) {
+				return false;
+			}
+			// check conflict flag
+			if (_aStatusCodes[2] === '1') {
+				// console.warn("CONFIGURATING:confliction Item selected", $element_);
+				return true;
+			}
+			return true;
+		};
+		/**
+		 * prevent default event behavior
+		 * @param  {Object} event_ e.g. e click event
+		 * @return {Void}
+		 */
+		__.cancelEvent = function (event_) {
+			if (!!event_ && typeof event_.preventDefault === 'function') {
+				event_.preventDefault();
+			}
+		};
+		/**
+		 * start a new configuration (reset to default pr-string)
+		 */
+		__.handleNewConfigurationClick = function (evt_) {
+			var promise;
+			__.cancelEvent(evt_);
+			//trigger Ajax request for change of configuration (returns Promise)
+			promise = DPU_MODEL.requestConfigurationReset();
+			//handle successfulResponse or Error and allways ==> onAjaxCompleted
+			promise.then(function (data) {
+				__.startLayerActivated = true;
+				DPU_MODEL.setConfigurationStartType('configuration-reset');
+				__.handleConfigurationUpdate(data);
+			}).then(undefined, __.configurationErrors).then(__.onAjaxCompleted);
+		};
+		/**
+		 * handle all configuration Erros
+		 */
+		__.configurationErrors = function (err) {
+			// console.log("Configuration Error", err.mesage);
+		};
+		/**
+		 * handle mode change click price <=> rate
+		 */
+		__.addModeSwitchEventAfterReset = function () {
+			var mode,promise,checkbox = jQuery('nm-price-rate-switch');
+			if (!!checkbox) {
+				checkbox.checked = false;
+			}
+			__.legacyEventBus.on('change', '.nm-price-rate-switch', function (e) {
+				mode = (e.target.checked === true) ? 'rate' : 'price';
+				promise = DPU_MODEL.changeRatePriceMode(mode);
+				promise.then(__.handleConfigurationUpdate).then(undefined, __.configurationErrors).then(__.onAjaxCompleted);
+			});
+		};
+		/**
+		 * dispatch end of AJAX request (on successful and/or failure)
+		 * e.g. for loadingindicator to hide
+		 */
+		__.onAjaxCompleted = function (startTime) {
+			if (startTime) {
+				// console.log("Request Finished after " + (new Date().getTime() - startTime.getTime()) + " ms");
+			}
+			__.eventBus.emit(EVENTS.CONFIG_CHANGEREQUEST_END);
+		};
+		/**
+		 * public exports methods
+		 */
+		__.initialize = function () {
+			var previousConfiguration,configurationRequestParam,previousUserConfigurationPromise;
+			if (!_initialized) {
+				__.addEvents();
+				_initialized = true;
+				//======================================
+				// check for configuration entries
+				//======================================
+				previousConfiguration = CARLINE_MAPPING.getPreviousWindowConfig();
+				configurationRequestParam = CARLINE_MAPPING.getConfigurationRequestParam();
+				previousUserConfigurationPromise = USER_CONFIGURATIONS.getPreviousUserConfigurationPrString();
+				//check if prstring or audicode was requested vir url params
+				if (!!configurationRequestParam) {
+					if (!!configurationRequestParam.audicode) {
+						exports.loadConfigurationByAudiCode(configurationRequestParam.audicode).then(function (response) {
+							exports.handleExternalConfiguration(response, {
+								startType: "teaser-audicode"
+							});
+						}).then(undefined, function (err) {
+							// console.error(err.message);
+							__.eventBus.emit(EVENTS.ERROR, [window.i18n['standard-configuration-error'], err.message]);
+						});
+					}
+					if (!!configurationRequestParam.prstring) {
+						exports.loadConfigurationByPrString(configurationRequestParam.prstring).then(function (response) {
+							exports.handleExternalConfiguration(response, {
+								startType: "teaser-prstring"
+							});
+						}).then(undefined, function (err) {
+							// console.error(err.message);
+							__.eventBus.emit(EVENTS.ERROR, [window.i18n['standard-configuration-error'], err.message]);
+						});
+					}
+				}
+				//check if entering from a trampoline page
+				if (previousConfiguration) {
+					if (previousConfiguration.carline !== DPU_API.getCarline()) {
+						//page redirect
+						CARLINE_MAPPING.useTrampoline(previousConfiguration, previousConfiguration.subsession, previousConfiguration.entryType);
+						return null;
+					}
+					//previous configuration does match currrent carline => load by prstring and adopt configuration
+					exports.loadConfigurationByPrString(previousConfiguration.prstring, previousConfiguration.subsession).then(function (response) {
+						exports.handleExternalConfiguration(response, {
+							startType: previousConfiguration.entryType
+						});
+					}, function (err) {
+						// console.log(err.message);
+						__.eventBus.emit(EVENTS.ERROR, [window.i18n['standard-configuration-error'], err.message]);
+					});
+				}
+				//TODO fix reading usercarline configuration!!:::::::::::::::::::
+				//check if a previous usercarline configuration exists
+				if (!previousConfiguration && !configurationRequestParam) {
+					previousUserConfigurationPromise.then(function (previousUserConfigurationPrString) {
+						//load user´s previous configuration for the current carline from storage
+						exports.loadConfigurationByPrString(previousUserConfigurationPrString).then(function (response) {
+							exports.handleExternalConfiguration(response, {
+								startType: 'user-configuration'
+							});
+						}, function (err) {
+							 console.warn(err.message);
+						});
+					}).catch(function (err) {
+						console.warn(err.message);
+					});
+				}
+				//======================================
+				// load version and carinfo
+				//======================================
+				var startTime = new Date();
+				__.dataInitialized = false;
+				var promise = DPU_MODEL.fireDataInitializationChain();
+				promise.then(function () {
+					__.updatePreselectedItems();
+					console.info("fireDataInitializationChain completed after " + (new Date().getTime() - startTime.getTime()) + " ms");
+				}, function (err) {
+					console.warn("fireDataInitializationChain failed after " + (new Date().getTime() - startTime.getTime()) + " ms:" + err.message);
+				});
+			}
+		};
+		/**
+		 * load a configuration by a strig auf pr numbers
+		 * (sends context and ids)
+		 * from the DPU Service
+		 * @param {string} prString
+		 * @param {subsession|null} subsession - optional subsessionID from previous configuration
+		 * @returns {Promise}
+		 */
+		exports.loadConfigurationByPrString = function (prString, subsession) {
+			return DPU_MODEL.loadConfigurationByPrString(prString, subsession);
+		};
+		/**
+		 * load a configuration from prteconfigurated teaser
+		 * @returns {Promise}
+		 */
+		exports.loadConfigurationFromTeaser = function (options_, startType_) {
+			var promise, subsession = DPU_API.getSubsessionID();
+			if (!!options_.prstring) {
+				promise = exports.loadConfigurationByPrString(options_.prstring, subsession);
+				return promise.then(function (config) {
+					exports.handleExternalConfiguration(config, {
+						startType: startType_
+					});
+				}).catch(function (error) {
+					__.eventBus.emit(EVENTS.ERROR, [window.i18n['standard-configuration-error'], error.message]);
+				});
+			}
+			if (!!options_.audicode) {
+				promise = exports.loadConfigurationByAudiCode(options_.audicode);
+				return promise.then(function (config) {
+					exports.handleExternalConfiguration(config, {
+						startType: startType_
+					});
+				}).catch(function (error) {
+					// console.error(error);
+					__.eventBus.emit(EVENTS.ERROR, [window.i18n['standard-configuration-error'], error.message]);
+				});
+			}
+			promise = Promise.reject("No valid config option found");
+			return promise;
+		};
+		/**
+		 * load a configuration by an audiCode
+		 * (sends context and audicode)
+		 * from the DPU Service
+		 * @returns {Promise}
+		 */
+		exports.loadConfigurationByAudiCode = function (audiCode) {
+			return DPU_MODEL.loadConfigurationByAudiCode(audiCode);
+		};
+		/**
+		 * get a list of all carstore configurations
+		 * from the Carstore Service
+		 * @returns {Promise}
+		 */
+		exports.listCarstoreItems = function () {
+			return DPU_MODEL.sendCarstoreRequest('list', null);
+		};
+		/**
+		 * swith carline, reset configuration and initailaze with new Carline data
+		 * @param {string} carline_ - carline name
+		 * @param {string} carinfoUrl_ - url for the carinfo.json
+		 * @param {string} data_ - optional initialization data
+		 * @returns {Promise}
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.switchCarline switchCarline} method
+		 */
+		exports.switchCarline = function (carline_, carinfoUrl_, modelsInfoUrl_, data_) {
+			var promise = DPU_MODEL.switchCarline(carline_, carinfoUrl_, modelsInfoUrl_);
+			return promise.then(function () {
+				if (!data_) {
+					// __.handleConfigurationUpdate(true);
+					__.eventBus.emit(EVENTS.CONFIG_RESET);
+					// MSS-2019
+					DPU_MODEL.setConfigurationStartType('switched-carline');
+				} else {
+					DPU_MODEL.adoptConfiguration(data_).then(function (success) {
+						__.handleConfigurationUpdate(success);
+					}).catch(function (err) {
+						__.configurationUpdateErrors(err);
+					});
+				}
+			});
+		};
+		/**
+		 * load a configuration from the carstore
+		 * @param {integer} slotId - slot id/index of the selected car configuration
+		 * @returns {Promise}
+		 */
+		exports.loadCarstoreItem = function (slotId) {
+			var promise = DPU_MODEL.sendCarstoreRequest('load', {
+				'slot': slotId
+			});
+			return promise.then(function (config) {
+				//adopt loaded configuration
+				exports.handleExternalConfiguration(config, {
+					startType: 'carstore'
+				});
+			});
+		};
+		/**
+		 * delete slot from carstore
+		 * @param {integer} slotId - slot id/index of the selected car configuration
+		 * @returns {Promise}
+		 */
+		exports.deleteCarstoreItem = function (slotId) {
+			return DPU_MODEL.sendCarstoreRequest('delete', {
+				'slot': slotId
+			});
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.setSubsessionID setSubsessionID} method
+		 * @oaram {string} - subsession id
+		 */
+		exports.setSubsessionID = function (id_) {
+			DPU_MODEL.setSubsessionID(id_);
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.resetToDefaultParams resetToDefaultParams} method
+		 */
+		exports.resetToDefaultSetupParams = function () {
+			DPU_MODEL.resetToDefaultSetupParams();
+		};
+		
+		/**
+		 * get marker for ajax calls
+		 * @oaram {String} the url the marker is for.
+		 * @returns {Promise} with marker as resolve
+		 */
+		exports.getAjaxMarker = function(sUrl_) {
+			var result = {
+				marker: "",
+				overwrites: false
+			};
+			return new Promise(function(resolve, reject) {
+				if (DPU_API.isConfigurable()) {
+					result.marker = DPU_API.getMemcacheVersion();
+					result.overwrites = true;
+				} else {
+					result.marker = SETUPS.get('nemo.staticversion');
+				}
+				resolve(result);
+			});
+		}
+		
+		exports.initializePromise = function (eventBus_) {
+			return new Promise(function (resolve) {
+				__.eventBus = eventBus_;
+				__.legacyEventBus = jQuery("body");
+				CONTENT.registerMarkerProvider(exports.getAjaxMarker);
+				__.initialize();
+				resolve("configurator/dpu-controller.js");
+			});
+		};
+		return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 229:
+/*!***********************************************!*\
+  !*** ./js/app/bundles/configurator-bundle.js ***!
+  \***********************************************/
+/*! exports provided: DPU_API, DPU_MODEL, DPU_CONTROLLER */
+/*! all exports used */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_configurator_dpu_api__ = __webpack_require__(/*! configurator/dpu-api */ 3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_configurator_dpu_api___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_configurator_dpu_api__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_configurator_dpu_model__ = __webpack_require__(/*! configurator/dpu-model */ 31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_configurator_dpu_model___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_configurator_dpu_model__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_configurator_dpu_controller__ = __webpack_require__(/*! configurator/dpu-controller */ 11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_configurator_dpu_controller___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_configurator_dpu_controller__);
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "DPU_API", function() { return __WEBPACK_IMPORTED_MODULE_0_configurator_dpu_api___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "DPU_MODEL", function() { return __WEBPACK_IMPORTED_MODULE_1_configurator_dpu_model___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "DPU_CONTROLLER", function() { return __WEBPACK_IMPORTED_MODULE_2_configurator_dpu_controller___default.a; });
+
+
+
+
+
+
+/***/ }),
+
+/***/ 230:
+/*!*******************************************************************************!*\
+  !*** /opt/app/nemo/node_modules/raw-loader!./js/templates/transfer-layer.tpl ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"nm-layer-wrapper nm-layer-wrapper-dialogue nm-layer-wrapper-transfer\">\n\t<div class=\"nm-layer nm-layer-transfer nm-layer-transfer-default\">\n\t\t<div class=\"nm-layer-inner\">\n\t\t\t<div class=\"nm-layer-conflict-content clearfix\">\n\t\t\t\t<div class=\"nm-3col cearfix\">\n\t\t\t\t\t<div class=\"\">\n\t\t\t\t\t\t<h2 class=\"nm-el-hdl nm-el-hdl-02 nm-at-hdl-b\">\n\t\t\t\t\t\t\t{{=window.i18n['transfer-layer.configuration-transfer']}}\n\t\t\t\t\t\t</h2>\n\t\t\t\t\t\t{{? 0 !== it.deleted.length}}\n\t\t\t\t\t\t<strong class=\"nm-el-pg nm-el-pg-01\">\n\t\t\t\t\t\t\t{{=window.i18n['transfer-layer.configuration-transfer-warning']}}:\n\t\t\t\t\t\t</strong>\n\t\t\t\t\t\t<ul class=\"nm-options-list nm-transfer-trigger nm-j-configurator-no-update\">\n\t\t\t\t\t\t\t{{~it.deleted :value:index}}\n\t\t\t\t\t\t\t<li class=\"nm-check-list-item nm-j-configurator-item\">\n\t\t\t\t\t\t\t\t<div class=\"nm-options-cell-additional\">\n\t\t\t\t\t\t\t\t\t/*\n\t\t\t\t\t\t\t\t\t<div class=\"nm-list-item-additional clearfix\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"nm-price nm-el-pg nm-el-pg-04\">\n\t\t\t\t\t\t\t\t\t\t\t{{=value.price}}\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t*/\n\t\t\t\t\t\t\t\t\t<span class=\"nm-list-item-text nm-el-pg nm-el-pg-04\">\n\t\t\t\t\t\t\t\t\t\t{{=value.name}}\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t{{~}}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t{{?}}\n\t\t\t\t\t</div>\n\t\t\t\t\t<ul class=\"nm-button-list clearfix\">\n\t\t\t\t\t\t/*<li>\n\t\t\t\t\t\t\t<a class=\"nm-b7 nm-j-configurator-delegate-transfer-click\" data-transfer=\"cancel\"\n\t\t\t\t\t\t\thref=\"{{=it.urls.cancel}}\">{{=window.i18n['transfer-layer.label.cancel']}}</a>\n\t\t\t\t\t\t</li>*/\n\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t<div class=\"nm-btn-continue\">\n\t\t\t\t\t\t\t\t<a class=\"nm-j-configurator-delegate-transfer-click nm-el-btn nm-el-btn-01 nm-el-btn-ast\" data-transfer=\"submit\">{{=window.i18n['proceed-label']}}</a>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n"
+
+/***/ }),
+
+/***/ 231:
+/*!*******************************************************************************!*\
+  !*** /opt/app/nemo/node_modules/raw-loader!./js/templates/conflict-layer.tpl ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = "{{##def.options_tiles:\n<ul class=\"nm-options-list nm-options-tiles\">\n\t<li>\n\t\t<span class=\"nm-el-pg nm-el-pg-03 nm-at-pg-b\">{{=p.header}}</span>\n\n\t\t<div class=\"nm-tile-block\">\n\n\t\t\t<ul class=\"nm-tile-list clearfix\">\n\n\t\t\t{{~ p.items :value:i }}\n\t\t\t\t\t<li class=\"nm-j-configurator-item nm-j-configurator-no-update nm-j-configurator-status_{{=value.status}} nm-j-configurator-type_{{=value.type}} nm-conflict-type-{{=value.type}} clearfix\"\n\t\t\t\tdata-configurator-id=\"{{=value.id}}\" data-mbvid=\"{{=value.id}}\">\n\t\t\t\t\t\t{{? !!value.image }}\n\t\t\t\t\t\t<div class=\"nm-tile-element-image\">\n\t\t\t\t\t\t\t<a class=\"nm-j-configurator-delegate-click\" href=\"#\"><img src=\"{{=value.image}}\" /></a>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t{{?}}\n\n\t\t\t\t\t\t<div class=\"nm-tile-element-info\">\n\t\t\t\t\t\t\t<span class=\"nm-list-item-text nm-el-pg nm-el-pg-03\">{{=value.name}}</span>\n\t\t\t\t\t\t\t<div class=\"nm-price nm-el-pg nm-el-pg-03 nm-at-pg-b\">\n\t\t\t\t\t\t\t\t{{=value.price}}\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t{{~}}\n\t\t\t</ul>\n\n\t\t</div>\n\n\t</li>\n</ul>\n#}}\n\n\n{{##def.options_list:\n<!-- Default options list -->\n\n<ul class=\"nm-options-list\">\n\t{{~ p.items :value:i }}\n\t<li class=\"nm-check-list-item nm-j-configurator-item nm-j-configurator-no-update nm-j-configurator-status_{{=value.status}} nm-j-configurator-type_{{=value.type}} nm-conflict-type-{{=value.type}} clearfix\"\n\tdata-configurator-id=\"{{=value.id}}\" data-mbvid=\"{{=value.id}}\">\n\n\t\t<div class=\"nm-options-list-cell-cb clearfix\">\n\t\t\t<a class=\"nm-checkbox-3 nm-j-configurator-delegate-click\" data-tracking-link='{\"events\":\"event73\"}'\n\t\t\thref=\"#\"></a>\n\t\t</div>\n\n\t\t<div class=\"nm-options-cell-additional\">\n\t\t\t{{? value.image }}\n\t\t\t<div class=\"nm-list-item-additional\">\n\t\t\t\t<div class=\"nm-list-item-image\">\n\t\t\t\t\t<img src=\"{{=value.image}}\" alt=\"{{=value.image.name}}\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t{{?}}\n\n\t\t\t<span class=\"nm-list-item-text nm-el-pg nm-el-pg-03\">\n\t\t\t\t{{? value.type === \"add\" }}\n\t\t\t\t<span class=\"nm-conflict-add-text nm-at-pg-b\">\n\t\t\t\t\t{{=window.i18n['conflict-layer.add-item']}}\n\t\t\t\t</span>\n\t\t\t\t{{??}}\n\t\t\t\t<span class=\"nm-conflict-remove-text nm-at-pg-b\">\n\t\t\t\t\t{{=window.i18n['conflict-layer.remove-item']}}\n\t\t\t\t</span>\n\t\t\t\t{{?}} {{=value.name}}\n\t\t\t</span>\n\t\t</div>\n\n\t\t{{? typeof value.priceValue !== 'undefined' && value.priceValue\n\t\t\t< 0 }} <div class=\"nm-price nm-el-pg nm-el-pg-03 nm-at-pg-b nm-at-pg-indicator\">\n\t\t{{??}}\n\t\t<div class=\"nm-price nm-el-pg nm-el-pg-03 nm-at-pg-b\">\n\t\t\t{{?}} {{=value.price}}\n\t\t</div>\n\t</li>\n\t{{~}}\n</ul>\n#}}\n\n\n<div class=\"nm-layer-wrapper nm-layer-wrapper-dialogue nm-layer-wrapper-conflict\">\n\t<div class=\"nm-layer nm-layer-conflict nm-layer-conflict-default\">\n\t\t<div class=\"nm-layer-inner\">\n\t\t\t<div class=\"nm-layer-conflict-content clearfix\">\n\t\t\t\t<div class=\"nm-3col cearfix\">\n\t\t\t\t\t<div class=\"nm-module nm-md-conflict-layer\" data-module=\"conflict-layer\">\n\t\t\t\t\t\t<h2 class=\"nm-el-hdl nm-el-hdl-02 nm-at-hdl-b\">\n\t\t\t\t\t\t\t{{=window.i18n['conflict-layer.selection-conflict']}}\n\t\t\t\t\t\t</h2>\n\t\t\t\t\t\t{{? 0 !== it.triggers.length}}\n\t\t\t\t\t\t<span class=\"nm-el-hdl nm-el-hdl-04 nm-at-hdl-b\">\n\t\t\t\t\t\t{{=window.i18n['conflict-layer.your-selection']}}\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<ul class=\"nm-options-list nm-conflict-trigger\">\n\t\t\t\t\t\t\t{{~it.triggers :value:index}}\n\t\t\t\t\t\t\t<li class=\"nm-check-list-item nm-j-configurator-item nm-j-configurator-no-update nm-j-configurator-status_{{=value.status}} nm-j-configurator-type_{{=value.type}} nm-conflict-type-{{=value.type}} clearfix\"\n\t\t\t\t\t\t\tdata-configurator-id=\"{{=value.id}}\" data-mbvid=\"{{=value.id}}\">\n\t\t\t\t\t\t\t\t<a class=\"nm-checkbox-1 nm-j-configurator-delegate-click\" href=\"#\"></a>\n\t\t\t\t\t\t\t\t<div class=\"nm-options-cell-additional\">\n\t\t\t\t\t\t\t\t\t<span class=\"nm-list-item-text nm-el-pg nm-el-pg-03\">\n\t\t\t\t\t\t\t\t\t\t{{=value.name}}\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t{{? typeof value.priceValue !== 'undefined' && value.priceValue\n\t\t\t\t\t\t\t\t< 0 }} <div class=\"nm-price nm-el-pg nm-el-pg-03 nm-at-pg-b nm-at-pg-indicator\">\n\t\t\t\t\t\t\t\t\t{{??}}\n\t\t\t\t\t\t\t\t\t<div class=\"nm-price nm-el-pg nm-el-pg-03 nm-at-pg-b\">\n\t\t\t\t\t\t\t\t\t\t{{?}} {{=value.price}}\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t{{~}}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t{{?}} {{? 0 !== it.solutions[0].length}}\n\t\t\t\t\t\t<span class=\"nm-el-hdl nm-el-hdl-04 nm-at-hdl-b\">\n\t\t\t\t\t\t\t{{=window.i18n['conflict-layer.mandatory-customizations']}}:\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t{{~ it.solutions :p }}\n\t\t\t\t\t\t{{? !!p.id}}\n\t\t\t\t\t\t<div class=\"nm-conflict-solution\" data-solution-id=\"{{=p.id}}\">\n\n\t\t\t\t\t\t\t{{?!!p.sameTypeItems}}\n\t\t\t\t\t\t\t\t{{#def.options_tiles}}\n\t\t\t\t\t\t\t{{??}}\n\t\t\t\t\t\t\t\t{{#def.options_list}}\n\t\t\t\t\t\t\t\t{{? 1 < p.items.length}} <a href=\"\" class=\"nm-j-conflict-options-show nm-el-lbl nm-el-lbl-01\" data-tracking-link='{\"events\":\"event76\"}'>\n\t\t\t\t\t\t\t\t\t<span class=\"nm-conflict-alternative-text-show\">\n\t\t\t\t\t\t\t\t\t\t{{=window.i18n['conflict-layer.show-alternatives']}}\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t<span class=\"nm-conflict-alternative-text-hide\">\n\t\t\t\t\t\t\t\t\t\t{{=window.i18n['conflict-layer.hide-alternatives']}}\n\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t\t{{?}}\n\t\t\t\t\t\t\t{{?}}\n\n\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t{{?}}\n\t\t\t\t\t\t{{~}} {{?}}\n\t\t\t\t\t\t<p class=\"nm-el-pg nm-el-pg-03 nm-at-pg-b nm-conflict-layer-total-price\">\n\t\t\t\t\t\t\t{{=window.i18n['conflict-layer.overall-cutomizations']}}: {{?\n\t\t\t\t\t\t\ttypeof it.totalPriceValue !== 'undefined' && it.totalPriceValue\n\t\t\t\t\t\t\t< 0 }} <span class=\"nm-el-pg nm-el-pg-03 nm-at-pg-b nm-at-pg-indicator\">\n\t\t\t\t\t\t\t\t{{??}}\n\t\t\t\t\t\t\t\t<span class=\"nm-el-pg nm-el-pg-03 nm-at-pg-b\">\n\t\t\t\t\t\t\t\t\t{{?}} {{=it.totalPrice}}\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t\t<ul class=\"nm-button-list clearfix\">\n\t\t\t\t\t\t\t{{? !!it.urls.cancel }}\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<a class=\"nm-j-configurator-delegate-conflict-click nm-el-btn nm-el-btn-01 nm-at-btn-inv\" data-conflict=\"cancel\"\n\t\t\t\t\t\t\t\t/*data-tracking-link='{\"events\":\"event74\"}'*/ href=\"{{=it.urls.cancel}}\">{{=window.i18n['abort-label']}}</a>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t{{?}} {{? !!it.urls.submit }}\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<a class=\"nm-j-configurator-delegate-conflict-click nm-el-btn nm-el-btn-02\" data-conflict=\"submit\"\n\t\t\t\t\t\t\t\t/*data-tracking-link='{\"events\":\"event75\"}'*/ href=\"{{=it.urls.submit}}\">{{=window.i18n['conflict-layer.label.submit']}}</a>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t{{?}}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n"
+
+/***/ }),
+
+/***/ 232:
+/*!**************************************************************************************************!*\
+  !*** /opt/app/nemo/node_modules/raw-loader!./js/templates/configurationstart-implicit-layer.tpl ***!
+  \**************************************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"nm-layer-wrapper nm-layer-wrapper-dialogue\">\n\t<div class=\"nm-layer nm-layer-dialogue\">\n\t\t<div class=\"nm-layer-inner\">\n\t\t\t<div class=\"nm-layer-dialogue-content clearfix\">\n\t\t\t\t<div class=\"nm-3col clearfix\">\n\t\t\t\t\t<div class=\"nm-module nm-start-layer nm-md-configurationstart-implicit-layer\">\n\t\t\t\t\t\t<h2 class=\"nm-el-hdl nm-el-hdl-02 nm-at-hdl-b\">\n\t\t\t\t\t\t\t{{=window.i18n['configurationstart-layer-info']}}\n\t\t\t\t\t\t</h2>\n\t\t\t\t\t\t<p class=\"nm-el-pg nm-el-pg-01\">{{= window.i18n['configurationstart-layer-edit']}}</p>\n\t\t\t\t\t\t<div class=\"nm-btn-continue\">\n\t\t\t\t\t\t\t<a href=\"#\" class=\"nm-configurationstart-layer-close nm-el-btn nm-el-btn-01 nm-el-btn-ast\" style=\"float:right;\">{{=window.i18n['proceed-label']}}</a>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n"
+
+/***/ }),
+
+/***/ 233:
+/*!************************************************************************************************!*\
+  !*** /opt/app/nemo/node_modules/raw-loader!./js/templates/configurationstart-loaded-layer.tpl ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"nm-layer-wrapper nm-layer-wrapper-dialogue\">\n\t<div class=\"nm-layer nm-layer-dialogue\">\n\t\t<div class=\"nm-layer-inner\">\n\t\t\t<div class=\"nm-layer-dialogue-content clearfix\">\n\t\t\t\t<div class=\"nm-3col clearfix\">\n\t\t\t\t\t<div class=\"nm-module nm-start-layer nm-simpleform nm-configurationstart-loaded-layer clearfix\">\n\t\t\t\t\t\t<h2 class=\"nm-el-hdl nm-el-hdl-02 nm-at-hdl-b\">\n\t\t\t\t\t\t\t{{=window.i18n['configurationloaded-layer-info']}}\n\t\t\t\t\t\t</h2>\n\t\t\t\t\t\t<p class=\"nm-el-pg nm-el-pg-01\">\n\t\t\t\t\t\t\t{{=\twindow.i18n['configurationloaded-layer-edit']}}\n\t\t\t\t\t\t</p>\n\t\t\t\t\t\t<img src=\"{{=it.ms_url}}{{=it.configuration.assets.exterior_front['carstore.new']}}\"\n\t\t\t\t\t\tclass=\"nm-unscaled-image nm-alpha\" />\n\t\t\t\t\t\t<div class=\"nm-start-information-overview\">\n\t\t\t\t\t\t\t<div class=\"nm-start-inforamation-content\">\n\t\t\t\t\t\t\t\t<span class=\"nm-el-hdl nm-el-hdl-04 nm-at-hdl-b\">\n\t\t\t\t\t\t\t\t\t{{=it.configuration.carlineName}}\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t<span class=\"nm-engine nm-el-pg nm-el-pg-03\">\n\t\t\t\t\t\t\t\t\t{{=it.configuration.description}}\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t<ul class=\"nm-car-price clearfix\">\n\t\t\t\t\t\t\t\t\t<li class=\"nm-car-price-total nm-el-hdl nm-el-hdl-04 nm-at-hdl-b clearfix\">\n\t\t\t\t\t\t\t\t\t\t/*<span class=\"nm-car-price-total-key\">\n\t\t\t\t\t\t\t\t\t\t\t{{=window.i18n['totalprice-label']}}\n\t\t\t\t\t\t\t\t\t\t</span>*/\n\t\t\t\t\t\t\t\t\t\t<span class=\"nm-car-price-total-value\">\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t{{? typeof(it.configuration.prices.rotr) !== 'undefined' && parseInt(it.configuration.prices.rotr, 10) > 0 }}\n\t\t\t\t\t\t\t\t\t\t\t\t{{=it.configuration.prices.rotr}}\n\t\t\t\t\t\t\t\t\t\t\t{{??}}\n\t\t\t\t\t\t\t\t\t\t\t\t{{=it.configuration.price}}\n\t\t\t\t\t\t\t\t\t\t\t{{?}}\n\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"nm-btn-continue\">\n\t\t\t\t\t\t\t\t<a href=\"#\" class=\"nm-configurationstart-layer-close nm-el-btn nm-el-btn-01 nm-el-btn-ast\">{{=window.i18n['proceed-label']}}</a>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n"
+
+/***/ }),
+
+/***/ 3:
+/*!****************************************!*\
+  !*** ./js/app/configurator/dpu-api.js ***!
+  \****************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxparams: 7 */
+/* jshint maxlen: 140 */
+/* global SETUPS,mss */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! jquery */ 1), __webpack_require__(/*! configurator/dpu-model */ 31), __webpack_require__(/*! utils/common */ 18), __webpack_require__(/*! module/state */ 40)], __WEBPACK_AMD_DEFINE_RESULT__ = function (jQuery, DPU_MODEL, UTILS, STATE) {
+		'use strict';
+		//Private Methods
+		var __ = {},
+			//Public API
+			exports = {
+				__: __
+			};
+		/**
+		 * @property {object} store for all API values
+		 */
+		__.stored = {};
+		/**
+		 * merge families with special info
+		 * @returns {object|null} object of familiy items (key=name,value=family)
+		 */
+		exports.getSpecialFamilies = function () {
+			// #api-003.2 - resolve dependency
+			var specialFamilies = SETUPS.get('nemo.families');
+			var configFamilies = exports.getFamilies();
+			if (!specialFamilies && !!configFamilies) {
+				specialFamilies = {};
+				// #api-003.3 - resolve dependency
+				for (var id in configFamilies) {
+					if (!!configFamilies[id].showstandard && configFamilies[id].showstandard === 'true') {
+						specialFamilies[id] = configFamilies[id];
+					}
+				}
+			}
+			return (!!specialFamilies) ? specialFamilies : null;
+		};
+		/**
+		 * get item families
+		 * calls {@link module:configurator/dpu-model.getFamilies DPU_MODEL.getFamilies}
+		 * @returns {object|null} families
+		 */
+		exports.getFamilies = function () {
+			return DPU_MODEL.getFamilies();
+		};
+		/**
+		 * send request to stateless render service
+		 * @param {String} renderPrNr - pr number to render
+		 * @param {String} renderViews - render views separated by ,
+		 * @param {String} renderSizes - renderSizes separated by ,
+		 * @returns {Promise} - render service call result as promise
+		 */
+		exports.sendRenderServiceRequest = function (prNumbersToFilter, renderPrNr, renderViews, renderSizes) {
+			return DPU_MODEL.sendRenderServiceRequest(prNumbersToFilter, renderPrNr, renderViews, renderSizes);
+		};
+		/**
+		 * search for items matching the search string
+		 * @param {string} searchString - search field input value
+		 * @param {boolean} hideInvisible - hide invisible items from search (staus 00000 and 10000)
+		 * @returns {array} itemsFound - list of all the found items
+		 * @default []
+		 */
+		exports.search = function (searchString, hideInvisible) {
+			var itemsFound = exports.searchItems(searchString, hideInvisible);
+			if (itemsFound.length > 0) {
+				//return result grouped by family
+				return __.groupByFamily(itemsFound);
+			} else {
+				return [];
+			}
+		};
+		/**
+		 * #NEMOBA-123
+		 *
+		 * Groups list of given search-results based on its family
+		 * and returns an array in the following format:
+		 * @param {array} items_ - found items to group
+		 * @returns {array} items - items grouped by families
+		 * [
+		 *  { key:'Family-Name', value:{ family: {}, items: [ ... ] }},
+		 *  { key:'Family-Name', value:{ family: {}, items: [ ... ] }}
+		 * ]
+		 */
+		__.groupByFamily = function (items_) {
+			var results = {
+				search: []
+			};
+			var families = exports.getFamilies();
+			var resultList;
+			var keys = {};
+			// TODO: remove quick-fix and move it to an appropriate place
+			//
+			var carlineName = exports.getCarlineName(),
+				items = items_ || {};
+			jQuery.each(items, function (key, item) {
+				if (item.family === undefined) {
+					console.log('Found item without family: ', item);
+					return true;
+				}
+				var family = families[item.family];
+				// id     = family.id || 'NO ID FOUND';
+				if (!!family) {
+					//NEMOBA-1250 families without name
+					if (!family.name) {
+						console.log('Found family without family.name: ', family);
+						return true;
+					}
+					//NEMOBA-1250 items without 'group'
+					family.group = family.group || family.name || family.id;
+					//new resultList (familyGroup)?
+					if (!keys[family.group]) {
+						keys[family.group] = 1;
+						resultList = {
+							key: family.group,
+							value: {
+								carlineName: carlineName,
+								family: family,
+								items: []
+							}
+						};
+						//add resultList to search results
+						results.search.push(resultList);
+					}
+					//add item to its resultList (familyGroup)
+					resultList.value.items.push(item);
+				}
+			});
+			return results.search;
+		};
+		__.groupByExtColorKey = function (items_) {
+			var families = exports.getFamilies();
+			var keys = ['extcolors.uni', 'extcolors.metallic', 'extcolors.pearl', 'extcolors.exclusive', 'extcolors.o', 'extcolors.m', 'extcolors.p'];
+			var i;
+			var family;
+			var resultLists = [];
+			var returnLists = [];
+			var carlineName = exports.getCarlineName(),
+				items = items_ || {};
+			jQuery.each(items, function (key, item) {
+				if (item.family === undefined) {
+					console.log('Found item without family: ', item);
+					return true;
+				}
+				family = families[item.family];
+				if (!!family) {
+					if (!family.name) {
+						console.log('Found family without family.name: ', family);
+						return true;
+					}
+					family.group = family.group || family.id || family.name;
+					family.group = family.group.trim();
+					if (keys.indexOf(family.group) === -1) {
+						console.log('Found unknown family group: ', family.group);
+					} else {
+						if (!resultLists[family.group]) {
+							resultLists[family.group] = {
+								'key': family.group,
+								'value': {
+									'carlineName': carlineName,
+									'family': family,
+									'items': []
+								}
+							};
+						}
+						resultLists[family.group].value.items.push(item);
+					}
+				}
+			});
+			for (i = 0; i < keys.length; i++) {
+				if (resultLists[keys[i]]) {
+					returnLists.push(resultLists[keys[i]]);
+				}
+			}
+			return returnLists;
+		};
+		/**
+		 * @returns {string|null} url - url to the renderservice
+		 */
+		exports.getRenderUrl = function () {
+			return SETUPS.get('nemo.url.mediaservice') || null;
+		};
+		/**
+		 * getSelectedItems
+		 * @returns {object|null} - object of all selected items (key=id,value=item)
+		 */
+		exports.getSelectedItems = function () {
+			var items = exports.getItems() || {};
+			var specialFamilies = exports.getSpecialFamilies();
+			var selectedItems = {};
+			var i = 0;
+			for (var id in items) { /* jshint forin: false */
+				if (!!items[id].status && items[id].status.charAt(3) === '1') {
+					if (items[id].status.charAt(4) === '0') {
+						selectedItems[id] = items[id];
+						i++;
+					}
+					if (items[id].status.charAt(4) === '1' && !!items[id].family && !!specialFamilies[items[id].family]) {
+						selectedItems[id] = items[id];
+						i++;
+					}
+				}
+			}
+			//return selected Items or null
+			return (i > 0) ? selectedItems : null;
+		};
+		/**
+		 * get current trimline from configuration
+		 * @returns {string|null} trimelinename
+		 */
+		exports.getSelectedTrimline = function () {
+			var configuratedItems = exports.getSelectedItems(),
+				keysArr = [],
+				len;
+			if (configuratedItems) {
+				keysArr = Object.keys(configuratedItems);
+				len = keysArr.length;
+				while (len--) {
+					if (keysArr[len].indexOf("trimline_") > -1) {
+						return keysArr[len];
+					}
+				}
+			}
+			return null;
+		};
+		/**
+		 * get all selected items (with attribute 'selectionMethod')
+		 * from current configuration
+		 * @returns {object} items
+		 */
+		exports.getSelectedItemsArray = function () {
+			var items = {};
+			jQuery.each(exports.getItems(), function (key, value) {
+				if (!!value.selectionMethod) {
+					items[value.selectionMethod] = items[value.selectionMethod] || [];
+					items[value.selectionMethod].push(value);
+				}
+			});
+			return items;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getCarline getCarline} method
+		 * @returns {string|null} name - carline name
+		 */
+		exports.getCarline = function () {
+			return DPU_MODEL.getCarline();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConfiguration getConfiguration} method
+		 * @returns {string|null} name - carline name
+		 */
+		exports.getCarlineName = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.carlineName) ? configuration.carlineName : null;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConfiguration getConfiguration} method
+		 * @returns {string|null} engine - engine prstring
+		 */
+		exports.getEngine = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.model) ? configuration.model : null;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConfiguration getConfiguration} method
+		 * @returns {object|null} techdata - techdata object
+		 */
+		exports.getTechdata = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.techdata) ? configuration.techdata : null;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConfiguratedItems getConfiguratedItems} method
+		 * @returns {string|null} exterior color code (prstring)
+		 */
+		exports.getExtColor = function () {
+			var items = exports.getConfiguratedItems();
+			for (var i = 0, len = items.length; i < len; i++) {
+				if (items[i].length === 4) {
+					return items[i];
+				}
+			}
+			return null;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConfiguration getConfiguration} method
+		 * @returns {string|null} modelyear
+		 */
+		exports.getModelYear = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.modelyear) ? configuration.modelyear : null;
+		};
+		/**
+		 * uses DPU Model`s {@linkcode module:configurator/dpu-model.getHeader getHeader} method
+		 * @returns {string} pricemode - 'price' or 'rate'
+		 * @default {string} 'price'
+		 */
+		exports.getPriceRateMode = function () {
+			var header = DPU_MODEL.getHeader();
+			return (header && !!header.mode) ? header.mode : 'price';
+		};
+		exports.getHiddenItemIDsFromVersion = function() {
+			return DPU_MODEL.getHiddenItemIDsFromVersion();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getPrString getPrString} method
+		 * @returns {string|null} - prstring for the current configuration
+		 */
+		exports.getPrString = function () {
+			return DPU_MODEL.getPrString();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConfigurationStartType getConfigurationStartType} method
+		 * @param {string} value - indicating how the current configuration has been started
+		 */
+		exports.getConfigurationStartType = function () {
+			return DPU_MODEL.getConfigurationStartType();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.isContinuedConfiguration isContinuedConfiguration} method
+		 * @param {boolean} value - indicating if the cuurent configuration has been changed after its start
+		 */
+		exports.isContinuedConfiguration = function () {
+			return DPU_MODEL.isContinuedConfiguration();
+		};
+		/**
+		 * uses DPU Model`s {@linkcode module:configurator/dpu-model.getHeader getHeader} method
+		 * @returns {string|null} - content version
+		 */
+		exports.getContentVersion = function () {
+			var header = DPU_MODEL.getHeader();
+			var version = (header && !!header.version) ? header.version : null;
+			return version;
+		};
+		/**
+		 * ueses DPU Model`s {@linkcode module:configurator/dpu-model.getHeader getHeader} method
+		 * @returns {string|null} - market version
+		 */
+		exports.getMarketVersion = function () {
+			var header = DPU_MODEL.getHeader();
+			var marketVersion = (header && !!header.marketVersion) ? header.marketVersion : null;
+			return marketVersion;
+		};
+		/**
+		 * uses DPU Model`s {@linkcode module:configurator/dpu-model.getHeader getHeader} method
+		 * currently logged in to 'myAudi' (carstore)
+		 * @returns {boolean}
+		 * @default false
+		 */
+		exports.isLoggedIn = function () {
+			var authenticated = (DPU_MODEL.getHeader() && DPU_MODEL.getHeader()['logged-in'] === true);
+			return !!authenticated;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.setLogin setLogin} method
+		 * try logging in to 'myAudi' (carstore)
+		 * @returns {Promise}
+		 */
+		exports.setLogin = function (loginState, subsession) {
+			return DPU_MODEL.setLogin(loginState, subsession);
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getSearchStopWords getSearchStopWords} method
+		 * @returns {string|null} - regEx to filter user search-inputs
+		 */
+		exports.getSearchStopWords = function () {
+			return DPU_MODEL.getSearchStopWords();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConflicts getConflicts} method
+		 * @returns {object|null} - conflict object
+		 */
+		exports.getConflicts = function () {
+			return DPU_MODEL.getConflicts();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConflicts getConflicts} method
+		 * @returns {array|null} - triggers array
+		 */
+		exports.getConflictTriggers = function () {
+			var triggers = null;
+			var conflict = exports.getConflicts();
+			if (conflict && conflict.triggers && conflict.triggers.length) {
+				triggers = conflict.triggers;
+			}
+			return triggers;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getTransfers getTransfers} method
+		 * @returns {object|null} - transfer object
+		 */
+		exports.getTransfers = function () {
+			//BUGFIX NEMOBA-2146
+			var transfers = DPU_MODEL.getTransfers();
+			return (transfers && transfers.deleted && transfers.deleted.length) ? transfers : null;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getAudicode getAudicode} method
+		 * @returns {String|false} - audicode if exists, false else
+		 */
+		exports.getAudicode = function() {
+			return DPU_MODEL.getAudicode();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getConfiguration getConfiguration} method
+		 * @returns {object|null} - configuration object
+		 */
+		exports.getConfiguration = function () {
+			return DPU_MODEL.getConfiguration();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getVersion getVersion} method
+		 * @returns {string|null} - version
+		 */
+		exports.getVersion = function () {
+			return DPU_MODEL.getVersion();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getMemcacheVersion getMemcacheVersion} method
+		 * @returns {string|null} - version
+		 */
+		exports.getMemcacheVersion = function () {
+			return DPU_MODEL.getMemcacheVersion();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getDpuUrl getDpuUrl} method
+		 * @returns {string|null} - version
+		 */
+		exports.getDpuUrl = function () {
+			return DPU_MODEL.getDpuUrl();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getContext getContext} method
+		 * @returns {string|null} - version
+		 */
+		exports.getContext = function () {
+			return DPU_MODEL.getContext();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getSubsessionID getSubsessionID} method
+		 * @returns {string|null} - version
+		 */
+		exports.getSubsessionID = function () {
+			return DPU_MODEL.getSubsessionID();
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.setSubsessionID setSubsessionID} method
+		 * @param {string} subsession_ - subsession
+		 * @returns {void} - version
+		 */
+		exports.setSubsessionID = function (subsession_) {
+			return DPU_MODEL.setSubsessionID(subsession_);
+		};
+		/**
+		 * @returns {string|null} code - motorcode
+		 */
+		exports.getMotorcode = function () {
+			var configuration = exports.getConfiguration();
+			return !!(configuration && configuration.model) ? configuration.model : null;
+		};
+		/**
+		 * @returns {object|null} assets
+		 */
+		exports.getConfigurationAssets = function () {
+			var configuration = exports.getConfiguration();
+			return !!(configuration && configuration.assets) ? configuration.assets : null;
+		};
+		/**
+		 * @returns {object|null} ext colors grouped by families
+		 */
+		exports.getExtColors = function () {
+			var items = __.getItemsByFamily('extcolors');
+			return !!(items) ? __.groupByExtColorKey(items) : null;
+		};
+		/**
+		 * @returns {string} url
+		 */
+		exports.getDocrootUrl = function () {
+			var url = window.location.protocol + '//' + window.location.host + (SETUPS.get('nemo.url.static') || '');
+			if (url.charAt(url.length - 1) === "/") {
+				url = url.slice(0, -1);
+			}
+			return url;
+		};
+		/**
+		 * if no carinfo.json exists the nemo mandant is not configurable
+		 * (e.g. EOS mandant)
+		 * @returns {boolean} configurable
+		 */
+		exports.isConfigurable = function () {
+			return !!SETUPS.get('nemo.url.carinfo');
+		};
+		/**
+		 * nemo mandant is in preview mode
+		 * @returns {boolean} previewMode
+		 */
+		exports.isInPreviewMode = function () {
+			return !!SETUPS.get('nemo.url.preview');
+		};
+		/**
+		 * get pages and nivigation tree (json)
+		 * @returns {object|null} pageTree
+		 */
+		exports.getPageTree = function () {
+			return SETUPS.get('pagetree');
+		};
+		/**
+		 * @returns {string|null} url for Audi-GoogleSearch
+		 */
+		exports.getGsaSearchUrl = function () {
+			return SETUPS.get('gsaSearchLink') || null;
+		};
+		/**
+		 * Search for Items (name,search,url) within the Navigation parts (Model-, Sitemap- Footernavigation)
+		 * @param {string} inputString - Input from search field
+		 * @param {string} navigationPart - where to search (model||siteMap||footer)
+		 * @returns {array} {name search url}
+		 * @dafault []
+		 */
+		exports.searchNavigation = function (inputString, navigationPart) {
+			var navigationItems = [],
+				whereArr = [],
+				searchString = inputString.toLowerCase();
+			switch (navigationPart) {
+			case 'model':
+				whereArr = __.getModelNavigationStorage();
+				break;
+			case 'siteMap':
+				whereArr = __.getSiteNavigationStorage();
+				break;
+			case 'footer':
+				whereArr = __.getFooterNavigationStorage();
+				break;
+			default:
+				whereArr = [];
+			}
+			jQuery.each(whereArr, function (index, value) {
+				if (!value.search) {
+					return true;
+				}
+				if (value.search.indexOf(searchString) !== -1 && !!value.url) {
+					navigationItems.push(value);
+				}
+			});
+			return navigationItems;
+		};
+		/**
+		 * calls DPU-Model´s {@linkcode module:configurator/dpu-model.getItems getItems} method
+		 * @returns {object|null} items - object with all items for the current carline
+		 */
+		exports.getItems = function () {
+			return DPU_MODEL.getItems() || null;
+		};
+		/**
+		 * calls {@link module:configurator/dpu-model.isConfigurationStarted DPU_MODEL.isConfigurationStarted}
+		 * @returns {boolean} - has the configuration been started?
+		 * @default false
+		 */
+		exports.isConfigurationStarted = function () {
+			return DPU_MODEL.isConfigurationStarted();
+		};
+		/**
+		 * calls {@link module:configurator/dpu-model.hasCustomConfiguration DPU_MODEL.hasCustomConfiguration}
+		 * @returns {boolean} has the user started a configuration other than the dafault?
+		 * @default false
+		 */
+		exports.hasCustomConfiguration = function () {
+			return DPU_MODEL.hasCustomConfiguration();
+		};
+		/**
+		 * @param {string} id - prNumber of the item to check
+		 * @returns {boolean}
+		 * @default false
+		 */
+		exports.isInCurrentConfiguration = function (id) {
+			var itemsArr = exports.getConfiguratedItems();
+			return (itemsArr.indexOf(id) > -1);
+		};
+		/**
+		 * get all items which have been configurated
+		 * @returns {array} - array of pr-numbers
+		 * @default []
+		 */
+		exports.getConfiguratedItems = function () {
+			//configuration
+			var config = exports.getConfiguration();
+			//is array?
+			var items = (config && !!config.items && config.items.length !== undefined);
+			return items ? config.items : [];
+		};
+		/**
+		 * @returns {object|null} -the energy efficiency classification object
+		 */
+		exports.getEnergyEfficiency = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.eec) ? configuration.eec : null;
+		};
+		/**
+		 * @returns {object|null} - price object containing additional price ifo (e.g. OTR price)
+		 */
+		exports.getPrices = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.prices) ? configuration.prices : null;
+		};
+		/**
+		 * @param {string} id_ - pr-number
+		 * @returns {object|null}
+		 */
+		exports.getItem = function (id_) {
+			var items = exports.getItems();
+			return !!(items && items[id_]) ? items[id_] : null;
+		};
+		/**
+		 * get items by their status
+		 * @param {string|RegEx} statusPattern_ - explicit 5-digit staus code or a equivalent RegEx
+		 * @returns {object|null} - items matching the staus pattern
+		 * @example
+		 * var selectedStandardMatcher=new RegExp("(0|1){3}11" );
+		 * var items=getItemsByStatus(selectedStandardMatcher);
+		 */
+		exports.getItemsByStatus = function (statusPattern_) {
+			var itemsOrig = exports.getItems();
+			var items = null;
+			if (!!statusPattern_ && itemsOrig) {
+				//param is regExp
+				if (typeof statusPattern_.compile !== "function") {
+					statusPattern_ = new RegExp(statusPattern_);
+				}
+				jQuery.each(itemsOrig, function (key, value) {
+					if (!!value.status && statusPattern_.test(value.status)) {
+						items = items || {};
+						items[key] = value;
+					}
+				});
+			}
+			return items;
+		};
+		/**
+		 * @param {string|RegEx} statusPattern_ - explicit family name or a equivalent RegEx
+		 * @returns {object|null} - items matching the family pattern
+		 * @example
+		 * var selectedStandardMatcher=new RegExp("(0|1){3}11" );
+		 * var items=getItemsByFamily(selectedStandardMatcher);
+		 */
+		__.getItemsByFamily = function (familyPattern) {
+			var itemsOrig = exports.getItems();
+			var items = null;
+			if (!!familyPattern && itemsOrig) {
+				//param is regExp
+				if (typeof familyPattern.compile !== "function") {
+					familyPattern = new RegExp(familyPattern);
+				}
+				jQuery.each(itemsOrig, function (key, value) {
+					if (!!value.family && familyPattern.test(value.family)) {
+						items = items || {};
+						items[key] = value;
+					}
+				});
+			}
+			return items;
+		};
+		exports.getItemsByFamily=__.getItemsByFamily;
+		/**
+		 * @returns {string|null} - price rate
+		 */
+		exports.getConfigurationCarPriceRate = function () {
+			var configuration = exports.getConfiguration();
+			return (!!configuration && !!configuration.rate) ? configuration.rate : null;
+		}; /*jshint maxlen:230*/
+		/**
+		 * @returns {object|null} - Link Object der Neuwagenboerse
+		 * @example
+		 * //object containing entrylinks for the VTP (Neuwagenboerse)
+		 * {"plainLink":"http://vtp.audi.com/anwb/controller.do?appId=ak&op=directEntry&embed=none",
+		 * "entryLink":"http://vtp.audi.com/anwb/controller.do?prString=50000|51614\\2014|4G209C\\1|F14 P5P5|F56VC|GPQDPQD|GPX4PX4|MEIL7M8&appId=ak&op=directEntry&fixHaendler=false&t_petr=D&t_gearext=Zg2&embed=none",
+		 * "queryLink":"http://vtp.audi.com/anwb/controller.do?act=search&v=5&prString=50000|51614\\2014|4G209C\\1|F14 P5P5|F56VC|GPQDPQD|GPX4PX4|MEIL7M8&appId=ak&fixHaendler=false&t_petr=D&t_gearext=Zg2&embed=none&callback=?"}"
+		 */
+		exports.getNwbLink = function () {
+			var configuration = exports.getConfiguration();
+			return !!(configuration && configuration.nwbLink) ? configuration.nwbLink : null;
+		};
+		/**
+		 * get JSON requestLink's base url for the VTP (Neuwagenboerse)
+		 * @returns {string} - url
+		 */
+		exports.getVtpRequestUrl = function () {
+			return SETUPS.get('nemo.vtp.request.url');
+		};
+		/**
+		 * get entryLink's base url for the VTP (Neuwagenboerse)
+		 * @returns {string} - url
+		 */
+		exports.getVtpEntryUrl = function () {
+			return SETUPS.get('nemo.vtp.entry.url');
+		};
+		/**
+		 * Extracts the configurator's status code from the dom
+		 * @param  {jQuery-Element} $element_ configurator item
+		 * @returns {String|null}
+		 */
+		exports.getDOMStatusCode = function ($element_) {
+			var _sClassName = !!$element_ ? $element_.get(0).className : "";
+			if (_sClassName.indexOf('nm-j-configurator-status_') === -1) {
+				return null;
+			}
+			return _sClassName.split('nm-j-configurator-status_')[1].split(' ')[0];
+		};
+		/**
+		 * check for loacla storage (modernizr)
+		 * @returns {boolean}
+		 */
+		exports.supportsLocalStorage = function () { // TODO: #api-rfc-001 - what about following 'tell don't ask' using something like: Header.isAdobeAir() ?
+			// fix for the poa
+			if (window.navigator.userAgent.toLowerCase().match(/adobeair/i) !== null) {
+				return true;
+			}
+			/*modernizer.js way:*/
+			try {
+				localStorage.setItem('test', 'test');
+				localStorage.removeItem('test');
+				return true;
+			} catch (e) {
+				if (e.code === window.DOMException.QUOTA_EXCEEDED_ERR && localStorage.length === 0) {
+					return true;
+				}
+				return false;
+			}
+		};
+		/**
+		 * getConfigurationFamilies
+		 * uses {@link module:configurator/dpu-model.getConfiguration DPU_MODEL.getConfiguration}
+		 * @returns {object|null} - configuration families
+		 */
+		exports.getConfigurationFamilies = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.families) ? configuration.families : null;
+		};
+		/**
+		 * getRecommendations
+		 * uses {@link module:configurator/dpu-model.getConfiguration DPU_MODEL.getConfiguration}
+		 * @returns {array} - recommendations array
+		 */
+		exports.getRecommendations = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.recommendations) ? configuration.recommendations : [];
+		};
+		/**
+		 * getDynamicRecommendations
+		 * uses {@link module:configurator/dpu-model.getConfiguration DPU_MODEL.getConfiguration}
+		 * @returns {array} - recommendations array
+		 */
+		exports.getDynamicRecommendations = function () {
+			var configuration = exports.getConfiguration();
+			return (configuration && !!configuration.empfehlungenPoC && !!configuration.empfehlungenPoC.recommendations) ? configuration.empfehlungenPoC.recommendations : [];
+		};
+		/**
+		 * @returns {array} items - site navigation items
+		 * @default []
+		 */
+		__.getSiteNavigationStorage = function () {
+			var storage = SETUPS.get('siteNavigation');
+			return !!storage ? storage : [];
+		};
+		/**
+		 * @returns {array} items - model navigation items
+		 * @default []
+		 */
+		__.getModelNavigationStorage = function () {
+			// #api-003.7 - resolve dependency
+			var storage = SETUPS.get('modelNavigation');
+			return !!storage ? storage : [];
+		};
+		/**
+		 * Search for Items within the Config Itams
+		 * @param {string} searchString - search string
+		 * @param {boolean} hideInvisible - ignore invisible Items in the search (with status 10000 and 00000)
+		 * @returns {object} - found items for the search term
+		 */
+		exports.searchItems = function (searchString, hideInvisible) {
+			//allow search for PrStrings in the MSSC project
+			var allowPrSearch = !!window.mss || STATE.getStateOfModeFor('debug') || false;
+			var items = exports.getItems() || {},
+				itemsFound = [],
+				searchContent,
+				families = exports.getFamilies();
+			searchString = searchString.toLowerCase();
+			searchString = searchString.replace(/^\w\s/, " ").replace(/\s\w$/, " ").replace(/\s\w\s/, " ").trim();
+			jQuery.each(items, function (index, value) {
+				if (!value.search || typeof value.search !== "string") {
+					return true;
+				}
+				searchContent = value.search;
+				//additional search within prstrings?
+				if (allowPrSearch && !!value.mbvId) {
+					searchContent += " | " + value.mbvId.toLowerCase();
+				}
+				//match?
+				if (searchContent.indexOf(searchString) !== -1) {
+					//ignore invisible items (status 00000 and 10000)
+					if (hideInvisible && (value.status === "00000" || value.status === "10000")) {
+						//console.log("skipped invisible item in the search: ",value);
+						return true;
+					}
+					//ignore items without family (MSS-1943)
+					if (value.family === undefined) {
+						return true;
+					}
+					//ignore items in families without name (MSS-1943)
+					var family = families[value.family];
+					if (!family || !family.name) {
+						return true;
+					}
+					itemsFound.push(value);
+				}
+			});
+			return itemsFound;
+		};
+		/**
+		 * data is initialized (carinfo and version request are completed)
+		 * calls {@link module:configurator/dpu-model.isInitialized DPU_MODEL.isInitialized}
+		 * @returns {boolean}
+		 */
+		exports.isInitialized = function () {
+			return DPU_MODEL.isInitialized();
+		};
+		/**
+		 * get the corresponding carline page url
+		 * @param {string} carlineID_ -carline id (e.g. 'a4limo')
+		 * @returns {string} - base url of the carline page
+		 */
+		exports.getCarlineUrl = function (carlineID) {
+			var carlineID2Url = SETUPS.get('nemo.carlineID2Url') || {};
+			var carlineUrl = carlineID2Url[carlineID];
+			if (!carlineUrl) {
+				carlineID2Url = SETUPS.get('mssc.carlinemapping') || {};
+				if (!!carlineID2Url) {
+					carlineUrl = carlineID2Url[carlineID];
+					return !!carlineUrl ? carlineUrl.posterViewUrl : undefined;
+				}
+			}
+			return !!carlineUrl ? carlineUrl.baseurl : undefined;
+		};
+		/**
+		 * get the carline page url for the current carline
+		 * @returns {string} - base url of the carline page
+		 */
+		exports.getCurrentCarlineUrl = function () {
+			var carline = exports.getCarline();
+			return exports.getCarlineUrl(carline);
+		};
+		/**
+		 * get a unique ID for the current configuration
+		 */
+		exports.getConfigurationId = function () {
+			__.configurationID = __.configurationID || UTILS.guid(); //eslint-disable-line new-cap
+			return __.configurationID;
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getModelsInfo getModelsInfo} method
+		 *@param {string} model_ - optional param to return the info of a specific model
+		 *@returns {object} model info of a specific item (or all)
+		 */
+		exports.getModelsInfo = function (model_) {
+			return DPU_MODEL.getModelsInfo(model_);
+		};
+		/**
+		 * calls DPU Model`s {@linkcode module:configurator/dpu-model.getModelsInfo getModelsInfo} method
+		 *@param {string} model_ - optional param to return the info of a specific model
+		 *@returns {object} model info of a specific item (or all)
+		 */
+		exports.getCurrentModelInfo = function () {
+			var currentModel = exports.getEngine();
+			return (!!currentModel) ? exports.getModelsInfo(currentModel) : null;
+		};
+		/**
+		 * get AVE String (for AudiRenderService)
+		 * @returns {string} - ave
+		 */
+		exports.getAveString = function () {
+			var configuration = exports.getConfiguration();
+			return !!(configuration && configuration.ave) ? configuration.ave : null;
+		};
+		/**
+		 * get MatchingAttributes String for Stock Car Search (for SCS API)
+		 * @returns {array} - matching attributes array
+		 */
+		exports.getSCSmatchingAttributes = function () {
+			var stockCarAttributes = exports.getSCSAttributes();
+			return !!(stockCarAttributes && stockCarAttributes.attrs) ? stockCarAttributes.attrs : [];
+		};
+		/**
+		 * get Stock Car Attributes (for SCS API)
+		 * @returns {object} - stock car search attributes
+		 */
+		exports.getSCSAttributes = function () {
+			var configuration = exports.getConfiguration();
+			return !!(configuration && configuration['stock-car-attrs']) ? configuration['stock-car-attrs'] : null;
+		};
+		/**
+		 * get translated ErrorMessage by its DPU ERROR_CODE
+		 * @param {string} errorCode_ - DPU-ErrorCode
+		 * @returns {string} translated error message
+		 */
+		exports.getErrorMessage = function (errorCode_) {
+			var errorCode,errorMessage;
+			errorCode = errorCode_ || "DEFAULT";
+			errorMessage=window.i18n['error.message.' + errorCode];
+			errorMessage=!!errorMessage?errorMessage:'!unknown error!';
+			return errorMessage;
+		};
+		/**
+		 * generate fallback image path
+		 * @param {string} view_ - carline view (exterior,exterior_front,exterior_back...)
+		 * @param {string} size_ - image size (thumbnail,thumbnail.new,stage,stage.new)
+		 * @returns {string} - lat image path
+		 */
+		exports.getAltImagePath = function (view_, size_) {
+			var carline, req, fileExtension;
+			carline = exports.getCarline();
+			if (!carline || !view_ || !size_) {
+				return false;
+			}
+			var carlineFallbackGroup = carline.substring(0, 1);
+			// RS- und S-Modelle bekommen die gleichen Fallback-Renderings wie A-Modelle
+			if (carline.indexOf('rs') === 0 || carline.indexOf('s') === 0) {
+				carlineFallbackGroup = 'a';
+			}
+			// TT-Modelle zeigen wir als R(8)-Modelle an
+			if (carline.indexOf('tt') === 0) {
+				carlineFallbackGroup = 'r';
+			}
+			if (view_ !== 'selection-compare') {
+				fileExtension = ".jpg";
+				req = carlineFallbackGroup + "-" + size_.split(".")[0] + "-" + view_ + fileExtension;
+			} else {
+				fileExtension = ".png";
+				req = carlineFallbackGroup + "-" + view_ + fileExtension;
+			}
+			if (typeof mss !== 'undefined') {
+				req = exports.getDocrootUrl() + '/cms4i-nemo-mss/fallback-renderings/' + req;
+			} else {
+				req = exports.getDocrootUrl() + '/cms4i-nemo/fallback-renderings/' + req;
+			}
+			return req;
+		};
+		/**
+		 * @returns {array} items - footer navigation items
+		 * @default []
+		 */
+		__.getFooterNavigationStorage = function () {
+			var storage = SETUPS.get('footerNavigation');
+			return !!storage ? storage : [];
+		};
+		return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 31:
+/*!******************************************!*\
+  !*** ./js/app/configurator/dpu-model.js ***!
+  \******************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxparams: 7 */
+/* jshint maxlen: 190 */
+/* globals Promise,SETUPS */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! jquery */ 1), __webpack_require__(/*! events */ 0), __webpack_require__(/*! utils/ajax */ 6)], __WEBPACK_AMD_DEFINE_RESULT__ = function (jQuery, EVENTS, AJAX) {
+		'use strict';
+		var __ = {},
+			_initialized = false,
+			//Public API
+			exports = {
+				__: __
+			};
+		/**
+		 * private exports methods
+		 */
+		__.oDefaults = {
+			actionsLookup: {
+				itemAdd: 'set',
+				removeItem: 'remove',
+				itemRemove: 'remove'
+			}
+		};
+		__.configurationStartType = 'default';
+		__.configurationContinued = false;
+		__.dataInitialized = false;
+		__.storage = {
+			/**
+			 * @property {object} configuration - configuration storage
+			 */
+			configuration: null,
+			/**
+			 * @property {object} conflicts - conflicting configuration
+			 */
+			conflicts: null,
+			/**
+			 * @property {object} transfers - trnsferred configuration
+			 */
+			transfers: null,
+			/**
+			 * @property {object} items - all configuration items for the current carline
+			 */
+			items: null,
+			/**
+			 * @property {string} defaultPrString - default PrString for the current carline
+			 */
+			defaultPrString: null,
+			/**
+			 * @property {object} header - last DPU response header inclusing (subsessionID,context,version,...)
+			 */
+			header: null,
+			/**
+			 * @property {object} families - item families
+			 */
+			families: null,
+			/**
+			 * @property {string} searchstopwords - regEx string for filtering the all stopwords from the user´s search input
+			 */
+			searchstopwords: null,
+			/**
+			 *@property {object} modelsInfo - list of objects containing additional information for all model keys within the current carline
+			 */
+			modelsInfo: null
+		};
+		/**
+		 * method called on configuration reset requests.
+		 * sends default pr-string to receive the default configuration
+		 * for this carline,context and version
+		 * @returns {Promise}
+		 */
+		__.sendResetRequest = function () {
+			//get DPU base URL
+			var url = exports.getDpuUrl() + "configuration";
+			//send default pr-string,context and version without subsession!
+			var data = {
+				context: exports.getContext(),
+				// version: exports.getVersion(),
+				ids: __.getDefaultPrString()
+			};
+			if (__.isDebugMode()) {
+				data.dpu_extra = 'messages';
+			}
+			//returns a promise
+			return AJAX.getJSON(url, data).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * change mode for price display
+		 *@param {string} mode - mode for price/rate display ('price' or 'rate')
+		 *
+		 */
+		exports.changeRatePriceMode = function (mode) {
+			return new Promise(function (resolve, reject) {
+				var url, headerMode, context, subsessionParam, header, prstring;
+				header = exports.getHeader();
+				headerMode = (header && !!header.mode) ? header.mode : 'price';
+				// Stop here if given mode is already the current mode.
+				if (headerMode === mode) {
+					reject(new TypeError("Rate/Price mode did not change"));
+					return null;
+				}
+				context = exports.getContext(), prstring = exports.getPrString();
+				// When in doubt fall back to 'price'.
+				mode = (mode === 'rate') ? 'rate' : 'price';
+				//check if subsession is avialbale
+				subsessionParam = exports.getSubsessionID() ? ('subsession=' + exports.getSubsessionID() + '&') : '';
+				// Construct url.
+				url = exports.getDpuUrl() + 'configuration?' + subsessionParam + 'context=' + context + '&ids=' + prstring + '&mode=' + mode;
+				// Call DPU and set callbacks.
+				AJAX.getJSON(url).then(__.checkDPUresponseStatus).then(function (data) {
+					var changed = __.setConfigurationRaw(data);
+					//always updat GUI on price always!
+					changed = true;
+					resolve(changed);
+				}, function (error) {
+					reject(new TypeError("Error switching priceRateMode: " + error.message));
+				});
+			});
+		};
+		/**
+		 * method called on configuration change requests
+		 * selection/deselection of configuration items
+		 * and its count value (if item has an available count)
+		 * @param {object} change_
+		 * @returns {Promise}
+		 */
+		__.sendChangeRequest = function (change_) {
+			//get DPU base URL
+			var url = exports.getDpuUrl() + "configuration";
+			//generate all the needed request params
+			var data = __.generateRequestData(change_);
+			//returns a promise
+			return AJAX.getJSON(url, data).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * method to generate a request data object
+		 * with all the params expected by the DPU
+		 * @param {object} change_
+		 * @returns {object} params
+		 */
+		__.generateRequestData = function (change_) {
+			var action, params = {},
+				sessionID;
+			//add application version
+			// params.version = exports.getVersion();
+			//add context (catrline, market etc.)
+			params.context = exports.getContext();
+			//add current configuration as PrString
+			params.ids = exports.getPrString();
+			//add action set||remove
+			action = __.oDefaults.actionsLookup[change_.action] || 'missing_action';
+			var itemId = change_.id;
+			//add item count if available
+			if (!!change_.count) {
+				itemId += "*" + change_.count;
+			}
+			params[action] = itemId;
+			//add a Subsession if it exists
+			sessionID = exports.getSubsessionID();
+			if (sessionID) {
+				params.subsession = sessionID;
+			}
+			if (__.isDebugMode()) {
+				params.dpu_extra = 'messages';
+			}
+			/*
+				//cleanup/delete params with empty, undefined or null values
+				var check = false;
+				for (var k in params) {
+					if (params.hasOwnProperty(k) && !( !! params[k])) {
+						delete params[k];
+					}
+				}
+				//*/
+			return params;
+		};
+		__.isDebugMode = function () {
+			var html = document.querySelector('html');
+			var className = 'nm-state-is-debug';
+			return (new RegExp('(^| )' + className + '( |$)', 'gi').test(html.className));
+		};
+		/**
+		 * @returns {string} current version for DPU requests
+		 */
+		exports.getVersion = function () {
+			var header = exports.getHeader();
+			return (header && header.version) ? header.version : null;
+		};
+		/**
+		 * get current static rendertime of cms
+		 * @returns {string|null} version number
+		 */
+		exports.getStaticVersion = function () {
+			var staticVersion = SETUPS.get('nemo.staticversion');
+			if (!staticVersion) {
+				return null;
+			}
+			return staticVersion;
+		};
+		/**
+		 * data is initialized (carinfo and version request are completed)
+		 * @returns {boolean}
+		 */
+		exports.isInitialized = function () {
+			return __.dataInitialized;
+		};
+		/**
+		 * @returns {string|null} memchache version
+		 */
+		exports.getMemcacheVersion = function () {
+			var version = '';
+			var header = exports.getDpuHeader();
+			// only for model-pages
+			if (!!header) {
+				if (!!header.version) {
+					version = header.version;
+				}
+				// return the taggedVersion instead of the marketVersion-version
+				if (!!header.taggedVersion) {
+					version = header.taggedVersion;
+				} else {
+					// return the marketVersion (= memcache-version) instead of the mbv-version
+					if (!!header.marketVersion) {
+						version = header.marketVersion;
+					}
+				}
+				var taggedVersionAndMarketVersion = !!header.taggedVersion && !!header.marketVersion;
+				if (taggedVersionAndMarketVersion && !!header.manualRevision && parseInt(header.manualRevision, 10) > 0) {
+					version += '.' + header.manualRevision;
+				}
+			}
+			var static_version = exports.getStaticVersion();
+			var build_timestamp = SETUPS.get('nemo.build.time');
+			if (!!build_timestamp && !!static_version && build_timestamp !== static_version) {
+				version += '.' + static_version;
+			}
+			//#NEMOBA-1726
+			// delete leading .
+			if (!!version && version.toString().indexOf('.') === 0) {
+				version = version.substring(1);
+			}
+			return version;
+		};
+		/**
+		 * @returns {string} current context for DPU requests
+		 */
+		exports.getContext = function () {
+			var header = exports.getHeader();
+			return (header && header.context) ? header.context : null;
+		};
+		/**
+		 * @returns {string} current subsession for DPU requests
+		 */
+		exports.getSubsessionID = function () {
+			var header = exports.getHeader();
+			return (header && header.subsession) ? header.subsession : null;
+		};
+		/**
+		 * @param {string} set current subsession after DPU responses
+		 */
+		exports.setSubsessionID = function (subsessionID) {
+			__.storage.header.subsession = subsessionID;
+		};
+		/**
+		 * @returns {string|null} current configuration prString
+		 */
+		exports.getPrString = function () {
+			var config = exports.getConfiguration();
+			return (config && !!config.prstring) ? config.prstring : null;
+		};
+		/**
+		 * @returns {string|null} default configuration as prString
+		 */
+		__.getDefaultPrString = function () {
+			return __.storage.defaultPrString || null;
+		};
+		/**
+		 * @param {string} store default configuration as prString
+		 */
+		__.setDefaultPrString = function (prstring_) {
+			__.storage.defaultPrString = prstring_ || null;
+		};
+		/**
+		 * handles responses from configuration change requests
+		 * @param {object} - json containing the complete or incremtal configuration
+		 */
+		exports.handleConfigurationResponse = function (data) {
+			//TODO => check if hash changed??? and return true||false
+			var changed = __.setConfigurationRaw(data);
+			return changed;
+		};
+		/**
+		 * adopt an externally loaded configuration
+		 * @param {object} data - loaded configuration
+		 * returns {Promise}
+		 */
+		exports.adoptConfiguration = function (data) {
+			return new Promise(function (resolve, reject) {
+				var changed = __.setConfigurationRaw(data);
+				resolve(changed);
+			});
+		};
+		/***
+		 * fix for special prices (e.g. rotr-price in UK)
+		 */
+		__.setPrice = function (data_) {
+			//BUGFIX for on the road prices (UK)
+			if (!!data_ && !!data_.configuration && data_.configuration.prices && data_.configuration.prices.rotr) {
+				__.storage.configuration.rotrprice = data_.configuration.prices.rotr;
+			}
+		};
+		/**
+		 * set the configuration raw data (complete response data including header,items, stopwords etc.)
+		 */
+		__.setConfigurationRaw = function (data) {
+			var changed = true;
+			//store last prString
+			var oldPrString = exports.getPrString();
+			//set header
+			__.setHeader(data);
+			__.setAudicode(data);
+			//set configuration data
+			__.setConfiguration(data);
+			//set price data (Bugfix for UK ROTR-Price)
+			__.setPrice(data);
+			//set items
+			__.setItems(data);
+			//set families
+			__.setFamilies(data);
+			//set searchstopwords
+			__.storage.searchstopwords = data.searchstopwords || __.storage.searchstopwords || null;
+			//set conflicts and transfers
+			__.setConflictsAndTransfers(data);
+			//response configuration Error
+			if (!data.configuration) {
+				return false;
+			}
+			//store initial/default configuration string
+			if (!__.getDefaultPrString()) {
+				var prstring = SETUPS.get("nemo.default.prstring") || data.configuration.prstring;
+				__.setDefaultPrString(prstring);
+			} /** @TODO find a correct way to detect changes*/
+			//check if configuration changed
+			if (oldPrString && (oldPrString === exports.getPrString())) {
+				changed = false;
+			}
+			return changed;
+		};
+		/**
+		 * set item families
+		 * @param {object} raw configuration response object
+		 */
+		__.setFamilies = function (data) {
+			if (!!data && !!data.families) {
+				//TODO: jQuery.extend(__.storage.families,data.families);
+				__.storage.families = jQuery.extend(true, __.storage.families, data.families);
+			}
+		};
+		/**
+		 * get item families
+		 * @returns {object} families
+		 */
+		exports.getFamilies = function () {
+			return __.storage.families || null;
+		};
+		/**
+		 * set conflicts and transfers
+		 * @param {object} raw configuration response object
+		 */
+		__.setConflictsAndTransfers = function (data) {
+			__.storage.conflicts = data.conflicts || null;
+			__.storage.transfers = data.transfers || null;
+		};
+		/**
+		 * set audicode if in payload
+		 * @param {object} raw configuration response object
+		 */
+		__.setAudicode = function (data) {
+			__.storage.audicode = (!!data.audicode && !!data.audicode.id) ? data.audicode.id : false;
+		};
+		/**
+		 * set the configuration
+		 * @param {object} configuration
+		 */
+		__.setConfiguration = function (data) {
+			//merge new configuration into existing configuration (no deep Copy!!!)
+			__.storage.configuration = jQuery.extend(false, __.storage.configuration, data.configuration);
+		};
+		/**
+		 * set the header
+		 * @param {object} header
+		 */
+		__.setHeader = function (data) {
+			if (!!data && !!data.header) {
+				var version = (!!__.storage && !!__.storage.header && !!__.storage.header.version) ? {
+					version: __.storage.header.version
+				} : {};
+				__.storage.header = jQuery.extend(true, __.storage.header, data.header, version);
+			}
+		};
+		/**
+		 * set all existing items for this carline
+		 * @param {object} raw response data
+		 */
+		__.setItems = function (data_) {
+			var i, j;
+			//itemsUpdateMode='full'||'incremental'
+			if (data_.itemsUpdateMode === 'full' && !!data_.items) {
+				//full update => set status of all previous items to "00000"
+				for (i in __.storage.items) {
+					if (__.storage.items.hasOwnProperty(i) && !!__.storage.items[i].status) {
+						//set item status to unselected
+						__.storage.items[i].status = '00000';
+					}
+				}
+			} else {
+				console.log('DPU_MODEL.setItems::incrmental update…');
+				//incremental update => overwrite existing properties and add new
+				//bugfix NEMOBA-2133
+				for (j in data_.items) {
+					if (!data_.items[j].packageDescription) {
+						data_.items[j].packageDescription = '';
+					}
+				}
+			}
+			for (j in data_.items) {
+				if (data_.items[j].subname) {
+					data_.items[j].subname = '(' + data_.items[j].subname + ')';
+				} else {
+					data_.items[j].subname = '';
+				}
+			}
+			//merge new items into existing items
+			__.storage.items = jQuery.extend(true, __.storage.items, data_.items);
+			//cleanup items ===============
+			for (i in __.storage.items) {
+				if (__.storage.items.hasOwnProperty(i)) {
+					//NEMOBA-1512 Serie?
+					if (__.storage.items[i].status === "11001" || __.storage.items[i].status === "10011") {
+						//set localized String 'Series' for
+						__.storage.items[i].price = window.i18n ? window.i18n.standard || "***Serie***" : "***Serie***";
+					}
+				}
+			}
+		};
+		/**
+		 * loads version and returns a promise for callback-handling
+		 * @returns {Promise}
+		 */
+		__.sendVersionRequest = function () {
+			var url = exports.getDpuUrl() + 'version';
+			var carline = exports.getCarline();
+			//stop calls on pages without carline (e.g. homepage)
+			if (!carline) {
+				return Promise.reject(new TypeError("no carline defined for version request"));
+			}
+			return AJAX.getJSON(url, {
+				context: exports.getContext(),
+				carline: carline
+			}).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * handle returned version from initial AJAX call
+		 * stores version params (included in the response header) for all following requests
+		 * triggers VERSION_LOAD_COMPLETE
+		 */
+		__.handleVersionResponse = function (response) {
+			var headerItems = response.items;
+			var hiddenItem, hiddenItems = [];
+
+			if (!!headerItems) {
+				for (hiddenItem in headerItems) {
+					if (headerItems.hasOwnProperty(hiddenItem) && headerItems[hiddenItem].hidden === true) {
+						hiddenItems.push(hiddenItem);
+					}
+				}
+			}
+			__.storage.header = response.header;
+			__.storage.headerItems = hiddenItems;
+			__.eventBus.emit(EVENTS.VERSION_LOAD_COMPLETE);
+		};
+		/**
+		 * loads static base configuration (carinfo.json) for the current carline
+		 *  and returns a Promise for callback-handling
+		 * @returns {Promise}
+		 */
+		__.sendCarinfoRequest = function () {
+			//get Carinfo.json URL
+			var url = __.getCarinfoUrl();
+			return AJAX.getJSON(url).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * hande carinfo.json response
+		 * set initial items
+		 * @param {object} response - JSON response from AJAX call
+		 */
+		__.handleCarinfoResponse = function (response) {
+			console.log('handleCarinfoResponse', response, exports.isConfigurationStarted());
+			//ignore carinfo response if another configuration has been started during loading process
+			if (!exports.isConfigurationStarted()) {
+				exports.handleConfigurationResponse(response);
+			} //update items
+			else {
+				__.setFamilies(response);
+				__.updateItemsFromCarinfo(response.items);
+			}
+		};
+		/**
+		 * loads static base configuration (<carline>.modelsinfo.json) for the current carline
+		 *  and returns a Promise for callback-handling
+		 * @returns {Promise}
+		 */
+		__.sendModelsinfoRequest = function () {
+			//get Carinfo.json URL
+			var url = __.getModelsinfoUrl();
+			return AJAX.getJSON(url).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * hande carinfo.json response
+		 * set initial items
+		 * @param {object} response - JSON response from AJAX call
+		 */
+		__.handleModelsinfoResponse = function (response) {
+			console.log('handleModelsinfoResponse', response, exports.isConfigurationStarted());
+			__.setModelsInfo(response.models);
+		};
+		/**
+		 * store loaded models info
+		 */
+		__.setModelsInfo = function (models_) {
+			__.storage.modelsInfo = models_ || null;
+		};
+		/**
+		 * get ModelInfo
+		 * @param {string }model_ - optional param to return the Info of a specific Model
+		 * @returns {object} - the Info of a specific model (of param model_ is set) otherwise all items
+		 */
+		exports.getModelsInfo = function (model_) {
+			if (!model_) {
+				return __.storage.modelsInfo || null;
+			} else {
+				var models = __.storage.modelsInfo;
+				var model = (!!models) ? models[model_] : null;
+				return model || null;
+			}
+		};
+		/**
+		 * update Items if carinfo has not been loaded before configurazion start
+		 */
+		__.updateItemsFromCarinfo = function (carinfoItems) {
+			var storedItems = jQuery.extend(true, {}, exports.getItems());
+			if (!carinfoItems) {
+				console.log("Carinfo Items missing!");
+				return false;
+			}
+			//replace items with carinfoItems
+			__.storage.items = carinfoItems;
+			//merge stored items into carinfo items
+			__.storage.items = jQuery.extend(true, __.storage.items, storedItems);
+		};
+		/**
+		 * handle Errors during AJAX request (rejected promise)
+		 * @param {Error}
+		 */
+		__.handleAjaxError = function (error) {
+			console.error('Error', error);
+		};
+		/**
+		 * @returns {string} url - url to the Carinfo.json
+		 */
+		__.getCarinfoUrl = function () {
+			var url = SETUPS.get('nemo.url.carinfo');
+			if (!url) {
+				return null;
+			}
+			url = url.split('.json').join('.' + exports.getMemcacheVersion() + '.json');
+			return url;
+		};
+		/**
+		 * @returns {string} url - url to the <crline>.modeslinfo.json
+		 */
+		__.getModelsinfoUrl = function () {
+			var url = SETUPS.get('nemo.url.modelsinfo');
+			if (!url) {
+				return null;
+			}
+			url = url.split('.json').join('.' + exports.getMemcacheVersion() + '.json');
+			return url;
+		};
+		__.setLoginState = function (state) {
+			var header = exports.getHeader();
+			if (header) {
+				header['logged-in'] = state;
+			}
+		};
+		/**
+		 * hgenerate carstore requests (list,load,delete)
+		 * @param	{string }actionStr - The `action` to perform. One of 'list', 'load' or 'delete'
+		 * @param	{object} - params for request (slot: number|string for item)
+		 * @returns {Promise} AJAX request
+		 */
+		exports.sendCarstoreRequest = function (actionStr, params) {
+			//itemID to be changed
+			if (!params || params === '' || params === undefined) {
+				params = {};
+			}
+			if (!params.slot || params.slot === '' || params.slot === undefined) {
+				params.slot = null;
+			}
+			//expects 'list', 'load' or 'delete'
+			if (!actionStr || actionStr === '') {
+				return Promise.reject(new TypeError("No 'actionStr' given!"));
+			}
+			var url = exports.getDpuUrl() + 'carstore';
+			var data = {
+				'action': actionStr,
+				'context': exports.getContext(),
+				'subsession': exports.getSubsessionID()
+			};
+			data = jQuery.extend(data, params);
+			//return AJAX Promise
+			return AJAX.getJSON(url, data).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * get current configuration filtered from given pr numbers
+		 * @param {Array} prNumbersToFilter - the pr numbers to exclude from result
+		 * @returns {Array} ids of filtered current configuration
+		 */
+		__.getFilteredPrNumbersFromCurrentConfig = function (prNumbersToFilter) {
+			var origIds = exports.getPrString().split('|');
+			var i, j, idLength, prLength, unmatched, filteredIds = [];
+			for (i = 0, idLength = origIds.length, prLength = prNumbersToFilter.length; i < idLength; i++) {
+				unmatched = true;
+				for (j = 0; j < prLength; j++) {
+					if (origIds[i].indexOf(prNumbersToFilter[j]) > -1) {
+						unmatched = false;
+					}
+				}
+				if (unmatched === true) {
+					filteredIds.push(origIds[i]);
+				}
+			}
+			return filteredIds;
+		};
+		/**
+		 * send request to stateless render service
+		 * @param {Array} prNumbersToFilter - pr numbers not to include in config for call
+		 * @param {String} renderPrNr - pr number to render
+		 * @param {String} renderViews - render views separated by ,
+		 * @param {String} renderSizes - renderSizes separated by ,
+		 * @returns {Promise} - render service call result as promise
+		 */
+		exports.sendRenderServiceRequest = function (prNumbersToFilter, renderPrNr, renderViews, renderSizes) {
+			var url = exports.getDpuUrl() + 'stateless-render-service';
+			var filteredIds = __.getFilteredPrNumbersFromCurrentConfig(prNumbersToFilter);
+			var data = {
+				'context': exports.getContext(),
+				'ids': filteredIds.join("|"),
+				'render-prnrs': renderPrNr,
+				'render-views': renderViews,
+				'render-sizes': renderSizes,
+				'subsession': exports.getSubsessionID()
+			};
+			//return AJAX Promise
+			return AJAX.getJSON(url, data).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * hgenerate carstore requests (list,load,delete)
+		 * @param	{string }actionStr - The `action` to perform. One of 'list', 'load' or 'delete'
+		 * @param	{object} - params for request (slot: number|string for item)
+		 * @returns {Promise} AJAX request
+		 */
+		exports.sendCarstoreHistoryRequest = function (params) {
+			//itemID to be changed
+			if (!params || params === '' || params === undefined) {
+				params = {};
+			}
+			if (!params.slot || params.slot === '' || params.slot === undefined) {
+				params.slot = null;
+			}
+			var url = exports.getDpuUrl() + 'history';
+			var data = {
+				'context': exports.getContext(),
+				'subsession': exports.getSubsessionID()
+			};
+			data = jQuery.extend(data, params);
+			//return AJAX Promise
+			return AJAX.getJSON(url, data);
+		};
+		/**
+		 * set myAudi Login
+		 * @returns {Promise} loginPromise
+		 */
+		exports.setLogin = function (loginState, subsessionID) {
+			return new Promise(function (resolve, reject) {
+				if (typeof loginState === 'boolean' && !!subsessionID) {
+					exports.setSubsessionID(subsessionID);
+					__.setLoginState(loginState);
+					resolve(loginState);
+				} else {
+					__.setLoginState(false);
+					reject(new TypeError("login failure"));
+				}
+			});
+		};
+		/**
+		 * send a configuration request (set, remove etc.)
+		 * to the DPU Service
+		 * @params {object} change_ - object containing id,action,count of the selected item
+		 * @returns {Promise}
+		 */
+		exports.requestConfigurationChange = function (change_) {
+			// Return a new promise.
+			return new Promise(function (resolve, reject) {
+				var requestPromise = __.sendChangeRequest(change_);
+				requestPromise.then(function (result) {
+					resolve(exports.handleConfigurationResponse(result));
+				}, function (error) {
+					reject(error);
+				});
+			});
+		};
+		/**
+		 * send a configuration reset request
+		 * (sends default pr-string,version and context without subsessionID)
+		 * to the DPU Service
+		 * @returns {Promise}
+		 */
+		exports.requestConfigurationReset = function () {
+			// Return a new promise.
+			return new Promise(function (resolve, reject) {
+				var requestPromise = __.sendResetRequest();
+				requestPromise.then(function (result) {
+					resolve(exports.handleConfigurationResponse(result));
+				}, function (error) {
+					reject(error);
+				});
+			});
+		};
+		/**
+		 * set item´s selection method (tracking indicator)
+		 * @param {string} id_ - prnumber
+		 * @param {string} selectionMethod_ -selection methos ('pre','active','conflict')
+		 */
+		exports.setItemSelectionMethod = function (id_, selectionMethod_) {
+			var items = exports.getItems();
+			if (items && !!items[id_]) {
+				if (!!selectionMethod_) {
+					items[id_].selectionMethod = selectionMethod_;
+				}
+				//clear selectionMethod attribute
+				else {
+					items[id_].selectionMethod = null;
+				}
+			}
+		};
+		/**
+		 * resolve a transfer or conflict
+		 * (sends accept - or cancelURL,
+		 * version and context and subsessionID)
+		 * to the DPU Service
+		 * @returns {Promise}
+		 */
+		exports.requestTransferOrConflictResolve = function (url) {
+			//Return a new promise.
+			return new Promise(function (resolve, reject) {
+				var requestPromise = AJAX.getJSON(url).then(__.checkDPUresponseStatus);
+				requestPromise.then(function (result) {
+					resolve(exports.handleConfigurationResponse(result));
+				}, function (error) {
+					reject(error);
+				});
+			});
+		};
+		/**
+		 * load a configuration by an audiCode
+		 * (sends context and audicode)
+		 * from the DPU Service
+		 * @returns {Promise}
+		 */
+		exports.loadConfigurationByAudiCode = function (audiCode) {
+			if (typeof audiCode !== 'undefined') {
+				audiCode = audiCode.toUpperCase();
+			}
+			// Returns a new promise.
+			var url = exports.getDpuUrl() + 'audicode';
+			//return Promise
+			return AJAX.getJSON(url, {
+				'context': exports.getContext(),
+				'audicode': audiCode
+			}).then(__.checkDPUresponseStatus);
+		};
+		exports.generateAudiCode = function (params) {
+			if (!params || params === '' || params === undefined) {
+				params = {};
+			}
+			var url = exports.getDpuUrl() + 'audicode';
+			//return Promise
+			var data = {
+				'context': exports.getContext(),
+				'subsession': exports.getSubsessionID(),
+				'ids': exports.getPrString()
+			};
+			data = jQuery.extend(data, params);
+			return AJAX.getJSON(url, data).then(__.checkDPUresponseStatus);
+		};
+		/**
+		 * load a configuration by a strig auf pr numbers
+		 * (sends context and ids)
+		 * from the DPU Service
+		 * @param {string} prString
+		 * @param {subsession|null} subsession - optional subsessionID from previous configuration
+		 * @returns {Promise}
+		 */
+		exports.loadConfigurationByPrString = function (prString, subsession) {
+			// Returns a new promise.
+			var url = exports.getDpuUrl() + 'configuration';
+			var data = {
+				'context': exports.getContext(),
+				'ids': prString
+			};
+			//add subsession if available
+			if (!!subsession) {
+				data.subsession = subsession;
+			}
+			//return Promise
+			return AJAX.getJSON(url, data).then(__.checkDPUresponseStatus).catch(function(error){
+				//Test&Target
+				if (error.id === "PRSTRING_MODEL_NOT_FOUND") {
+					// create and dispatch the event
+					var tNtEvent = new CustomEvent("TNT_ERROR", {
+						detail: {
+							"errorCode":error.id,
+							"prString": prString
+						}
+					});
+					document.dispatchEvent(tNtEvent);
+				}
+				//redispatch error
+				throw error;
+			});
+		};
+		/**
+		 * @returns {object} header - last dpu response´s header
+		 */
+		exports.getHeader = function () {
+			return __.storage.header || null;
+		};
+		/**
+		 * @returns {Array} hidden items from version request
+		 */
+		exports.getHiddenItemIDsFromVersion = function() {
+			return __.storage.headerItems || null;
+		};
+		/**
+		 * @returns {string} regex string - the regEx string for filtering the all stopwords from the user input
+		 */
+		exports.getSearchStopWords = function () {
+			return __.storage.searchstopwords || null;
+		};
+		/**
+		 * removes transfer object after a transfer was resolved (accepted or cancelled)
+		 * @returns {void}
+		 */
+		exports.transferCompleted = function () {
+			__.storage.transfers = null;
+		};
+		/**
+			 * chain of requests (getVersion request followed by getCarinfo request)
+			 * for the base initialization of data.
+			 * 'dup-url' param is needed for the 'getCarinfo' request following the 'getVersion'
+			 * @returns {Promise}
+			 * @example
+				//fire initialization request with new version and context
+				MODEL.fireDataInitializationChain(setup);
+			 */
+		exports.fireDataInitializationChain = function () {
+			__.dataInitialized = false;
+			//fire Ajax request chain
+			return __.sendVersionRequest().
+			then(__.handleVersionResponse).
+			then(__.getSignedLink).
+			then(__.sendCarinfoRequest).
+			then(__.handleCarinfoResponse).
+			then(__.sendModelsinfoRequest).
+			then(__.handleModelsinfoResponse).then(function () {
+				__.dataInitialized = true;
+			});
+			//.then(undefined, __.handleAjaxError).then(__.onAJAXcompletedAlways);
+		};
+		/**
+		 * initialize module
+		 * @param {object} eventBus_ - EventBus used for this module
+		 */
+		__.initialize = function () {
+			if (!_initialized) {
+				_initialized = true; /**@TODO handle initial data setups */
+				//set initial configuration Items via SETUPS
+				__.clearConfigurationData({
+					'prstring': SETUPS.get('nemo.default.prstring'),
+					'header': SETUPS.get("nemo.default.header"),
+					'configuration': SETUPS.get("nemo.default.configuration"),
+					'items': SETUPS.get("nemo.minimal.carinfoitems") || {} /*SETUPS.get("nemo.default.items")*/
+				});
+			}
+		};
+		/**
+		 * @returns {object} conflict - object containing triggers ans solutions to a conflictt
+		 */
+		exports.getConflicts = function () {
+			return __.storage.conflicts || null;
+		};
+		exports.getDpuHeader = function () {
+			return __.storage.header || null;
+		};
+		/**
+		 * @returns {object} transfer - object conatining all transfer infos
+		 */
+		exports.getTransfers = function () {
+			return __.storage.transfers || null;
+		};
+		/**
+		 * @returns {array} array - recomedations array
+		 */
+		exports.getRecommendations = function () {
+			return __.storage.configuration.recommendations || [];
+		};
+		/**
+		 * @returns {String | false} audicode or false if not existing
+		 */
+		exports.getAudicode = function() {
+			return __.storage.audicode || false;
+		};
+		/**
+		 * @returns {object | null} items - object containing complete configuration(assets, items, conflicts, transfers, recommendations, ...)
+		 */
+		exports.getConfiguration = function () {
+			return __.storage.configuration || null;
+		};
+		/**
+		 * @returns {object | null} items - object with all items
+		 * for the current carline(key: prNumber = > value: item)
+		 */
+		exports.getItems = function () {
+			return __.storage.items || null;
+		};
+		/**
+		 * @returns {string} carlinename
+		 */
+		exports.getCarline = function () {
+			var carline = null;
+			var configuration = exports.getConfiguration();
+			//if configuration is available
+			if (configuration && !!configuration.carline) {
+				carline = configuration.carline;
+			} else {
+				/*
+				 * if configuration is not yet available (e.g. before getCarinfo)
+				 * read carline from SETUPS (defined inline via CQ)
+				 */
+				carline = SETUPS.get('nemo.default.carline') || null;
+			}
+			return carline;
+		};
+		/**
+		 * @returns {string | null} url - url to the DPU - Service
+		 */
+		exports.getDpuUrl = function () {
+			return SETUPS.get('nemo.url.dpu') || null;
+		};
+		exports.isConfigurationStarted = function () {
+			return (__.configurationStartType && __.configurationStartType !== 'default');
+		};
+		/**
+		 * get item families
+		 * @returns {object | null} list - object containing all families
+		 */
+		exports.getFamilies = function () {
+			return __.storage.families || null;
+		};
+		/**
+		 * @returns {boolean} - has the user started a configuration other than the default ?
+		 * @default false
+		 */
+		exports.hasCustomConfiguration = function () {
+			return (exports.isConfigurationStarted() && (__.getDefaultPrString() !== exports.getPrString()));
+		};
+		/**
+		 * has the configuration been continued after the configuration start
+		 */
+		exports.isContinuedConfiguration = function () {
+			return __.configurationContinued;
+		};
+		/**
+		 * call signed lik for preview mode sessionAuth
+		 * @returns {prmise}
+		 */
+		__.getSignedLink = function () {
+			var signedPreviewUrl = SETUPS.get('nemo.url.preview');
+			if (!!signedPreviewUrl) {
+				var promise = AJAX.getJSON(signedPreviewUrl).then(__.checkDPUresponseStatus);
+				return promise.then(function (response) {
+					__.handleSignedLinkResponse(response);
+				}).then(undefined, function (error) {
+					console.warn("loading signedPreviewUrl failed: " + error.message);
+				});
+			} else {
+				return Promise.resolve("no signedPreviewUrl available");
+			}
+		};
+		__.handleSignedLinkResponse = function (data) {
+			console.log("Signed Link loaded", data);
+			__.setConfigurationRaw(data);
+		};
+		/**
+		 * switch carline, reset configuration and initailize with new Carline data
+		 * without page reload (=> MSSC)
+		 * @param {string} carline_ - carline name
+		 * @param {string} carinfoUrl_ - url for the carinfo.json
+		 * @returns {Promise}
+		 */
+		exports.switchCarline = function (carline_, carinfoUrl_, modelsInfoUrl_) {
+			if (!!carinfoUrl_ && !!carline_) {
+				//set SETUP values
+				SETUPS.set('nemo.default.carline', carline_);
+				SETUPS.set('nemo.url.carinfo', carinfoUrl_);
+				SETUPS.set('nemo.url.modelsinfo', modelsInfoUrl_);
+				//store previous context
+				var context = exports.getContext();
+				//reset configuration
+				var data = {
+					configuration: {
+						carline: carline_
+					},
+					header: {
+						context: context
+					}
+				};
+				__.clearConfigurationData(data);
+				return exports.fireDataInitializationChain();
+			} else {
+				return Promise.reject("switchCarline: missing params for initialization!");
+			}
+		};
+		/**
+		 * reset configuration data
+		 * @param {object} data_ - optional initialization data
+		 */
+		__.clearConfigurationData = function (data_) {
+			__.configurationContinued = false;
+			__.configurationStartType = 'default';
+			//clear storage
+			__.clearStorage();
+			//set initial values (optional)
+			if (!!data_ && !!data_) {
+				for (var item in data_) {
+					__.storage[item] = data_[item];
+				}
+			}
+		};
+		/**
+		 * clear all stored objects
+		 */
+		__.clearStorage = function () {
+			__.storage = {
+				configuration: null,
+				conflicts: null,
+				transfers: null,
+				items: null,
+				defaultPrString: null,
+				header: null,
+				families: null,
+				searchstopwords: null
+			};
+		};
+		/**
+		 * set configuration startType
+		 * @param {string} startType_ - configuration start type
+		 */
+		exports.setConfigurationStartType = function (startType_) {
+			//user started a configuration by avtively changing an item/clicking item
+			if (exports.getConfigurationStartType() === 'default' && startType_ === 'configuration-change') {
+				__.configurationContinued = false;
+				__.configurationStartType = startType_;
+				__.eventBus.emit(EVENTS.CONFIG_START, __.configurationStartType);
+				return;
+			}
+			if (startType_ !== 'configuration-change') {
+				__.configurationStartType = startType_;
+				__.configurationContinued = false;
+				__.eventBus.emit(EVENTS.CONFIG_START, __.configurationStartType);
+			} else {
+				//configuration was not started but continued by the user
+				__.configurationContinued = true;
+			}
+		};
+		/*
+		 * check all AJAX calls for valid header status
+		 * @param {object} data - ajax json response
+		 * @returns {object} data
+		 */
+		__.checkDPUresponseStatus = function (data) {
+			var err,sCode,isAudiCodeError;
+			if (!!data.header && !!data.header.statuscode) {
+				sCode = Math.floor(data.header.statuscode / 100);
+				isAudiCodeError = !!data.audicode && !!data.audicode.message;
+				//custom Error
+				if (!isAudiCodeError && data.header.statuscode === 300) {
+					err = new Error();
+					if (data.header.error && data.header.error.id) {
+						err.id = data.header.error.id;
+					}
+					err.name = "custom-dpu-error";
+					err.statuscode = 300;
+					err.message = (!!data.header.statusmessage) ? data.header.statusmessage : "unknow statusmessage";
+					err.errormessages = (!!data.header.errormessages) ? data.header.errormessages : [];
+					throw err;
+				}
+				if (sCode === 3 || sCode === 5) {
+					err = new Error();
+					err.message = data.header.statusmessage ? data.header.statusmessage : "Configuration Error (statuscode:" + data.header.statuscode + ")";
+					//handle audicode errors
+					if (isAudiCodeError) {
+						console.error("Audicode Error (statuscode:" + (data.audicode.statuscode || '???') + "," + (data.audicode.message || 'unknown') + ")");
+						err.message = (!!data.audicode.message) ? data.audicode.message : "Audicode Error:" + data.audicode.statuscode;
+					}
+					if (data.header.error && data.header.error.id) {
+						err.id = data.header.error.id;
+					}
+					throw err;
+				}
+			}
+			return data;
+		};
+		/**
+		 * get configuration startType
+		 * @returns {string}
+		 * @default {string} 'default'
+		 */
+		exports.getConfigurationStartType = function () {
+			return __.configurationStartType;
+		};
+		/**
+		 * reset all configuration values if none available
+		 * for basic interaction with the DPU (e.g. testDriveForm on the startpage)
+		 * @params {object} data - base data (configuration, header,prstring)
+		 */
+		exports.resetToDefaultSetupParams = function () {
+			var baseParams = {
+				'prstring': SETUPS.get('nemo.default.prstring'),
+				'header': SETUPS.get("nemo.default.header"),
+				'configuration': SETUPS.get("nemo.default.configuration")
+			};
+			__.clearConfigurationData(baseParams);
+		};
+		exports.initializePromise = function (eventBus_) {
+			return new Promise(function (resolve) {
+				__.eventBus = eventBus_;
+				__.initialize();
+				resolve("configurator/dpu-model.js");
+			});
+		};
+		return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 40:
+/*!********************************!*\
+  !*** ./js/app/module/state.js ***!
+  \********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*global define, require */
+
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! jquery */ 1)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function (jQuery) {
+	"use strict";
+
+	var __ = {},
+		exports = {
+			__: __
+		};
+	// private vars
+	var stateOfModes = {
+		'debug': false,
+		'module': false,
+		'1920': false
+	};
+
+	var persistendModes = {'1920': true};
+
+
+	exports.triggerModeChange = function (modeToTrigger, stateToChangeTo_) {
+		var stateToChangeTo = stateToChangeTo_;
+
+		if( stateToChangeTo === 'true') {
+			stateToChangeTo = true;
+		}
+
+		if( stateToChangeTo === 'false' ) {
+			stateToChangeTo = false;
+		}
+
+		if( stateToChangeTo !== true && stateToChangeTo !== false ) {
+			return false;
+		}
+
+
+		if( typeof stateOfModes[modeToTrigger] === "undefined" ) {
+			return false;
+		}
+
+
+		stateOfModes[modeToTrigger] = stateToChangeTo;
+
+		if( stateToChangeTo === true ) {
+			if( modeToTrigger === '1920' ) {
+				document.querySelector("body").setAttribute('page-type', 'widescreen');
+				document.querySelector("body").setAttribute('page-override', 'widescreen-overwrite');
+			}
+			jQuery('html').addClass('nm-state-is-' + modeToTrigger);
+
+		} else {
+			if( modeToTrigger === '1920' ) {
+				document.querySelector("body").removeAttribute('page-type', 'widescreen');
+				document.querySelector("body").removeAttribute('page-override', 'widescreen-overwrite');
+			}
+			jQuery('html').removeClass('nm-state-is-' + modeToTrigger);
+		}
+
+		localStorage.setItem('nm_states', JSON.stringify(stateOfModes));
+
+		return true;
+	};
+
+	exports.getStateOfModeFor = function(mode) {
+		return stateOfModes[mode] || false;
+	};
+
+	__.initialize = function () {
+		var recoveredStateModes;
+
+		try {
+			recoveredStateModes = JSON.parse(localStorage.getItem('nm_states')) || [];
+
+			jQuery.each(stateOfModes, function (index) {
+
+				if( typeof persistendModes[index] !== "undefined" ) {
+					exports.triggerModeChange(index, recoveredStateModes[index]);
+				}
+
+			});
+
+		} catch(e) {
+			console.warn(e);
+		}
+	};
+
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.initialize();
+			resolve("module/state.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 70:
+/*!*****************************************!*\
+  !*** ./js/app/configurator/transfer.js ***!
+  \*****************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint maxparams:10 */
+/*jshint maxlen:150 */
+/* global SETUPS,Promise */
+/**
+ * @description module to handle configuration conflicts
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! jquery */ 1),
+	__webpack_require__(/*! configurator/dpu-api */ 3),
+	__webpack_require__(/*! events */ 0),
+	__webpack_require__(/*! core/layer/api */ 10),
+	__webpack_require__(/*! core/template */ 5),
+	__webpack_require__(/*! text!templates/transfer-layer.tpl */ 230)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function(jQuery, CONFIGURATOR_API, EVENTS, LAYER_API, TPL_RENDERER, TRANSFER_TPL) {//eslint-disable-line max-params
+    /** @exports configurator/transfer */
+    "use strict";
+    var
+    //Private
+        __ = {},
+        //Public API
+        exports = {
+            __: __
+        };
+    __.oDefaults = {
+        sSelectorDelegateTransferClick: '.nm-layer-transfer .nm-j-configurator-delegate-transfer-click'
+    };
+    __.transfer = null;
+    __.layerInstance = null;
+    __.layerIsOpening = false;
+    __.layerIsClosing = false;
+    /**
+     * add event Listener
+     */
+    __.addEvents = function() {
+		__.legacyEventBus.on('click.nemo.configuration.transfer', __.oDefaults.sSelectorDelegateTransferClick, __.handleTransferResolveClick);
+    };
+    /**
+     * merge configuration responses containing a transfer conflict
+     * with the CarinfoJSON data
+     * @param  {Object} data_ transfer data from the dpu
+     * @returns {Object} merged transfer data
+     */
+    __.mergeData = function(data_) {
+        var merged = {
+            'deleted': [],
+            'transferred': [],
+            'standard': []
+        };
+        //====================
+        //deleted items
+        var arr = data_.deleted,
+            len = arr.length,
+            tempItem;
+        //
+        while (len--) {
+            tempItem = {
+                id: arr[len].id
+            };
+            //copy Data from CarInfo into tempItem
+            jQuery.extend(true, tempItem, CONFIGURATOR_API.getItem(arr[len].id));
+            merged.deleted.push(tempItem);
+        }
+        //Array wieder umdrehen
+        merged.deleted.reverse();
+        //====================
+        //transfered Items
+        arr = data_.transferred;
+        len = arr.length;
+        while (len--) {
+            tempItem = {};
+            //copy Data from CarInfo into tempItem
+            jQuery.extend(true, tempItem, CONFIGURATOR_API.getItem(arr[len].id));
+            merged.transferred.push(tempItem);
+        }
+        //Array wieder umdrehen
+        merged.transferred.reverse();
+        //====================
+        //stanadard Items
+        arr = data_.standard;
+        len = arr.length;
+        while (len--) {
+            tempItem = {};
+            //copy Data from CarInfo into tempItem
+            jQuery.extend(true, tempItem, CONFIGURATOR_API.getItem(arr[len].id));
+            merged.standard.push(tempItem);
+        }
+        //Array wieder umdrehen
+        merged.standard.reverse();
+        //button url for abort click
+        merged.urls = data_.urls;
+        return merged;
+    };
+    /**
+     * @retruns {Promise} - a Promise (returning a layer instance on resolve)
+     */
+    __.openLayer = function(layerName, tplHtml, closeCallBackFn) {
+        if (__.layerIsClosing) {
+            // we have an old conflict which is still opening and not closed
+            // console.log('DELAY OPENING NEXT CONFLICT LAYER!');
+            setTimeout(function() {
+                __.openLayer(layerName, tplHtml, closeCallBackFn);
+            }, 510);
+            return;
+        }
+        __.layerIsOpening = true;
+        //returns promise on open
+        var promise = LAYER_API.open(layerName, tplHtml, closeCallBackFn);
+        return promise.then(function(layerInstance) {
+            __.layerIsOpening = false;
+            return Promise.resolve(layerInstance);
+        }, function(err) {
+            // console.log("Error opening transfer layer", err.message);
+            __.layerIsOpening = false;
+            return Promise.reject(err);
+        });
+    };
+    __.closeLayer = function() {
+        __.layerIsClosing = true;
+        if (__.layerInstance===null && __.layerIsOpening) {
+            // the layer is being opened but we already had a click triggering a close
+            // delay the close for the time it takes to fully open the layer
+            // console.log('DELAY CLOSING LAYER!');
+            setTimeout(__.closeLayer, 510);
+            return;
+        }
+        console.log('CLOSING LAYER!', __.layerInstance);
+        //Layer Instance returns promise on close
+        var promise = __.layerInstance.close();
+        promise.then(function() {
+            __.layerInstance = null;
+            __.layerIsClosing = false;
+            __.onLayerClose();
+        }, function(err) {
+            __.layerIsClosing = false;
+            // console.log("Error closing transfer Layer", err.message);
+        });
+    };
+    /**
+     * close CallBack (e.g. on shader click)
+     */
+    __.onLayerClose = function() {
+        //remove transfer item click handler on layer close
+        //jQuery('body').removeClass(__.oDefaults.sSelectorConfigLayerOpen);
+        __.transfer = null;
+    };
+    /*
+     * handle transfer layer abort or accept clicks
+     */
+    __.handleTransferResolveClick = function(event) {
+        var $element, url, cancelLink;
+        if (event) {
+            __.cancelEvent(event);
+            //aktuellen Transfer schliessen
+            $element = jQuery(event.target);
+            url = $element.attr('href');
+            if (!!url) {
+                url = SETUPS.get('nemo.url.dpu') + url;
+            }
+        } else {
+            cancelLink = jQuery([__.oDefaults.sSelectorDelegateTransferClick, "[data-transfer='cancel']"].join('')).attr("href");
+            url = SETUPS.get('nemo.url.dpu') + cancelLink;
+        }
+        __.eventBus.trigger(EVENTS.TRANSFER_CLOSE, {
+            'url': url
+        });
+        //close current conflict layer
+        __.closeLayer();
+    };
+    /**
+     * prevent default event behavior
+     * @param  {Object} event_ e.g. e click event
+     * @return {Void}
+     */
+    __.cancelEvent = function(event_) {
+            if (!!event_ && typeof event_.preventDefault === 'function') {
+                event_.preventDefault();
+            }
+        },
+        /**fire conflict 'close'/abort if all layers are closed globally
+         *(Event=> LAYER_BEFORE_CLOSE_ALL:'layer.before.closeall')
+         */
+        __.handleTransferClose = function() {
+            //close Layer if opened and fire abort request!!!
+            if (!!__.layerName) {
+                console.log(EVENTS.LAYER_BEFORE_CLOSE_ALL + "::transfer");
+                //submit abort request upon before closing transfer layer
+                __.handleTransferResolveClick();
+            }
+        };
+    /**
+     * handle configuration responses with transfer objects
+     * @param {object} transfer_ - transfer object
+     */
+    exports.handleTransfer = function(transfer_) {
+        var mergedData = __.mergeData(transfer_);
+        var templateType = "transfer-layer";
+        var templateString = TRANSFER_TPL || jQuery('#nm-id-' + templateType + '-tpl').html();
+        var templateHtml = TPL_RENDERER.render(templateString, mergedData);
+        //console.log('mergedData', mergedData, 'templateName', templateName, 'templateHtml', templateHtml);
+        var promise = __.openLayer(templateType, templateHtml, __.handleTransferResolveClick);
+        promise.then(function(instance) {
+            __.layerInstance = instance;
+        }, function(error) {
+            console.log("TRANSFER Layer open failed", error.message);
+        });
+    };
+    __.initialize = function() {
+        __.addEvents();
+    };
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.legacyEventBus = jQuery('body');
+			__.initialize();
+			resolve("configurator/transfer.js");
+		});
+	};
+    return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 71:
+/*!*****************************************!*\
+  !*** ./js/app/configurator/conflict.js ***!
+  \*****************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxparams:10, maxlen: 175 */
+/* global SETUPS,Promise*/
+/**
+* @description module to handle configuration conflicts
+*/
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! jquery */ 1),
+	__webpack_require__(/*! configurator/dpu-api */ 3),
+	__webpack_require__(/*! events */ 0),
+	__webpack_require__(/*! core/layer/api */ 10),
+	__webpack_require__(/*! core/template */ 5),
+	__webpack_require__(/*! text!templates/conflict-layer.tpl */ 231)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function(jQuery, CONFIGURATOR_API, EVENTS, LAYER, TPL_RENDERER, CONFLICT_TPL) {//eslint-disable-line max-params
+	/**
+	* @exports configurator/conflict
+	*/
+	'use strict';
+	var
+	//Private
+	__ = {},
+	//Public API
+	exports = {
+		__: __
+	};
+	__.previousSelectedSolution = null;
+	__.layerInstance = null;
+	__.currentCancelLink = '';
+	__.oDefaults = {
+		sSelectorConflictLayer: '.nm-layer-conflict',
+		sSelectorConfigLayerOpen: 'nm-config-layer-open',
+		sSelectorDelegateConflictClick: '.nm-j-configurator-delegate-conflict-click',
+		sSelectorOptionsShow: '.nm-j-conflict-options-show',
+		sSelectorConflictSolution: '.nm-conflict-solution',
+		sSelectorDelegateClick: '.nm-layer-wrapper-conflict .nm-j-configurator-delegate-click',
+		sClassConflictSolutionShow: 'nm-conflict-solution-show'
+	};
+
+	//whitelist for family types to be grouped and displayed as pattern
+	__.groupingWhitelist = ['extcolor', 'upholstery'];
+	/*
+	* add event Listener
+	*/
+	__.addEvents = function() {
+		__.legacyEventBus.on('click.nemo.configurator', __.oDefaults.sSelectorDelegateConflictClick, __.handleConflictResolveClick);
+		//show alternative options menu click
+		__.legacyEventBus.on('click.alternative-options', __.oDefaults.sSelectorOptionsShow, __.toggleAlternativeOptions);
+		//handle conflict Itme Click while conflict layer is open
+		__.legacyEventBus.on('click.solution.store', __.oDefaults.sSelectorDelegateClick, __.handleConflictItemClick);
+	};
+	//save last clicked solution item
+	__.handleConflictItemClick = function(event_) {
+		var item, solution, solutionID, isSelectedItem;
+		__.cancelEvent(event_);
+		item = jQuery(this);
+		solution = item.closest('div[data-solution-id]');
+		solutionID = solution.data('solution-id');
+		isSelectedItem = __.isSelectedItem(item.closest('.nm-j-configurator-item'));
+		if (isSelectedItem) {
+			console.log('ITEM "' + item.closest('.nm-j-configurator-item').attr("[nm-j-configurator-id]") + '" is already part of the configuration', item, solution, solutionID);
+			return false;
+		} else {
+			__.previousSelectedSolution = solutionID;
+			console.log('ITEM was clicked', item, solution, solutionID, __.previousSelectedSolution);
+		}
+	};
+	/**
+	* Extracts the configurator's status code from the dom
+	* @param  {jQuery-Element} $element_ configurator item
+	* @returns {String|null}
+	*/
+	__.isSelectedItem = function($element_) {
+		var _sClassName = $element_.get(0).className,
+		status;
+		if (_sClassName.indexOf("nm-j-configurator-status_") === -1) {
+			return false;
+		} else {
+			status = _sClassName.split('nm-j-configurator-status_')[1].split(' ')[0];
+			return (status.length === 5 && status[3] === "1");
+		}
+	};
+	//show/hide conflict solution alternative options
+	__.toggleAlternativeOptions = function() {
+		var $this = jQuery(this),
+		$container = $this.closest('.nm-conflict-solution');
+		$container.toggleClass(__.oDefaults.sClassConflictSolutionShow);
+		/*if($container.hasClass(
+		__.oDefaults.sClassConflictSolutionShow)){
+		__.eventBus.trigger('configuration.conflict-solution-show');
+		}*/
+		return false;
+	};
+	__.detectGroups = function(solution_, familyItems_, configItems_) {
+		var i, configItem, familyItem, currentType, length, header;
+		length = solution_.items.length;
+		solution_.sameTypeItems = false;
+		if (length < 2) {
+			return solution_;
+		}
+		for (i = length - 1; i >= 0; i--) {
+			configItem = configItems_[solution_.items[i].id];
+			if (!configItem) {
+				return solution_;
+			}
+			familyItem = familyItems_[configItem.family];
+			if (!familyItem) {
+				return solution_;
+			}
+			header = familyItem.name;
+			// compare type after the first iteration
+			if (i < length - 1) {
+				if (currentType !== familyItem.type || __.groupingWhitelist.indexOf(familyItem.type) < 0) {
+					return solution_;
+				}
+			}
+			currentType = familyItem.type;
+		}
+		solution_.sameTypeItems = true;
+		solution_.header = header;
+		return solution_;
+	};
+	/**
+	* merge conflict data response from the DPU with carinfo JSON
+	* @param  {Object} data_ - conflict data from the dpu
+	* @param {Object} familyItems_ - return value of CONFIGURATOR_API.getSpecialFamilies()
+	* @param {Object} configItems_ - return value of CONFIGURATOR_API.getItems()
+	* @return {Object} merged conflict data
+	*/
+	__.mergeData = function(data_, familyItems_, configItems_) {
+		// console.warn('conflict', data_);
+		var conflictsData = data_,
+		item, mergedEffItem, i, len, effItemsArr, configItem, mergedItem, triggers, solutions = [],
+		solution,
+		exclusives;
+		//loop through solutions
+		//merge solutions with replacedByTriggers
+		if (!!conflictsData.replacedByTriggers && conflictsData.replacedByTriggers.length) {
+			conflictsData.solutions.unshift(conflictsData.replacedByTriggers);
+		}
+		jQuery.each(conflictsData.solutions, function(iteration, solution_) {
+			solution = {};
+			solution.items = [];
+			solution.ids = [];
+			effItemsArr = [];
+			//loop through each solution´s items
+			jQuery.each(solution_, function(index, item_) {
+				configItem = configItems_[item_.id];
+				if (!!configItem) {
+					if (!!configItem.name) {
+						// MSS-2659 - only delete name from DPU response if we already have one
+						delete item_.name;
+					}
+					mergedItem = jQuery.extend(true, {}, configItem, item_);
+					//console.log(mergedItem,item,configItem);
+				} else {
+					//item is missing in the carInfo!!!!
+					//console.log('Item:'+item.id+' is missing in the carInfo.json!!!');
+					mergedItem = item_;
+				}
+				//copy family info to Item
+				if (!!mergedItem.family && !!familyItems_[mergedItem.family]) {
+					mergedItem.family = familyItems_[mergedItem.family];
+				}
+				//id item has effItems (NEMOBA-532)
+				if (!!item_.effItems) {
+					//loop through a solution´s effItems if exist
+					jQuery.each(item_.effItems, function(index, effItem_) {
+						configItem = configItems_[effItem_.id];
+						if (!!configItem.name) {
+							delete effItem_.name;
+						}
+						mergedEffItem = jQuery.extend(true, {}, configItem, effItem_);
+						//copy family info to Item
+						if (!!mergedEffItem.family && !!familyItems_[mergedEffItem.family]) {
+							mergedEffItem.family = familyItems_[mergedEffItem.family];
+						}
+						//Bugfix: dotJS template erwartet items im Datanmodel :(
+						mergedEffItem.items = [mergedEffItem];
+						effItemsArr.push(mergedEffItem);
+					});
+				}
+				//collect all item id to generate an unique ID for each solution
+				solution.ids.push(mergedItem.id);
+				//add items to solution
+				solution.items.push(mergedItem);
+			});
+			//generate an unique ID for the solution (concatenate all item IDs)
+			solution.id = solution.ids.join('');
+			//add merged solution to solutions array
+			solutions.push(solution);
+			//add effItems to the solutions array as a single solution
+			if (effItemsArr.length > 0) {
+				solutions = solutions.concat(effItemsArr);
+			}
+		});
+		conflictsData.solutions = solutions;
+		// Detect tile-able solutions
+		for (i = conflictsData.solutions.length - 1; i >= 0; i--) {
+			conflictsData.solutions[i] = __.detectGroups(conflictsData.solutions[i], familyItems_, configItems_);
+		}
+		//add exclusives Object to the solutions[0]
+		exclusives = [];
+		len = conflictsData.solutions[0].items.length;
+		while (len--) {
+			item = conflictsData.solutions[0].items[len];
+			if (!!item.family && !!item.family.id && item.family.id.indexOf('synthetic.audi_exclusive') > -1) {
+				//add item to exclusives
+				exclusives.push(item);
+				// set flag to item, to identify it as exclusive in client-template
+				conflictsData.solutions[0].items[len].exclusive = true;
+			} else {
+				conflictsData.solutions[0].items[len].exclusive = false;
+			}
+		}
+		//array wieder umdrehen
+		exclusives.reverse();
+		conflictsData.solutions[0].exclusives = exclusives;
+		//merge conflict triggers items with carinfo data
+		triggers = [];
+		effItemsArr = [];
+		jQuery.each(conflictsData.triggers, function(iteration, trigger_) {
+			configItem = configItems_[trigger_.id];
+			if (!!configItem) {
+				/*alle attribute bis auf 'name' aus dem Conflict trigger uebernehemen
+				und mit den Feldern aus der Carinfo erweitern*/
+				if (!!configItem.name) {
+					delete trigger_.name;
+				} else {
+					//DEBUG
+					trigger_.name = '#' + configItem.name;
+				}
+				mergedItem = jQuery.extend(true, {}, configItem, trigger_);
+				//console.log(mergedItem,item,configItem);
+			} else {
+				//item is missing in the carInfo!!!!
+				//console.log('trigger Item:'+item.id+' is missing in the carInfo.json!!!');
+				mergedItem = trigger_;
+			}
+			//copy family info to Item
+			if (!!mergedItem.family && !!familyItems_[mergedItem.family]) {
+				mergedItem.family = familyItems_[mergedItem.family];
+			}
+			triggers.push(mergedItem);
+			//id item has seffItems (NEMOBA-532)
+			if (!!trigger_.effItems) {
+				//loop through a solution´s effItems if exist
+				jQuery.each(trigger_.effItems, function(index, value) {
+					configItem = configItems_[value.id];
+					if (!!configItem.name) {
+						delete value.name;
+					}
+					mergedEffItem = jQuery.extend(true, {}, configItem, value);
+					//Bugfix: dotJS template erwartet items im Datanmodel :(
+					mergedEffItem.items = [mergedEffItem];
+					effItemsArr.push(mergedEffItem);
+				});
+			}
+		});
+		//add effItems to start the solutions array as single solutions
+		if (effItemsArr.length > 0) {
+			conflictsData.solutions = effItemsArr.concat(conflictsData.solutions);
+		}
+		conflictsData.triggers = triggers;
+		return conflictsData;
+	};
+	/**
+	* @retruns {Promise} - a Promise (returning a layer instance on resolve)
+	*/
+	__.openLayer = function(layerName, tplHtml, closeCallBackFn) {
+		var layerPromise;
+		//returns promise on open
+		return new Promise(function(resolve, reject) {
+			// console.log('OPENING CONFLICT LAYER!', layerName);
+			layerPromise = LAYER.open(layerName, tplHtml, closeCallBackFn);
+			layerPromise.then(function(layerInstance) {
+				__.layerInstance = layerInstance;
+				__.openSelectedSolutionAlternatives();
+				__.currentCancelLink = jQuery([__.oDefaults.sSelectorDelegateConflictClick, "[data-conflict='cancel']"].join('')).attr("href");
+				resolve(__.layerInstance);
+			}, function(err) {
+				// console.log("Error opening conflict layer", err.message);
+				reject(err);
+			});
+		});
+	};
+	/**
+	* close layer by triggering the close method on the layer instance
+	* @returns {Promise}
+	*/
+	__.closeLayer = function() {
+		var promise;
+		// console.log('CLOSING LAYER!', __.layerInstance);
+		//Layer Instance returns promise on close
+		promise = __.layerInstance.close();
+		return promise.then(function() {
+			__.layerInstance = null;
+			__.onLayerClose();
+		}, function(err) {
+			// console.log("Error closing conflict Layer", err.message);
+			throw new TypeError("Error closing conflict Layer: " + err.message);
+		});
+	};
+	/**
+	* close CallBack (e.g. on shader click)
+	*/
+	__.onLayerClose = function() {
+		//remove conflict item click handler on layer close
+		jQuery('body').removeClass(__.oDefaults.sSelectorConfigLayerOpen);
+		__.conflict = null;
+	};
+	/*
+	* handle conflict layer abort or accept clicks
+	*/
+	__.handleConflictResolveClick = function(event) {
+		var $element, url, cancelLink, action = 'cancel';
+		if (event) {
+			__.cancelEvent(event);
+			//aktuellen Konfliklayer schliessen
+			$element = jQuery(event.target);
+			url = SETUPS.get('nemo.url.dpu') + $element.attr('href');
+			if (!!$element.data('conflict')) {
+				action = $element.data('conflict');
+			}
+		} else {
+			cancelLink = jQuery([__.oDefaults.sSelectorDelegateConflictClick, "[data-conflict='cancel']"].join('')).attr("href");
+			action = 'cancel';
+			if (!!cancelLink) {
+				url = SETUPS.get('nemo.url.dpu') + cancelLink;
+			} else {
+				url = SETUPS.get('nemo.url.dpu') + __.currentCancelLink;
+			}
+		}
+		__.eventBus.emit(EVENTS.CONFLICT_CLOSE, {
+			url: url,
+			action: action
+		});
+		//close current conflict layer
+		__.closeLayer();
+	};
+	//open solution alternatives if one item was selected previously
+	__.openSelectedSolutionAlternatives = function() {
+		var selectedSolution;
+		//no previous selection available
+		if (!__.previousSelectedSolution) {
+			return;
+		}
+		//find solution by data-solution-ID
+		selectedSolution = jQuery("[data-solution-id='" + __.previousSelectedSolution + "']");
+		//delete previous selection if not found
+		if (!__.previousSelectedSolution) {
+			__.previousSelectedSolution = undefined;
+		}
+		//open solution´s alternatives
+		selectedSolution.addClass(__.oDefaults.sClassConflictSolutionShow);
+	};
+	/**
+	* prevent default event behavior
+	* @param  {Object} event_ e.g. e click event
+	* @return {Void}
+	*/
+	__.cancelEvent = function(event_) {
+		if (!!event_ && typeof event_.preventDefault === 'function') {
+			event_.preventDefault();
+		}
+	};
+	__.initialize = function() {
+		__.addEvents();
+	};
+	/**
+	* handle a configuration conflict response
+	* opens a conflict layer
+	* @param {object} conflict_ - the raw conflict object
+	* calls LAYER_API.open
+	*/
+	exports.handleConflict = function(conflict_) {
+		return new Promise(function(resolve, reject) {
+			var mergedData = __.mergeData(conflict_, CONFIGURATOR_API.getSpecialFamilies() || {}, CONFIGURATOR_API.getItems());
+			var templateType = "conflict-layer";
+			var templateString = CONFLICT_TPL || jQuery("#nm-id-" + templateType + "-tpl").html();
+			var templateHtml = TPL_RENDERER.render(templateString, mergedData);
+			var promise = __.openLayer(templateType, templateHtml, __.handleConflictResolveClick);
+			promise.then(resolve, reject);
+		});
+	};
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.legacyEventBus = jQuery('body');
+			__.initialize();
+			resolve("configurator/conflict.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 72:
+/*!*************************************!*\
+  !*** ./js/app/module/startlayer.js ***!
+  \*************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint maxlen: 145 */
+/*jslint maxparams: 7 */
+/*global Promise*/
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! jquery */ 1),
+	__webpack_require__(/*! events */ 0),
+	__webpack_require__(/*! core/layer/api */ 10),
+	__webpack_require__(/*! core/template */ 5),
+	__webpack_require__(/*! text!templates/configurationstart-implicit-layer.tpl */ 232),
+	__webpack_require__(/*! text!templates/configurationstart-loaded-layer.tpl */ 233)
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(jQuery, EVENTS, LAYER_API, TPL_RENDERER, START_IMPLICIT_TPL, CONFIG_ADOPT_TPL) {//eslint-disable-line max-params
+	/**
+	 * @exports module/startlayer
+	 */
+	'use strict';
+	var __ = {},
+		exports = {
+			__: __
+		};
+	__.instance = false;
+	__.enabled = true;
+	__.source = false;
+	__.oDefaults = {
+		sCloseLayerButtonSelector: '.nm-configurationstart-layer-close'
+	};
+
+	__.addEvents = function() {
+		__.legacyEventBus.on('click.layer.configstart.close', __.oDefaults.sCloseLayerButtonSelector, __.closeStartLayer);
+	};
+	__.removeEvents = function() {
+		__.legacyEventBus.off('click.layer.configstart.close', __.oDefaults.sCloseLayerButtonSelector, __.closeStartLayer);
+	};
+
+	__.trackLoadConfigEvent = function() {
+		if (!!__.enabled) {
+			return new Promise(function(resolve) {
+				var interval = setInterval(function() {
+					if (!!__.layerProcessed) {
+						clearInterval(interval);
+						if (!!__.layerActive) {
+							console.log("resolve: ", __.source);
+							if (__.source === 'carstore') {
+								resolve({"source": 'myAudi'});
+							} else if (__.source=== 'audicode-input') {
+								resolve({"source": 'audicode'});
+							} else {
+								resolve({"source": __.source});
+							}
+						} else {
+							console.log("reject");
+							return Promise.reject();
+						}
+					}
+				}, 50);
+			});
+		} else {
+			return Promise.reject();
+		}
+	};
+
+	/**
+	 * opens a special "configuration start" layer
+	 */
+	__.openStartLayer = function(data_) {
+		if (!__.enabled) {
+			__.layerProcessed = true;
+			__.layerActive = false;
+			return Promise.reject(new Error('Start layers not supported.'));
+		}
+
+		return new Promise(function(resolve, reject) {
+			data_ = data_;
+			var layerType = 'configurationstart-implicit';
+			var templateHtml;
+			var tpl;
+			//user template for external configurations?
+			if ( !!data_) {
+				layerType='configurationstart-loaded';
+				tpl=CONFIG_ADOPT_TPL;//||jQuery('#nm-id-' + layerType+'-layer-tpl').html();
+			} else {
+				layerType = 'configurationstart-implicit';
+				tpl=START_IMPLICIT_TPL;//||jQuery('#nm-id-' + layerType+'-layer-tpl').html();
+			}
+			templateHtml = TPL_RENDERER.render(tpl, data_||{});
+			setTimeout(function() {
+				document.body.scrollTop = 0;
+				var promise = LAYER_API.open(layerType, templateHtml, __.closeStartLayer);
+				promise.then(function(layerInstance) {
+					__.layerProcessed = true;
+					__.layerActive = false;
+					if (!!data_) {
+						__.source = data_.start_type;
+						__.layerActive = true;
+					}
+					__.instance = layerInstance;
+					__.addEvents();
+					jQuery('body').addClass('nm-config-layer-open');
+					resolve(__.instance);
+				}, function(err) {
+					__.layerProcessed = true;
+					__.layerActive = false;
+					reject(err);
+				});
+			},600);
+		});
+	};
+
+
+	__.closeStartLayer = function(event_) {
+		__.cancelEvent(event_);
+		if (__.instance && typeof __.instance.close === "function") {
+			__.instance.close();
+
+		}
+		__.eventBus.emit(EVENTS.STARTLAYER_CLOSE);
+		__.instance = null;
+		__.removeEvents();
+		jQuery('body').removeClass('nm-config-layer-open');
+	};
+
+	__.cancelEvent = function(event_) {
+		if ( !!event_ && typeof event_.preventDefault === 'function') {
+			event_.preventDefault();
+		}
+	};
+
+	__.initialize = function(eventBus_) {
+		// force singleton
+		if (!__.instance) {
+			__.addEvents();
+			__.instance = true;
+			__.layerProcessed = false;
+			__.layerActive = true;
+		}
+	};
+	/**
+	 * open a startlayer
+	 * @param {object} data_ - startlayer data (e.g for adopting configuration warnings)
+	 * @returns {Promise} - promise opening the layer
+	 * (returning a layerInstace on resolve)
+	 */
+	exports.handleStartLayer = function(data_) {
+		return __.openStartLayer(data_);
+	};
+
+	exports.unHandleStartLayer = function() {
+		__.layerProcessed = true;
+		__.layerActive = false;
+	};
+
+	/**
+	 * enable/disable start layers. Useful for applications without start layers, e.g. MSSC
+	 * @param {boolean} enabled
+	 */
+	exports.setEnabled = function(enabled) {
+		__.enabled = enabled;
+	};
+
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.legacyEventBus = jQuery('body');
+			__.initialize();
+			resolve("module/startlayer.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 73:
+/*!******************************************!*\
+  !*** ./js/app/module/carline-mapping.js ***!
+  \******************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxlen: 180, maxparams: 7 */
+/*global Promise*/
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! core/cache */ 209), __webpack_require__(/*! configurator/dpu-api */ 3), __webpack_require__(/*! configurator/dpu-controller */ 11), __webpack_require__(/*! events */ 0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (CACHE, CONFIGURATOR_API, DPU_CONTROLLER, EVENTS) { //eslint-disable-line max-params
+	'use strict';
+	var __ = {},
+		//Public API
+		exports = {
+			__: __
+		};
+	/**
+	 * private exports methods
+	 */
+	__.oDefaults = {};
+	__.globalEventBus = null;
+	/**
+	 * get previous configuration params from the
+	 * window.name object if entered via trampoline page
+	 * @returns {object|null} previousConfiguration
+	 * e.g.{'subsession': 'ihewdbuew', 'carline': 'a6limo', 'prstring': '4G2S3Y0|P5P5|SX'}
+	 */
+	exports.getPreviousWindowConfig = function () {
+		var config = null,
+			windowJson,
+			carlineId = CONFIGURATOR_API.getCarline(),
+			cachedData = (window && window.name && window.name !== null) ? window.name : CACHE.getItem("use_trampoline", "data", 'localStorage');
+		if (cachedData) {
+			try {
+				windowJson = JSON.parse(cachedData);
+				if (!!windowJson && windowJson.prstring && windowJson.subsession && windowJson.carline === carlineId) {
+					config = windowJson;
+				}
+			} catch (ex) {
+				//nothing to do (we are not comming from a page were we set the window.name)
+				console.log('we are not comming from a page were we set the window.name');
+				config = null;
+			}
+		}
+		// remove localStorage item if available
+		if (CACHE.getItem("use_trampoline", "data", 'localStorage')) {
+			CACHE.removeItem('use_trampoline', "data", 'localStorage');
+		}
+		return config;
+	};
+	/**
+	 * check if the url contains a audicode or prstring request
+	 * @returns {object|null} object with audicode or prstring or null
+	 */
+	exports.getConfigurationRequestParam = function () {
+		var request = null,
+			audicode = __.getUrlVar('audicode'),
+			prstring = __.getUrlVar('pr');
+		if (!!audicode) {
+			request = {};
+			request.audicode = audicode;
+		}
+		if (!!prstring) {
+			request = {};
+			request.prstring = prstring;
+		}
+		return request;
+	};
+	/**
+	 * trampoline machanism to change URL to matching carline
+	 * @param{object} data - configuration data
+	 * @param{string} subsession - subsessionID
+	 * @param{string} entryType - start/entry-type
+	 * @returns {void} nothing
+	 */
+	exports.useTrampoline = function (data, subsession, entryType) {
+		var prstring = data.configuration.prstring,
+			carline = data.configuration.carline,
+			audiCodeCarlineUrl = __.getCarlineUrl(carline);
+		if (!audiCodeCarlineUrl) {
+			return;
+		}
+		//save audiCodeCorrespondingCarline, audiCodeCorrespondingPrstring and subsession in window.name
+		window.name = '{"subsession":"' + subsession + '","carline":"' + carline + '","prstring":"' + prstring + '","entryType":"' + entryType + '"}';
+		//save the data returned from dpu into the local db
+		CACHE.setItem('carline_mapping', subsession, JSON.stringify(data), 'localStorage');
+		//save audiCodeCorrespondingCarline, audiCodeCorrespondingPrstring and subsession in localStorage, because IE11 will delete window object at page switch
+		CACHE.setItem('use_trampoline', "data", '{"subsession":"' + subsession + '","carline":"' + carline + '","prstring":"' + prstring + '","entryType":"' + entryType + '"}', 'localStorage');
+		//forward (delay bugfix due to hash change events triggered @about 100ms)
+		setTimeout(function(){
+			window.location.href = audiCodeCarlineUrl;
+		},150);
+	};
+	/**
+	 * get the corresponding carline page url
+	 * @param {string} carlineID_ -carline id (e.g. 'a4limo')
+	 * @returns {string} - base url of the carline page
+	 */
+	__.getCarlineUrl = function (carlineID_) {
+		return CONFIGURATOR_API.getCarlineUrl(carlineID_);
+	};
+	/**
+	 * check if a previous configuration via trampoline page exists
+	 * @returns {boolean} has a previous configuration?
+	 */
+	exports.hasPreviousWindowConfiguration = function () {
+		var previousConfig = exports.getPreviousWindowConfig();
+		return !!previousConfig;
+	};
+	/**
+	 * check if a configuration needs redirect via trampoline page
+	 * (e.g. current carline/page is not matching the loaded configuration)
+	 * @param {object} data - a loaded configuration object
+	 * @returns {boolean} needs trampoline or not?
+	 */
+	exports.isMatchingConfiguration = function (data) {
+		var doesMatch, carlineId, isDataDefined, audiCodeCorrespondingCarline, audiCodeCorrespondingPrstring, isCarline2IDMappingAvailable, audiCodeCarlineUrl;
+		doesMatch = false;
+		isDataDefined = !!data;
+		audiCodeCorrespondingCarline = null;
+		carlineId = CONFIGURATOR_API.getCarline();
+		if (isDataDefined && data.configuration && data.configuration.carline) {
+			audiCodeCorrespondingCarline = data.configuration.carline;
+		}
+		if (isDataDefined && data.configuration && data.configuration.carline) {
+			audiCodeCorrespondingCarline = data.configuration.carline;
+		}
+		audiCodeCorrespondingPrstring = null;
+		if (isDataDefined && data.configuration && data.configuration.prstring) {
+			audiCodeCorrespondingPrstring = data.configuration.prstring;
+		}
+		isCarline2IDMappingAvailable = false;
+		audiCodeCarlineUrl = __.getCarlineUrl(audiCodeCorrespondingCarline);
+		if (audiCodeCarlineUrl) {
+			isCarline2IDMappingAvailable = true;
+		}
+		//change window location if carlineID doesn´t match the current page´s Carline
+		if (!!audiCodeCorrespondingCarline && carlineId !== audiCodeCorrespondingCarline && isCarline2IDMappingAvailable) {
+			doesMatch = false;
+		}
+		//adopt configuration if carlinID matches
+		if (!!audiCodeCorrespondingCarline && carlineId === audiCodeCorrespondingCarline) {
+			doesMatch = true;
+		}
+		console.log("isMatchingConfiguration: " + doesMatch + '  audiCodeCorrespondingPrstring: ' + audiCodeCorrespondingPrstring);
+		return doesMatch;
+	};
+	/**
+	 * @description Returns all get params.
+	 *@param {string} url_ - complete url string
+	 *@returns {object} urls vars as object
+	 */
+	__.getUrlVars = function (url_) {
+		var vars = {},
+			hash, hashes, i, len;
+		hashes = (url_.slice(url_.indexOf('?') + 1).split("#")[0]).split('&');
+		for (i = 0, len = hashes.length; i < len; i++) {
+			hash = hashes[i].split('=');
+			vars[hash[0]] = hash[1];
+		}
+		return vars;
+	};
+	/**
+	 * @description Returns specific get param if defined.
+	 * @calls methos __.getUrlVars
+	 * @param {name_} name_ - name of the param to extract
+	 * @param {string} url_ - url (otional,otherwise window.location.href)
+	 * @returns {object|null} param-object mathing the name_ param otherwise null
+	 */
+	__.getUrlVar = function (name_,url_) {
+		var url = url_ || window.location.href;
+		return __.getUrlVars(url)[name_] || null;
+	};
+	/**
+	 * public initialize method
+	 * @param {EventEmitter2} globalEventBus - Event Bus
+	 * @return {Promise} returns Promise
+	 */
+	exports.initialize = function (globalEventBus) {
+		return new Promise(function (resolve) {
+			__.globalEventBus = globalEventBus;
+			resolve('carline-mapping.js');
+		});
+	};
+	exports.initializePromise = exports.initialize;
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 74:
+/*!****************************************************!*\
+  !*** ./js/app/configurator/user-configurations.js ***!
+  \****************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxparams:10, maxlen: 175 */
+/* global Promise*/
+/**
+ * @description module to store and load user´s configuration in the Browser´s storage
+ * during the user´s configuration process his configuration will be saved locally (in his Browser Storage) for later use.
+ * If the user returns to a carline in which has configured a car before his previous configuration will be loaded from his Browser storage
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! jquery */ 1),
+	__webpack_require__(/*! configurator/dpu-api */ 3),
+	__webpack_require__(/*! events */ 0)
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(jQuery, CONFIGURATOR_API, EVENTS) {
+	/**
+	 * @exports configurator/user-configurations
+	 */
+	'use strict';
+	var __ = {},
+		//Public API
+		exports = {
+			__: __
+		};
+	//use Browser´s Session storage
+	__.STORAGE = window.sessionStorage || null;
+	__.entryPrefix = '__nemo__';
+
+	/**
+	 * write current configuration into storage on configuration.update Event
+	 */
+	__.handleConfigurationUpdates = function() {
+		var entry = {
+			prString: CONFIGURATOR_API.getPrString(),
+			carlineID: CONFIGURATOR_API.getCarline()
+		};
+		//if(CONFIGURATOR_API.isConfigurationStarted){
+		var promise = __.writeEntry(entry);
+		promise.then(function(data) {
+			console.log("user´s configuration storageID: " + data.stored);
+		}, function(err) {
+			console.warn("Error storing user´s configuration: " + err.message);
+		});
+		//}
+	};
+
+	/**
+	 * write entry into storage
+	 * @returns {Promise}
+	 */
+	__.writeEntry = function(entry) {
+		return new Promise(function(resolve, reject) {
+			var uuid;
+			uuid = __.uuid();
+			if (!entry) {
+				reject(new TypeError("writeEntry: missing param 'entry_'"));
+			}
+			entry = JSON.stringify(entry);
+
+			if (!__.STORAGE) {
+				reject(new TypeError("sessionStorage is not available"));
+			}
+			__.STORAGE.setItem(uuid, entry);
+			resolve({
+				stored: uuid
+			});
+		});
+	};
+
+	/**
+	 * generate name for the storage entry
+	 */
+	__.uuid = function uuid() {
+		return __.entryPrefix + CONFIGURATOR_API.getVersion();
+	};
+
+	__.addEvents = function() {
+		__.eventBus.on(EVENTS.CONFIG_UPDATE, __.handleConfigurationUpdates);
+	};
+
+	/**
+	 * read stored entry from Browser´s storage
+	 */
+	__.readEntryFromStorage = function() {
+		return new Promise(function(resolve, reject) {
+			var entry;
+			if (!__.STORAGE) {
+				reject(new TypeError("Browserstorage is not available"));
+			}
+			try {
+				entry = __.STORAGE.getItem(__.uuid());
+				entry = JSON.parse(entry);
+				resolve(entry);
+			} catch (err) {
+				reject(new TypeError("Error reading user´s configuration: " + err.message));
+			}
+		});
+	};
+
+	//initialize module on APP_READY
+	__.initialize = function() {
+		if (CONFIGURATOR_API.isInPreviewMode() || !CONFIGURATOR_API.isConfigurable()) {
+			console.log( true ? 'preview-mode' : 'missing DPU');
+			return;
+		}
+		__.addEvents();
+	};
+	/**
+	* get user configurations prString for the current carline
+	* @returns {string|null}
+	*/
+	exports.getPreviousUserConfigurationPrString=function(){
+		var promise = __.readEntryFromStorage();
+		return promise.then(function(entry) {
+			if (entry && !!entry.carlineID && !!entry.prString && entry.carlineID === CONFIGURATOR_API.getCarline()&& entry.prString!==CONFIGURATOR_API.getPrString()) {
+				return Promise.resolve(entry.prString);
+			} else {
+				return Promise.reject(new TypeError("no valid user configuration available"));
+			}
+		},function(){
+				return Promise.reject(new TypeError("error reading user configuration from storage"));
+			});
+	};
+
+	__.debugEntries = function() {
+		//getStoredCarlines
+		var entry, entries = [],
+			pattern = new RegExp(__.entryPrefix);
+		/* jshint forin: false */
+		for (entry in __.STORAGE) {
+			if (pattern.test(entry)) {
+				entries.push(entry);
+			}
+		}
+		return entries;
+	};
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.initialize();
+			resolve("module/user-configurations.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ })
+
+},[229]);
+});
+//# sourceMappingURL=bundle.configurator.js.map

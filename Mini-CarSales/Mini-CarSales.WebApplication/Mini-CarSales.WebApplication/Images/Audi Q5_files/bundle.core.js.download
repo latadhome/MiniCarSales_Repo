@@ -1,0 +1,5074 @@
+/*! release#17.55.1.3 */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("bundle.core", [], factory);
+	else if(typeof exports === 'object')
+		exports["bundle.core"] = factory();
+	else
+		root["bundle.core"] = factory();
+})(this, function() {
+return webpackJsonpbundle__name_([3],{
+
+/***/ 0:
+/*!**************************!*\
+  !*** ./js/app/events.js ***!
+  \**************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function Events() {
+	"use strict";
+
+	return {
+		/**
+		 * Configuration Events
+		 */
+
+		VERSION_LOAD_COMPLETE: 'version.load.complete',
+
+		//Dom is ready and all required base config params (e.g. 'nemo.url.dpu') are avialable
+		APP_READY: 'app.ready',
+
+		// all promise-initialized modules are initialized
+		APP_INITIALIZED: 'app.initialized',
+
+		AVE_AVAILABLE: 'ave.available',
+		AVE_STREAM_READY: 'ave.stream.ready',
+
+		//configuration data was reset
+		CONFIG_RESET: "configuration.reset",
+
+		//configuration data was updated
+		CONFIG_UPDATE: "configuration.update",
+
+		//CONFIG_CANCEL: "configuration.cancel",
+		//user configuration was started
+		CONFIG_START: "configuration.start",
+
+		//configuration json has been parsed (local configuration data has not yet been updated!)
+		CONFIG_PARSED: 'configuration.parsed',
+
+		//a configuration ('nm-j-configuration-item') item was clicked
+		CONFIG_ITEM_CLICKED: 'configuration.item-clicked',
+
+		DOM_UPDATED: 'dom.updated',
+
+		TRIGGER_DOM_UPDATE: 'trigger.dom.update',
+
+		//adopt a configuration (e.g. loaded by audicode or carstore)
+		CONFIG_ADOPT: 'configuration.adopt-new',
+
+		CONFIG_PDF: "configuration.pdf",
+
+		CONFIG_SEND: "configuration.send",
+
+		// save config in carstore
+		CONFIG_SAVED: "configuration.saved",
+
+		//open conflict layer
+		CONFIG_CONFLICT_OPEN: 'configuration.conflict-open',
+
+		CONFIG_NON_CONFLICTING: 'configuration.non-conflicting',
+
+		//dispatch change request at the beginning of an AJAX request
+		CONFIG_CHANGEREQUEST_START: 'configuration.change-request-start',
+		//dispatch change request at the end (success or failure) of an AJAX request
+		CONFIG_CHANGEREQUEST_END: 'configuration.change-request-end',
+
+		//check if a (pending) conflict exits
+		CONFIG_CONFLICT_CHECK: 'configuration.conflict-check',
+
+		//resolve a conflict by closing a conflict layer (accept or cancel)
+		CONFLICT_CLOSE: 'conflict.resolve',
+
+		//abort a transfer by clicking 'abort' within the transfer layer
+		TRANSFER_CLOSE: 'transfer.cancel',
+
+		/**
+		 * Form Events
+		 */
+		FORM_FINISHED: "form.finished",
+
+		FORM_LOADED: "form.loaded",
+
+		HASH_CHANGE: 'hash.change',
+
+		FORM_ERROR: "form.error",
+
+		/**
+		 * Layer Events
+		 */
+		LAYER_OPEN: "layer.open",
+
+		LAYER_CLOSE: "layer.close",
+
+		LAYER_INSERTED: "layer.inserted",
+
+		LAYER_LOADED: "layer.loaded",
+
+		LAYER_STATIC_OPEN: "layer.static.open",
+
+		LAYER_BEFORE_CLOSE_ALL: 'layer.before.closeall',
+
+		LAYER_BEFORE_CLOSE: 'layer.before.close',
+
+		LAYER_CLOSED: 'layer.closed',
+
+		EQUIPMENT_SEARCH_LAYER_LOADED: "equipmentSearchlayer.loaded",
+
+		EQUIPMENT_SEARCH_LAYER_RESIZED: "equipmentSearchlayer.resized",
+
+		RENDERINGLAYER_LOADED: "renderinglayer.loaded",
+
+		RENDERINGLAYER_RESIZED: "renderinglayer.resized",
+
+		STARTLAYER_OPEN: 'startlayer.open',
+
+		STARTLAYER_CLOSE: 'startlayer.close',
+
+		TRANSFERLAYER_CLOSED: 'transferlayer.closed',
+
+		SEARCH_OPEN: 'search.nemo.open',
+
+		SEARCH_CLOSE: 'search.nemo.close',
+
+		SEARCH_LOAD_AUDICODE: 'search.load.audicode',
+
+		MENUFLYOUT_OPEN: 'menuflyout.open',
+
+		MENUFLYOUT_CLOSE: 'menuflyout.close',
+
+		/**
+		 * Page Events
+		 */
+		PAGE_NAV: "page.nav",
+
+		PAGE_OPEN: "page.open",
+
+		PAGE_LEAVE: "page.leave",
+
+		PAGE_READY: "page.ready",
+
+		PAGE_INSERTED: "page.inserted",
+
+		PAGE_LOADED: "page.loaded",
+
+		PAGE_ANIMATION_START: "page.animation.start",
+
+		PAGE_ANIMATION_COMPLETE: "page.animation.complete",
+		/**
+		 * Mediagallery Events
+		 */
+		MEDIAGALLERY_CATEGORY_CHANGED: "mediagallery.category.changed",
+		MEDIAGALLERY_ITEM_CHANGED: "mediagallery.item.changed",
+		MEDIAGALLERY_RESIZED: "mediagallery.resized",
+		MEDIAGALLERY_SLIDED: "mediagallery.slided",
+
+		/**
+		 * Custom Events
+		 */
+		UPDATE_VIEW_STATE: "stage.updateViewState",
+
+		STAGE_RENDERIMAGE_UPDATED: "stage.renderimage.updated",
+
+		EXTERNAL_EDITOR: "configuration.external.nemo.configurator",
+
+		ERROR: "nemo.error",
+
+		NOTIFICATION: "nemo.notification",
+
+		MYAUDI_LOGIN: 'myaudi.login',
+
+		MYAUDI_LOGOUT: 'myaudi.logout',
+
+		CONTENT_RESIZE: 'content.resize',
+
+		/**
+		 * AudiCode Events
+		 */
+		AUDICODE_DELETED: "audicode.deleted",
+
+		AUDICODE_SUCCESS: "audicode.success",
+
+		AUDICODE_FAILED: "audicode.failed",
+		/**
+		 * Teaser Tracking
+		 */
+		TEASER_ACTIVATED: 'teaserActivated',
+		TEASER_ALL_ACTIVATED: 'allTeasersActivated',
+
+		RESET_POSTERVIEW: 'mss.reset.posterview',
+		STOCKCAR_UPDATE: 'stck.update',
+		SC_UPDATE_VIEW: 'sc:update:view',
+        SC_UPDATE_VIEW_COUNTS: 'sc:update:view:counts',
+        SC_RESET_RESULT_COUNT: 'sc:reset:result:counts',
+        SC_UPDATE_VIEW_RANGE_FILTER: 'sc:update:view:range:filter',
+        SC_UPDATE_VIEW_FAVORITES: 'sc:update:view:favorites',
+        SC_DELETE_VIEW_FAVORITE: 'sc:delete:view:favorite',
+        SC_DELETE_OUTDATET_FAVORITE: 'sc:delete:outdatet:favorite',
+        SC_RESET_VIEW: 'sc:reset:view',
+        SC_UPDATE_LOCATION_VIEW: 'sc:update:location:view',
+        SC_ERROR_GPS: 'sc:error:gps',
+        SC_UPDATE_VEHICLES: 'sc:increment:vehicles',
+        SC_UPDATE_LOCATION_MODEL: 'sc:update:location:model',
+        SC_UPDATE_LOCATION_FILTER: 'sc:update:location:filter',
+		SC_COMPARE_UPDATE: 'sc:compare:update',
+		SC_VERSION_LOADED: 'sc:version:loaded',
+		SC_DETAILS_RATE_UPDATE: 'sc:details:updateRate',
+
+		/*
+		 * DSH Conversion Tracking
+		 */
+		 DSH_ZOOM_CHANGE: 'dsh:zoom.change',
+		 DSH_INPUT: 'dsh:input'
+	};
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 10:
+/*!**********************************!*\
+  !*** ./js/app/core/layer/api.js ***!
+  \**********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* global Promise */
+/*eslint no-else-return:0*/
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! core/layer/element */ 58),
+	__webpack_require__(/*! utils/dom */ 2),
+	__webpack_require__(/*! core/layer/animation */ 39),
+	__webpack_require__(/*! events */ 0)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function(ELEMENT, DOM_UTILS, ANIMATION, EVENTS) {
+		"use strict";
+	var __, exports;
+	__ = {};
+	exports = {
+		__: __
+	};
+	__.layers = {};
+	/*
+	 * Data structure for each layer.
+	 * @constructor
+	 */
+	__.Layer = function(type, html, onCloseRequest) {
+		// Store type, html, onCloseRequest
+		this.type = type;
+		this.html = html;
+		this.element = ELEMENT.create(html);
+		this.onCloseRequest = onCloseRequest;
+		return this;
+	};
+	__.Layer.prototype.close = function() {
+		return __.closeLayer(this);
+	};
+	// Update layer contents silently.
+	__.Layer.prototype.update = function(newContent) {
+		this.element = ELEMENT.create(newContent);
+		this.html = newContent;
+		/*this.isVisible = false;
+		this.isClosed = false;
+		this.isClosing_ = false;
+		this.isOpening = false;*/
+	};
+	__.Layer.prototype.getElement = function() {
+		return this.element;
+	};
+
+	__.Layer.prototype.remove = function() {
+		//this.isVisible = false;
+		delete __.layers[this.type];
+		this.element = null;
+		this.onCloseRequest = null;
+		this.html = null;
+		this.type = null;
+	};
+	/*
+	 * Returns true if both conditions are met:
+	 * - A layer object of the given type exists.
+	 *- The object is currently not being closed.
+	 */
+	__.hasActiveLayer = function(type) {
+		/*if (!__.layers[type]) {
+			return false;
+		}*/
+		return !!__.layers[type];
+		//return !__.layers[type].isClosing;
+	};
+	/*
+	 * Returns the number of currently open layers.
+	 */
+	__.nrOfLayers = function() {
+		var count = 0,
+			layer;
+		for (layer in __.layers) {
+			if (__.layers.hasOwnProperty(layer)) {
+				count++;
+			}
+		}
+		return count;
+	};
+	__.initialize = function() {
+		DOM_UTILS.getEventDelegate('body').off('click', '.nm-layer-wrapper', exports.wrapperClickHandler);
+		DOM_UTILS.getEventDelegate('body').on('click', '.nm-layer-wrapper', exports.wrapperClickHandler);
+	};
+	/**
+	 * Opens a new layer.
+	 * @alias core/layer/base:open
+	 * @param {String} type - The layer type
+	 * @param {String} html - The content to be opened in a layer
+	 * @param {Function} onCloseRequest - A callback that gets called when a
+	 * third party attempts to close this layer (by calling
+	 * core/layer/base:requestCloseall()).
+	 * @returns {Promise} A layer Object to close or replace the layer or
+	 * false.
+	 */
+	exports.open = function(type, html, onCloseRequest) {
+		var layer;
+		// reject if params are not set or layer type already exists
+		if (!type) {
+			return Promise.reject(new Error('type not set.'));
+		}
+		if (!html) {
+			return Promise.reject(new Error('html not set.'));
+		}
+		//check if no active layer of the same type already exists
+		if (!__.hasActiveLayer(type)) {
+			//reject if onCloseRequest is set but not a function
+			if (!!onCloseRequest && typeof onCloseRequest !== 'function') {
+				return Promise.reject(new Error('onCloseRequest has to be a function.'));
+			} else {
+				//create and open new Layer
+				layer = new __.Layer(type, html, onCloseRequest);
+				__.layers[type] = layer;
+				//create and animate DOM Elements
+				return __.openLayer(layer);
+			}
+		} else {
+			//do not close CMS or conflict Layers…they are updated silently
+			if ((type === 'cms' ||type === 'conflict-layer')) {
+				layer = new __.Layer(type, html, onCloseRequest);
+				return __.updateLayer(layer, html);
+			} if( type === 'jslayer') {
+				return Promise.resolve(__.layers.jslayer);
+			}
+			//other layer types do not allow duplicates to be opened
+			return Promise.reject(new Error('Duplicate layer type. ' + type));
+		}
+	};
+	/**
+	 * Requests to close all layers. This will iterate over all currently
+	 * opened layers and either close them or call the callback if one was given
+	 * when the layer was opened (in which case closing the layer is the
+	 * responsibility of the module which initially opened that layer).
+	 * @alias core/layer/base:requestCloseall
+	 * @returns A Promise object.
+	 */
+	exports.requestCloseall = function() {
+		var type;
+		for (type in __.layers) {
+			if (__.layers.hasOwnProperty(type)) {
+				__.requestCloseLayer(type);
+			}
+		}
+	};
+	__.requestCloseLayer = function(type) {
+		var layer = __.layers[type];
+		if (typeof layer.onCloseRequest === 'function') {
+			layer.onCloseRequest();
+		} else {
+			__.closeLayer(layer);
+		}
+	};
+	/**
+	 * open method
+	 * handles communication with the animation module
+	 * @param {Layer} - Layer instance
+	 * @return {Promise}
+	 */
+	__.openLayer = function(layer_) {
+		var promise,tmpLayer;
+		/*if (!!layer_) {
+			layer_.setAsOpening();
+		}*/
+		tmpLayer=layer_;
+		promise = ANIMATION.open(layer_.element, layer_);
+		return promise.then(
+			// success
+			function(layer) {
+				//layer.setAsVisible();
+				__.dispatchEvent(EVENTS.LAYER_LOADED, {
+					element: layer.element
+				});
+				return layer;
+			}).catch(
+			// fail
+			function(err) {
+				__.closeLayer(tmpLayer);
+				//__.LOGGER.error('core/layer/animation:layerOpen: animation rejected:', err);
+				console.error('core/layer/animation:layerOpen: animation rejected.', err);
+				throw err;
+			});
+	};
+
+    __.dispatchEvent=function (eventName_,payLoad_) {
+    	__.eventBus.emit(eventName_,payLoad_);
+    };
+	/**
+	 * close method
+	 * handles communication with the animation module
+	 * @param {Layer} - Layer instance
+	 * @return {Promise}
+	 */
+	__.closeLayer = function(layer_) {
+		var promise = ANIMATION.close(layer_.element, layer_);
+		/*if (!!layer_) {
+			layer_.setAsClosing();
+		}*/
+		return promise.then(
+			// success
+			function(layer) {
+				//layer.setAsClosed();
+				layer.remove();
+			},
+			// fail
+			function(err) {
+				console.log('core/layer/animation:layerClose: animation rejected.', err);
+				throw err;
+			}).catch(function(err){console.error(err);}).then(ANIMATION.toggleShader).then(function() {
+				__.dispatchEvent(EVENTS.LAYER_CLOSED, {
+					element: layer_.element
+				});
+			}
+		);
+	};
+	/**
+     * update an existing layer with conetnt of the same type
+	 * @param  {Layer} layer_ - Layer Object
+	 * @param  {HTMLElement} newContent_ - new html content
+	 * @returns {Promise} - new layer or Error
+	 */
+	__.updateLayer = function(layer_, newContent_) {
+		var promise;
+		layer_.update(newContent_);
+		promise = ANIMATION.replace(layer_.getElement(), layer_);
+		/*if (!!layer_) {
+			layer_.setAsOpening();
+		}*/
+		return promise.then(
+			// success
+			function(layer) {
+				//layer.setAsVisible();
+				__.dispatchEvent(EVENTS.LAYER_LOADED, {
+					element: layer.getElement()
+				});
+				return layer;
+			}).catch(function(err) {
+				console.log('core/layer/animation:layerUpdate: animation rejected.');
+				throw err;
+			});
+	};
+	/**
+	 * Checks if a wrapper click has been outside the layer element
+	 * (if a layer is currently open) and has to be treated as a
+	 * request to close layers.
+	 * @param {Event} e Event
+	 */
+	exports.wrapperClickHandler = function(e) {
+		if (__.nrOfLayers() > 0) {
+			if (__.isShaderClicked(e)) {
+				exports.requestCloseall();
+			}
+		}
+	};
+
+	__.isShaderClicked=function (e) {
+		return (DOM_UTILS.isElementOutsideOfElementWithSelector(e.target, '.nm-layer-inner') && e.target.classList.contains('nm-layer-wrapper'));//eslint-disable-line new-cap
+	};
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.initialize();
+			resolve("core/layer/api.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 15:
+/*!********************************!*\
+  !*** ./js/app/core/content.js ***!
+  \********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @description Content Controller.
+ *              Gets and sets (html) content from external resources.
+ *              Caches external content utilizing 'core.CACHE' to minimize xhmlhtprequests.
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! core/cache */ 209), __webpack_require__(/*! core/static-content */ 210), __webpack_require__(/*! utils/ajax */ 6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(CACHE, STATIC_CONTENT, AJAX) {
+	"use strict";
+	var __ = {},
+		exports = {
+			__: __
+		};
+	// cache index
+	__.oIndex = {};
+	// counts running xhr's
+	__.iCounterXhr = 0;
+	// global cache for "fillcached"-URIs
+	__.aCacheURI = [];
+	// set number of parallel ajax requests
+	__.iParallelXHRMax = 3;
+	// @Todo refactor, @see __.rewriteUrl() !
+	__.sMarkerXHR = '.headless';
+	// marker-provider for headless urls
+	__.oMarkerProvider = [];
+	//list of all registered content prividers
+	__.registeredContentProviders = [];
+	//RegEx matching dynamic content urls
+	__.DYNAMIC_URL_PREFIX_REGEX = /js(-|_)link/g;
+	/**
+	 * Updates the index
+	 * @param  {String}  sKey_        Convention: Convention: URI
+	 * @param  {Boolean} isAvailable_ [description]
+	 * @returns {void}
+	 */
+	__.updateIndex = function(sKey_, isAvailable_) {
+		var sKey = encodeURIComponent(sKey_);
+		if (isAvailable_) {
+			__.oIndex[sKey] = true;
+		} else {
+			__.oIndex[sKey] = false;
+			delete __.oIndex[sKey];
+		}
+	};
+	/**
+	 * Returns the caching-status
+	 * @param  {String}  sKey_ Convention: URI
+	 * @returns {boolean} is Cached?
+	 */
+	exports.isCached = function(sKey_) {
+		var sKey = encodeURIComponent(sKey_);
+		return !!__.oIndex[sKey];
+	};
+	/**
+	 * Processes the content by updating the index and pushing
+	 * it to the cache
+	 * @param {String} sKey_   Convention: URI
+	 * @param {String} sValue_ Content
+	 * @param {boolean} failsafeSet ???
+	 * @returns {void}
+	 */
+	exports.setContent = function(sKey_, sValue_, failsafeSet) {
+		// FIXME: why is this error commented out ?
+		// TODO: either throw error or remove condition
+		// if (typeof (sValue_) !== 'string') {
+		//	throw new Error("nemo.core.controller.content: exports.setContent requires 'String'");
+		// }
+		// set sKey_ in index to true or false, depending on return value of setItem.
+		var written = CACHE.setItem('core.controller.content', sKey_, sValue_, {
+			'failsafeSet': failsafeSet
+		});
+		if (!written) {
+			// if we couldn't write to the cache it's safe to say that the whole cache is empty now
+			// so we also need to reset the caching index, otherwise the index might say something is cached
+			// that isn't really there anymore
+			exports.flush();
+		}
+		__.updateIndex(sKey_, written);
+	};
+	/**
+	 * precondition: search url for matching marker for dynamic contentProvider
+	 * @param {String} url_ - url to examine
+	 * @returns {boolean} url contains marker for a dynamic contentprovider
+	 */
+	__.hasDynamicContentUrl = function(url_) {
+		return (url_||"").match(__.DYNAMIC_URL_PREFIX_REGEX);
+	};
+	/**
+	 * Gets the content from the cace or the supplied URI
+	 * @param  {String} sKey_       Convention: URI
+	 * @param  {Boolean} cache Flag, if the content should be stored locally or not
+	 * @returns {Promise} content wrapped in a Promise
+	 */
+	exports.getContent = function(sKey_, cache) {
+		var chachedContent, dynamicContentProvider;
+		//preconditon: is URL with dynamic contentProvider?
+		if (__.hasDynamicContentUrl(sKey_)) {
+			dynamicContentProvider = __.getDynamicContentProvider(sKey_);
+			//has registered content provider for this url?
+			if (dynamicContentProvider) {
+				return __.getContentFromProvider(dynamicContentProvider, sKey_);
+			} else {
+				return Promise.reject(new Error("no registered content provider has been found for this url: " + sKey_));
+			}
+		} else {
+			if (STATIC_CONTENT.isStaticContentRequest(sKey_)) {
+				return STATIC_CONTENT.getContent(sKey_);
+			} else {
+				//is allready cached?
+				chachedContent = CACHE.getItem('core.controller.content', sKey_, cache);
+				// new content from AEM - xhrrequest
+				if (!exports.isCached(sKey_) || !chachedContent) {
+					return __.loadRemoteContent(sKey_, cache);
+				}
+				// known content from storage/cache
+				else {
+					return Promise.resolve(CACHE.getItem('core.controller.content', sKey_, cache));
+				}
+			}
+		}
+	};
+	/**
+	 * Takes an array of URIs and loads them into the cache
+	 * @param  {array} aResources_ Array of URIs
+	 * @returns {void}
+	 */
+	exports.fillCache = function(aResources_) {
+		var _i = 0;
+		for (_i; _i < aResources_.length; _i++) {
+			// dump already cached ones
+			if (!exports.isCached(aResources_[_i])) {
+				__.aCacheURI.push({
+					sKey: aResources_[_i]
+				});
+			}
+		}
+		__.processCacheURIs();
+	};
+	/**
+	 * Load cached items if there are no xhr-requests running
+	 * @returns {void}
+	 */
+	__.processCacheURIs = function() {
+		var _obj;
+		// noone's left
+		if (__.aCacheURI.length === 0) {
+			return;
+		}
+		// no running xhrs -  load one
+		if (__.iCounterXhr < __.iParallelXHRMax) {
+			_obj = __.aCacheURI.shift();
+			// fire xhr
+			__.loadRemoteContent(_obj.sKey, true);
+		}
+		// still items to load
+		if (__.aCacheURI.length > 0) {
+			/* jshint -W059 */
+			window.setTimeout(__.processCacheURIs, 50);
+		}
+	};
+	/**
+	 * register module to provide content (HTML-String)
+	 * @param {object} contentProvider_ - object with content provider options
+	 * @returns {void} nothing
+	 */
+	exports.registerContentProvider = function(contentProvider_) {
+		var provider = {};
+		//is valid RegExp and Promise?
+		if (!!contentProvider_ && (contentProvider_.regEx && typeof contentProvider_.regEx.exec === 'function') && (contentProvider_.callbackPromise && typeof contentProvider_.callbackPromise === 'function')) {
+			provider.regEx = contentProvider_.regEx;
+			provider.callbackPromise = contentProvider_.callbackPromise;
+			provider.name = contentProvider_.name || ("provider#" + __.registeredContentProviders.length);
+			__.registeredContentProviders.push(provider);
+		} else {
+			console.warn("invalid params!could not register content Provider");
+		}
+	};
+	/**
+	 * search through all regeistered content providers for an entry
+	 * with a regEx matching the current url request
+	 * @param {string} url_ - url
+	 * @returns {object} registered content provider object or null
+	 */
+	__.getDynamicContentProvider = function(url_) {
+		var res = __.registeredContentProviders.filter(function(item) {
+			return !!url_.match(item.regEx);
+		});
+		return res.length ? res[0] : null;
+	};
+	/**
+	 * get content from provider wrapped in a promise
+	 * @param {object} contentProvider_ - content provider object
+	 * @param {string} url_ - url for this request
+	 * @returns {Promise} html string wrapped in a prmise
+	 */
+	__.getContentFromProvider = function(contentProvider_, url_) {
+		var promise = contentProvider_.callbackPromise(url_);
+		return (typeof promise.then === 'function') ? promise : Promise.reject(new Error("invalid content provider"));
+	};
+	/**
+	 * registers a callback for url markers.
+	 * @param {Function} provider -the provider callback
+	 * @returns {undefined}
+	 */
+	exports.registerMarkerProvider = function(provider) {
+		if (typeof provider === 'function' && __.oMarkerProvider.indexOf(provider) < 0) {
+			__.oMarkerProvider.push(provider);
+		}
+	};
+	/**
+	 * Adds the required XHR-marker
+	 * @param  {String} sUrl_ Url
+	 * @return {Promise} url wrapped in a promise
+	 */
+	__.rewriteUrl = function(sUrl_) {
+		var _ext = '.' + sUrl_.split('#')[0].split('?')[0].split('.').pop(),
+			marker = '',
+			markerProviderPromises = [],
+			overwritten = false;
+		__.oMarkerProvider.forEach(function(provider) {
+			markerProviderPromises.push(provider(sUrl_));
+		});
+		return Promise.all(markerProviderPromises).then(function(values) {
+			values.forEach(function(_oMarker) {
+				if (!!_oMarker.marker && !overwritten) {
+					marker += '.' + _oMarker.marker;
+					if (!!_oMarker.overwrites) {
+						marker = '.' + _oMarker.marker;
+						overwritten = true;
+					}
+				}
+			});
+			return marker;
+		}).then(function(marker_) {
+			return sUrl_.split(_ext).join(marker_ + __.sMarkerXHR + _ext);
+		}).catch(function(err) {
+			console.warn(err);
+			return sUrl_;
+		});
+	};
+	/**
+	 * XMLHTTPRequest to get content
+	 * @param  {string} sKey_       Convention: URI
+	 * @param  {boolean} cache Flag, if the content should be stored locally or not
+	 * @returns {void}
+	 */
+	__.loadRemoteContent = function(sKey_, cache) {
+		return new Promise(function(resolve, reject) {
+			__.rewriteUrl(sKey_).then(function(url_) {
+				__.iCounterXhr += 1;
+				AJAX.getContent(url_).then(function(data_) {
+					//send component error to App Dynamics
+					if (window.ADRUM && window.ADRUM.command && data_.indexOf('component_error') > -1) {
+						window.ADRUM.command("addUserData", "component-error", "true");
+					}
+					// set content api
+					if (!!cache) {
+						exports.setContent(sKey_, data_);
+					}
+					__.iCounterXhr -= 1;
+					resolve(data_);
+				}).catch(function(err) {
+					console.warn("loadRemoteContent failed", err);
+					//this function gets executed always!!!(even on error)
+					// reduce this one from the xhrCounter
+					__.iCounterXhr -= 1;
+					reject(err);
+				});
+			});
+		});
+	};
+	/**
+	 * Clears the cache (local and session storage), resets the index
+	 * @param {array} keysToKeep_ - lait of keys not to be eraxsed
+	 * @returns {void}
+	 */
+	exports.flush = function(keysToKeep_) { //eslint-disable-line max-statements
+		var keysToKeep = keysToKeep_ || [],
+			keysToRemove = [],
+			key, i, decodedKey;
+		if (keysToKeep.length === 0) {
+			__.oIndex = {};
+			CACHE.clear('core.controller.content', 'sessionStorage');
+		} else {
+			for (key in __.oIndex) {
+				if (__.oIndex.hasOwnProperty(key)) {
+					decodedKey = decodeURIComponent(key);
+					if (__.oIndex[key] && keysToKeep.indexOf(decodedKey) === -1) {
+						keysToRemove.push(decodedKey);
+					}
+				}
+			}
+			for (i in keysToRemove) {
+				if (keysToRemove.hasOwnProperty(i)) {
+					CACHE.removeItem('core.controller.content', keysToRemove[i]);
+					__.updateIndex(keysToRemove[i], false);
+				}
+			}
+		}
+	};
+	/**
+	 * Constructor
+	 * @return {void}
+	 */
+	__.initialize = function() {
+		// flush storage
+		exports.flush();
+	};
+	exports.debug = function() {
+		return {
+			cacheLenght: __.aCacheURI.length,
+			cacheItems: __.aCacheURI
+		};
+	};
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.initialize();
+			resolve("core/content.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 18:
+/*!********************************!*\
+  !*** ./js/app/utils/common.js ***!
+  \********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxlen: 170 */
+/* eslint max-statements: [1, 11, {"ignoreTopLevelFunctions": true}] */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+		"use strict";
+		var __, exports;
+		__ = {};
+		exports = {
+			__: __
+		};
+		// default intervall for polling (wait) method Run all 50 ms.
+		__.polling = {
+			defaultIntervalTime: 50
+		};
+		__.d4 = function() {
+			/*jslint bitwise: true */
+			return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); //eslint-disable-line no-bitwise
+		};
+		/**
+		 * @description Return a pseudo guid
+		 * @returns {String}
+		 */
+		exports.guid=function() {
+			return (__.d4() + __.d4() + __.d4() + __.d4() + __.d4());
+		};
+
+		/**
+	 	* @description Returns all get params.
+	 	* @param {string} url_ - complete url string
+	 	* @returns {object} urls vars as object
+	 	*/
+		exports.getUrlVars = function (url_) {
+			return __.getUrlVar(url_, '?');
+		};
+		/**
+	 	* @description Returns hash params.
+	 	* @param {string} url_ - complete url string
+	 	* @returns {object} urls vars as object
+	 	*/
+		exports.getUrlHashVars = function (url_) {
+			return __.getUrlVar(url_, '#');
+		};
+		__.getUrlVar = function (url_, delimiter_) {
+			var vars = {},
+				hash, hashes, i, len;
+			hashes = (url_.slice(url_.indexOf(delimiter_) + 1).split("#")[0]).split('&');
+			for (i = 0, len = hashes.length; i < len; i++) {
+				hash = hashes[i].split('=');
+				vars[hash[0]] = hash[1];
+			}
+			return vars;
+		};
+
+		/**
+		 * deep merge objects
+		 * @param {object} out - ObjectA,ObjectB,…,ObjectN (some Objects to merge as Param_1…Param_N)
+		 * @returns {object} - merged object
+		 * @example
+		 * extend({}, objA, objB);
+		 */
+		exports.extend = function(out) {
+			var out_ = out || {},
+				i, obj, key;
+			for (i = 1; i < arguments.length; i++) {
+				obj = arguments[i];
+				if (!obj) {
+					continue;
+				}
+				for (key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						if (typeof obj[key] === 'object') {
+							exports.extend(out_[key], obj[key]);
+						} else {
+							out_[key] = obj[key];
+						}
+					}
+				}
+			}
+			return out_;
+		};
+		/*
+		 * The actual polling method.
+		 * @returns {void} - returns nothing
+		 */
+		__.run = function(fn, timeout, intervalTime, resolve, reject) { //eslint-disable-line max-params
+			var interval, runsFor, returnValue;
+			runsFor = 0;
+			returnValue = fn();
+			if (!!returnValue) {
+				resolve(returnValue);
+			} else {
+				interval = setInterval(function() {
+					returnValue = fn();
+					if (!!returnValue) {
+						clearInterval(interval);
+						resolve(returnValue);
+					} else if (runsFor > timeout) {
+						clearInterval(interval);
+						reject(new Error());
+					}
+					runsFor += intervalTime;
+				}, intervalTime);
+			}
+		};
+		/**
+		 * Starts polling.
+		 * @param {Function} fn - A function that gets called until it returns
+		 * a truthy value.
+		 * @param  {Number} timeout - The timeout. Rejects the promise if elapsed.
+		 * @param {Number} intervalTime_ - The duration (ms) between each call
+		 * (default 50).
+		 * @returns {Promise} -A Promise that either:
+		 *  - resolves with the return value of fn
+		 *  - or rejects with an Error object.
+		 */
+		exports.wait = function(fn, timeout, intervalTime_) {
+			// If no intervalTime is set, use the default.
+			var intervalTime = intervalTime_ || __.polling.defaultIntervalTime;
+			// Return a new Promise and start polling.
+			return new Promise(function(resolve, reject) {
+				__.run(fn, timeout, intervalTime, resolve, reject);
+			});
+		};
+		/**
+		 * converts number format from 1,000.00 to 1.000,00
+		 * @param {Number} number_ - Number to convert
+		 * @returns {Number} - returns converted number
+		 */
+		exports.convertNumberFormat = function(number_) {
+			var ret = parseFloat(number_),
+				x, x1, x2, rgx;
+			ret = ret.toFixed(2) + '';
+			ret = ret.replace('.', ',');
+			x = ret.split(',');
+			x1 = x[0];
+			x2 = x.length > 1 ? ',' + x[1] : '';
+			rgx = /(\d+)(\d{3})/;
+			while (rgx.test(x1)) {
+				x1 = x1.replace(rgx, '$1' + '.' + '$2'); //eslint-disable-line no-useless-concat
+			}
+			ret = x1 + x2;
+			return ret;
+		};
+		/**
+		 * clones an Object
+		 * @param {Object} obj - Object to clone
+		 * @returns {Object} - cloned Object
+		 */
+		exports.cloneObject = function(obj) {
+			var temp, key;
+			if (obj === null || typeof obj !== 'object') {
+				return obj;
+			}
+			temp = obj.constructor(); // give temp the original obj's constructor
+			for (key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					temp[key] = exports.cloneObject(obj[key]);
+				}
+			}
+			return temp;
+		};
+		/**
+		 * serializes Input
+		 * @param {HTMLObject} input_ - Input Field
+		 * @param {Array} q_ - Array to push values to
+		 * @returns {String} - serialized Form
+		 */
+		__.serializeFormInput = function(input_, q_) {
+			var ret = q_;
+			switch (input_.type) {
+				case 'text':
+				case 'hidden':
+				case 'password':
+				case 'button':
+				case 'reset':
+				case 'submit':
+					ret.push(input_.name + "=" + encodeURIComponent(input_.value));
+					break;
+				case 'checkbox':
+				case 'radio':
+					if (input_.checked) {
+						ret.push(input_.name + "=" + encodeURIComponent(input_.value));
+					}
+					break;
+				case 'file':
+					break;
+				default:
+					break;
+			}
+			return ret;
+		};
+		/**
+		 * serializes form
+		 * @param {HTMLObject} formElement_ - Form
+		 * @returns {String} - serialized Form
+		 */
+		exports.serializeForm = function(formElement_) {
+			// BY: https://code.google.com/p/form-serialize/
+			var i, j, q = [];
+			if (!formElement_ || formElement_.nodeName !== "FORM") {
+				return;
+			}
+			for (i = formElement_.elements.length - 1; i >= 0; i = i - 1) {
+				if (formElement_.elements[i].name === "") {
+					continue;
+				}
+				switch (formElement_.elements[i].nodeName) {
+					case 'INPUT':
+						//q = __.serializeFormInput(formElement_.elements[i], q);
+						switch (formElement_.elements[i].type) {
+							case 'text':
+							case 'hidden':
+							case 'password':
+							case 'button':
+							case 'reset':
+							case 'submit':
+								q.push(formElement_.elements[i].name + "=" + encodeURIComponent(formElement_.elements[i].value));
+								break;
+							case 'checkbox':
+							case 'radio':
+								if (formElement_.elements[i].checked) {
+									q.push(formElement_.elements[i].name + "=" + encodeURIComponent(formElement_.elements[i].value));
+								}
+								break;
+							case 'file':
+								break;
+							default:
+								break;
+						}
+						break;
+					case 'TEXTAREA':
+						q.push(formElement_.elements[i].name + "=" + encodeURIComponent(formElement_.elements[i].value));
+						break;
+					case 'SELECT':
+						switch (formElement_.elements[i].type) {
+							case 'select-one':
+								q.push(formElement_.elements[i].name + "=" + encodeURIComponent(formElement_.elements[i].value));
+								break;
+							case 'select-multiple':
+								for (j = formElement_.elements[i].options.length - 1; j >= 0; j = j - 1) {
+									if (formElement_.elements[i].options[j].selected) {
+										q.push(formElement_.elements[i].name + "=" + encodeURIComponent(formElement_.elements[i].options[j].value));
+									}
+								}
+								break;
+							default:
+								break;
+						}
+						break;
+					case 'BUTTON':
+						switch (formElement_.elements[i].type) {
+							case 'reset':
+							case 'submit':
+							case 'button':
+								q.push(formElement_.elements[i].name + "=" + encodeURIComponent(formElement_.elements[i].value));
+								break;
+							default:
+								break;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+			return q.join("&");
+		};
+				/**
+		 * decode params from url segments
+		 * @param  {string} url_ - url to be examined
+		 * @param  {RegExp} matcher_ - regExp to mark the start of the url segments
+		 * @return {object} all found params as key value Object
+		 */
+		exports.decodeUrlSegments = function(url_, matcher_) {
+			var matched, encodedParams = null,
+				segments,
+				paramsArr, pkey, pvalue;
+			if (!!url_ && matcher_ && typeof matcher_.exec === "function" && url_.match(matcher_)) {
+				matched = matcher_.exec(url_);
+				//get url segments after the matching marker
+				segments = url_.split(matched[0]);
+				//remove leading and/or trailing slashes
+				segments=segments[1].replace(/^\/|\/$/g, '');
+				paramsArr = segments.split("/");
+				//check if tuples of two exist
+				if (paramsArr.length && paramsArr.length % 2 === 0) {
+					encodedParams = {};
+					while (paramsArr.length) {
+						pkey = paramsArr.shift();
+						pvalue = paramsArr.shift();
+						encodedParams[pkey] = pvalue;
+					}
+				}
+			}
+			return encodedParams;
+		};
+		/**
+		 * encode params to url segmens
+		 * @param  {object} params_ - key value object to be endoded
+		 * @return {string} url params as url segments
+		 */
+		exports.encodeUrlSegments = function(params_) {
+			var key, encodedSegments = "";
+			for (key in params_) {
+				if (params_.hasOwnProperty(key)) {
+					encodedSegments += "/" + key + "/" + params_[key];
+				}
+			}
+			return encodedSegments;
+		};
+		return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 19:
+/*!*******************************!*\
+  !*** ./js/app/core/scroll.js ***!
+  \*******************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+  * use SCROLL.register() to get notified when something happened
+  *
+	*	SCROLL.register('.selector', {
+	*		mode: SCROLL.MODE.INOUT | SCROLL.MODE.COVER | SCROLL.MODE.SCROLLUP | SCROLL.MODE.SCROLLDOWN
+	*		notifyWhen: SCROLL.NOTIFY.ONSCROLL | SCROLL.NOTIFY.AFTERSCROLL (default: SCROLL.NOTIFY.ONSCROLL)
+	*		eventName: string (eventname to be fired when change occurs - event is automatically registered)
+	*	}, callback)
+  *
+	*	mode:
+	*		INOUT
+	*			gets notified, whenever the elements changes it's position to the viewport (INSIDE from/to OUTSIDE or ABOVE from/to BELOW)
+	*		COVER
+	*			same as INOUT, but as long as there is an registered element fully in the viewport above the changed element it is considered as BELOW
+	*		SCROLLDOWN and SCROLLUP
+	*			these elements always get notified when the user scrolls in the according direction (for best performance this should only be used with AFTERSCROLL notifications)
+	*			also it's best to register only one element and not a list of all elements
+  *
+	*	the fired event passes the following data object:
+	*	{
+	*			element:     the element that changed it's state
+	*			eventName:   the eventname that was registered
+	*			where:       where the element is now in relation to the viewport (ABOVE, IN, or BELOW)
+	*			was:         where the element was before the change in relation to the viewport (ABOVE, IN, or BELOW)
+	*	}
+ **/
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! core/signal */ 4),
+	__webpack_require__(/*! events */ 0)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function(SIGNAL, EVENTS) {
+	'use strict';
+	var __ = {},
+	api = {
+		'__': __
+	},
+	emitter,
+	initialized = false,
+	working = false,
+	viewport = {'top': 0, 'bottom': 0},
+	configured = [],
+	registered = [[], []],
+	lastWindowScrollPos = [0, 0],
+	WHERE = {'ABOVE': 1, 'IN': 2, 'BELOW': 3},
+	NOTIFY = {'ONSCROLL': 0, 'AFTERSCROLL': 1},
+	MODE = {'INOUT': 0, 'COVER': 1, 'SCROLLUP': 2, 'SCROLLDOWN': 3},
+	scrollEndTimer,
+	defaults = {
+		'notifyWhen': NOTIFY.ONSCROLL,
+		'eventName': '',
+		'mode': MODE.INOUT
+	};
+
+	__.updateViewportData = function() {
+		viewport = {
+			'top': 0,
+			'bottom': (window.innerHeight || document.documentElement.clientHeight)
+		};
+	};
+
+	__.pageLoadHandler = function(payload) {
+		var i, l;
+		registered = [[], []];
+		SIGNAL.getEmitter().removeAllListeners('element.scroll');
+		for (i = 0, l = configured.length; i < l; i++) {
+			__.register(configured[i].selector, configured[i].options, configured[i].callback, payload.domElement[0], true);
+		}
+	};
+
+	__.initializeListeners = function() {
+		if (!initialized) {
+			window.addEventListener('scroll', __.scrollHandler);
+			window.addEventListener('scroll', __.scrollEndHandler);
+			window.addEventListener('resize', __.scrollHandler);
+			window.addEventListener('resize', __.scrollEndHandler);
+			window.addEventListener('resize', __.updateViewportData);
+			__.updateViewportData();
+			initialized = true;
+		}
+	};
+
+	__.register = function(selector, options, callback, reInit) {
+		var elements, container, notifyWhen, eventName, mode, list, i, el, where, data, l;
+		if (typeof reInit === undefined || !reInit) {
+			configured.push({
+				'selector': selector,
+				'options': options,
+				'callback': callback
+			});
+		}
+		container = document;
+		elements = container.querySelectorAll(selector);
+		if (!!elements.length) {
+			__.initializeListeners();
+			notifyWhen = options.notifyWhen || defaults.notifyWhen;
+			eventName = options.eventName || defaults.eventName;
+			mode = options.mode || defaults.mode;
+			list = [];
+			SIGNAL.getEmitter().addListener('element.scroll.'+eventName, callback);
+
+			for (i = 0, l = elements.length; i < l; i++) {
+				el = elements[i];
+				where = __.getElementsState(el, mode, elements);
+				data = {
+					'element': el,
+					'selector': selector,
+					'eventName': eventName,
+					'mode': mode,
+					'where': where,
+					'was': where,
+					'elements': elements
+				};
+				SIGNAL.getEmitter().trigger('element.scroll.'+data.eventName, data);
+				list.push(data);
+			}
+			registered[notifyWhen].push(list);
+		}
+	};
+
+	__.getElementsState = function(el, mode, elements) {
+		var where = __.getElementState(el), i;
+		if (mode === MODE.COVER && where === WHERE.IN) {
+			// if we have an element with 100% coverage before the current element, we are BELOW, otherwise we are really IN
+			for (i = 0; i < elements.length; i++) {
+				if (elements[i] === el) {
+					break;
+				}
+				if (__.getElementCoverage(elements[i]) === 100) {
+					return WHERE.BELOW;
+				}
+			}
+		}
+		return where;
+	};
+
+	__.getElementState = function(el) {
+		var rect = el.getBoundingClientRect();
+		if (
+		(rect.top >= viewport.top && rect.top < viewport.bottom) || /* top in viewport */
+		(rect.bottom >= viewport.top && rect.bottom < viewport.bottom) || /* bottom in viewport */
+		(rect.top < viewport.top && rect.bottom > viewport.top) /* top out of viewport but bottom in or below viewport */
+		) {
+			return WHERE.IN;
+		} else if (rect.top < viewport.top) {
+			return WHERE.ABOVE;
+		} else {
+			return WHERE.BELOW;
+		}
+	};
+
+	__.getElementCoverage = function(el) {
+		var top, bottom, rect;
+		if (__.getElementState(el) !== WHERE.IN) {
+			return 0;
+		}
+		rect = el.getBoundingClientRect();
+		if (rect.top >= viewport.top && rect.bottom <= viewport.bottom) {
+			return 100;
+		}
+		top = rect.top;
+		bottom = rect.bottom;
+		if (top < 0) {
+			top = 0;
+		}
+		if (bottom > viewport.bottom) {
+			bottom = viewport.bottom;
+		}
+		return ((bottom - top) / (viewport.bottom - viewport.top)) * 100;
+	};
+
+	__.dump = function() {
+		console.log(registered);
+	};
+
+	__.checkOnScroll = function() {
+		__.checkChangedElements(NOTIFY.ONSCROLL);
+	};
+
+	__.checkAfterScroll = function() {
+		__.checkChangedElements(NOTIFY.AFTERSCROLL);
+	};
+
+	__.checkChangedElements = function(notifyWhen) {
+		var windowScrollPos = window.scrollY, i, j, l;
+		working = false;
+		if (registered[notifyWhen].length > 0) {
+			for (i = 0, l = registered[notifyWhen].length; i < l; i++) {
+				for (j in registered[notifyWhen][i]) {
+					if (!!registered[notifyWhen][i][j] && document.body.contains(registered[notifyWhen][i][j].element)) { // only check elements still in the dom
+						registered[notifyWhen][i][j] = __.checkChangedElement(registered[notifyWhen][i][j], notifyWhen, windowScrollPos);
+					}
+				}
+			}
+		}
+		lastWindowScrollPos[notifyWhen] = windowScrollPos;
+	};
+
+	__.checkChangedElement = function(data, notifyWhen, windowScrollPos) {
+		var where = __.getElementsState(data.element, data.mode, data.elements);
+		data.was = data.where;
+		data.where = where;
+		if (data.mode === MODE.SCROLLDOWN) {
+			if (windowScrollPos > lastWindowScrollPos[notifyWhen]) {
+				SIGNAL.getEmitter().trigger('element.scroll.'+data.eventName, data);
+			}
+		} else if (data.mode === MODE.SCROLLUP) {
+			if (windowScrollPos < lastWindowScrollPos[notifyWhen]) {
+				SIGNAL.getEmitter().trigger('element.scroll.'+data.eventName, data);
+			}
+		} else if (data.was !== data.where) {
+			SIGNAL.getEmitter().trigger('element.scroll.'+data.eventName, data);
+		}
+		return data;
+	};
+
+	__.scrollHandler = function() {
+		if (!working) {
+			working = true;
+			window.requestAnimationFrame(__.checkOnScroll);
+		}
+	};
+	__.scrollEndHandler = function() {
+		clearTimeout(scrollEndTimer);
+		scrollEndTimer = window.setTimeout(function() {
+			window.requestAnimationFrame(__.checkAfterScroll);
+		}, 250);
+	};
+
+	__.initialize = function() {
+		__.eventBus.on(EVENTS.PAGE_LOADED, __.pageLoadHandler);
+	};
+
+	api.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.initialize();
+			resolve('core/scroll.js');
+		});
+	};
+
+	api.register = __.register;
+	api.unregister = __.unregister;
+	api.WHERE = WHERE;
+	api.NOTIFY = NOTIFY;
+	api.MODE = MODE;
+
+	return api;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 2:
+/*!*****************************!*\
+  !*** ./js/app/utils/dom.js ***!
+  \*****************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*global Promise,getComputedStyle,console,define,cancelAnimationFrame*/
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! dom-delegate */ 37), __webpack_require__(/*! doT */ 7), __webpack_require__(/*! utils/animate */ 57)], __WEBPACK_AMD_DEFINE_RESULT__ = function(EVENT_DELAGATE, doT, ANIMATE) {
+		'use strict';
+		//Private Methods
+		var __ = {},
+			//Public API
+			exports = {
+				__: __
+			};
+		__.eventDelegates = {};
+		__.TRANSITION_TIMEOUT = 1500;
+		//Returns true if it is a DOM element
+		__.isValidDOMElement = function(o) {
+			return (typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+				o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string");
+		};
+		/**
+		 * return HTMLElement as dummy fallback
+		 * @returns {HTMLElement} HTMLElement of type/tagName '_'
+		 */
+		__.getDummyElement = function() {
+			return document.createElement("_");
+		};
+		/**
+		 * Polyfill method for Element.matches
+		 * (http://davidwalsh.name/element-matches-selector)
+		 * @param {HTMLElement} el - element toc check
+		 * @param {string} selector - selector to validate
+		 * @returns {Boolean} element matches?
+		 */
+		exports.selectorMatches = function(el, selector) {
+			var p = Element.prototype;
+			var f = p.matches || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || function(s) {
+				return [].indexOf.call(document.querySelectorAll(s), this) !== -1;
+			};
+			return f.call(el, selector);
+		};
+		/**
+		 * Check if element is hidden
+		 * @param {HTMLElement} el - element to check for visibility
+		 * @returns {Boolean} element visibility
+		 */
+		exports.isHidden = function(el) {
+			return (el.offsetParent === null);
+		};
+		/**
+		 * isElementVisible
+		 * @param  {HtmlElement} element_ to check if visible
+		 * @param  {HtmlElement} parent_ element's container
+		 * @param {Boolean} fullVisible_ if true only returns true if the all object rect is visible
+		 * @return {Boolean} returns if element is visible
+		 */
+		exports.isVisible = function(element_, parent_, fullVisible_) {
+			var parentBound = parent_.getBoundingClientRect(),
+				rectBound = element_.getBoundingClientRect(),
+				rightBoundVisible = Math.round(rectBound.right) <= Math.round(parentBound.right) && Math.round(rectBound.right) >= Math.round(parentBound.left),
+				leftBoundVisible = Math.round(rectBound.left) >= Math.round(parentBound.left) && Math.round(rectBound.left) <= Math.round(parentBound.right);
+			if (fullVisible_) {
+				return rightBoundVisible && leftBoundVisible;
+			}
+			return rightBoundVisible || leftBoundVisible;
+		};
+		/**
+		 * handle $(document).ready
+		 * @param {function} callBack_  - method to be called upon ready
+		 * @returns {null} void
+		 */
+		exports.handleDocumentReady = function(callBack_) {
+			var isIE9orBelow = (/MSIE\s/).test(navigator.userAgent) && parseFloat(navigator.appVersion.split("MSIE")[1]) < 10,
+				checkReadyState = 'loading';
+			if (isIE9orBelow) {
+				checkReadyState = 'interactive';
+			}
+			if (document.readyState !== checkReadyState) {
+				callBack_();
+			} else if (document.addEventListener) {
+				document.addEventListener('DOMContentLoaded', callBack_);
+			} else {
+				document.attachEvent('onreadystatechange', function() {
+					if (document.readyState !== 'loading') {
+						callBack_();
+					}
+				});
+			}
+		};
+		/**
+		 * get an instance of eventdelegator to register events
+		 * @param {string} selector_  - to deleagte Events
+		 * @returns {object} instance of an event delgator
+		 * @example
+		 * DOM_UTILS.getEventDelegate("body").on("eventaction",".selector",handlerFunction);
+		 */
+		exports.getEventDelegate = function(selector_) {
+			var el = document.querySelector(selector_);
+			//check if an event delegate with the same rootElement exists
+			if (!__.eventDelegates[selector_] && el) {
+				__.eventDelegates[selector_] = new EVENT_DELAGATE(el);
+			}
+			return __.eventDelegates[selector_];
+		};
+		/**
+		 * Returns a rendered string.
+		 * @param {String} template_ - a valid doT template string.
+		 * @param {Object} data_ - The data to render the template with.
+		 * @returns {string} rendered template as string (or empty string if parse expection occurred)
+		 * @example
+		 * DOM_UTILS.renderTemplate('<div>{{=it.foo}}</div>', {foo: 'bar'});
+		 * // <div>bar</div>
+		 */
+		exports.renderTemplate = function(template_, data_) {
+			var renderedHtml = "";
+			try {
+				renderedHtml = doT.template(template_)(data_);
+			} catch (ex) {
+				console.warn("renderTemplate Error:", ex);
+			}
+			return renderedHtml;
+		};
+		/**
+		 * @description test if element is outside of element matched by selector
+		 * @param {HTMLElement} clickedTarget - event´s clicked target
+		 * @param {string} selector - selector string
+		 * @returns {boolean} is inside element
+		 */
+		exports.isElementOutsideOfElementWithSelector = function(clickedTarget, selector) {
+			var el;
+			//first test if the element itself matches the selector
+			if (exports.selectorMatches(clickedTarget, selector)) {
+				return false;
+			}
+			//then test if element has a parent with matches the selector (closest)
+			el = clickedTarget;
+			while (!exports.selectorMatches(el, selector) && el.parentNode !== document) {
+				el = el.parentNode;
+			}
+			if (exports.selectorMatches(el, selector)) {
+				return false;
+			} else {
+				return true;
+			}
+		};
+		/**
+		 * get offset from Element
+		 * @param {string} selector_ -  css selector
+		 * @param {HTMLElement} context_ -  context HTMLElement (defaults to 'document')
+		 * @returns {Object} with offset top and
+		 */
+		exports.getOffset = function(selector_, context_) {
+			// Preserve chaining for setter
+			var elem = exports.getElement(selector_, context_),
+				docElem, win, rect, doc;
+			if (!exports.isElement(elem)) {
+				return;
+			}
+			// Support: IE<=11+
+			// Running getBoundingClientRect on a
+			// disconnected node in IE throws an error
+			if (!elem.getClientRects().length) {
+				return {
+					top: 0,
+					left: 0
+				};
+			}
+			rect = elem.getBoundingClientRect();
+			// Make sure element is not hidden (display: none)
+			if (rect.width || rect.height) {
+				doc = elem.ownerDocument;
+				win = window; //getWindow( doc );
+				docElem = doc.documentElement;
+				return {
+					top: rect.top + win.pageYOffset - docElem.clientTop,
+					left: rect.left + win.pageXOffset - docElem.clientLeft
+				};
+			}
+			// Return zeros for disconnected and hidden elements (gh-2310)
+			return rect;
+		};
+		/**
+		 * get an Element by its CSS Selector
+		 * append HTML String to and HTML Element
+		 * @param {HTMLELement} el_ - elemet to append childnodes to
+		 * @param {String} htmlString_ - html Content to Apend
+		 * @return {void}
+		 */
+		exports.appendHtmlString = function(el_, htmlString_) {
+			var div, elements;
+			if (el_ && !!htmlString_) {
+				div = document.createElement('div');
+				div.innerHTML = htmlString_;
+				elements = div.childNodes;
+				while (elements.length > 0) {
+					el_.appendChild(elements[0]);
+				}
+			}
+		};
+		/**
+		 * create elements from HTMLString
+		 * @param {String} htmlString_ - html Content to Apend
+		 * @return {DOMElement} new HTML Element
+		 */
+		exports.createElementsFromHtmlString = function(htmlString_) {
+			var div = document.createElement('div');
+			if (!!htmlString_) {
+				div.innerHTML = htmlString_;
+			}
+			return div.childNodes;
+		};
+		/**
+		 * get elements data attribute as Object
+		 * @param {HTMLElement} elem_ - HTML Element
+		 * @param {string} attr_ - na of the data attribzte (with or withou "data-" prefix)
+		 * @returns {object|string|null} Object or String
+		 */
+		exports.getDataAttribute = function(elem_, attr_) {
+			var val, data = null;
+			data = {};
+			val = elem_.getAttribute('data-' + attr_) || elem_.getAttribute(attr_);
+			try {
+				data = JSON.parse(val);
+				return data;
+			} catch (ex) {
+				if (!!val && (val.indexOf("{") < 0 && val.indexOf("[") < 0)) {
+					console.warn('data attribute is no JSON', val);
+					return val;
+				}
+				console.error('could not parse data attribute JSON', val);
+				return null;
+			}
+		};
+		/**
+		 * get an elements closest neighbor by its css-selector
+		 * @param {HTMLElement} el_ - HTML Element
+		 * @param {string} selector_ - neighbor to look for
+		 * @returns {HTMLElement|null} found Element
+		 */
+		exports.closest = function(el_, selector_) {
+			var matchesFn, el;
+			el = el_;
+			if (typeof el_.closest === "function") {
+				return el_.closest(selector_);
+			}
+			// find vendor prefix
+			['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function(fn) {
+				if (typeof document.body[fn] === 'function') {
+					matchesFn = fn;
+					return true;
+				}
+				return false;
+			});
+			// traverse parents
+			while (el) {
+				if (el && el[matchesFn](selector_)) {
+					return el;
+				}
+				el = el.parentElement;
+			}
+			return null;
+		};
+		/**
+		 * get an elements siblings
+		 * @param {HTMLElement} el_ - HTML Element
+		 * @param {String} selector_ - selector of sibling
+		 * @returns {Array} array with found Elements
+		 */
+		exports.siblings = function(el_, selector_) {
+			var siblings = [],
+				parentNode = el_.parentNode;
+			if (!!parentNode) {
+				siblings = Array.prototype.filter.call(parentNode.children, function(child) {
+					var returnValue = child !== el_;
+					if (!!selector_ && returnValue) {
+						returnValue = child.matches(selector_);
+					}
+					return returnValue;
+				});
+			}
+			return siblings;
+		};
+		/* From Modernizr */
+		__.transitionEvent = (function whichTransitionEvent() {
+			var t;
+			var el = document.createElement('fakeelement');
+			var transitions = {
+				'transition': 'transitionend',
+				'OTransition': 'oTransitionEnd',
+				'MozTransition': 'transitionend',
+				'WebkitTransition': 'webkitTransitionEnd'
+			};
+			for (t in transitions) {
+				if (el.style[t] !== undefined) {
+					return transitions[t];
+				}
+			}
+		}());
+		/**
+		 * observe an element´s transition returning a resolved Promises when the CSS transition is finished
+		 * @param {HTMLElement} element_ - DOMelement/target to attach the EventListener to
+		 * @param {string|null} transitionTriggerClass_ - class the triggers the CSS transition (otional)
+		 * @returns {Promise} Promise returning the transition target
+		 */
+		exports.handleTransition = function(element_, transitionTriggerClass_) {
+			return new Promise(function(resolve, reject) {
+				if (!element_ || !element_.addEventListener) {
+					reject("missing params");
+				}
+				element_.addEventListener(__.transitionEvent, function transitionCallBack() {
+					element_.removeEventListener(__.transitionEvent, transitionCallBack);
+					if (!!transitionTriggerClass_) {
+						element_.classList.remove(transitionTriggerClass_);
+					}
+					resolve(element_);
+				});
+				if (!!transitionTriggerClass_) {
+					element_.classList.add(transitionTriggerClass_);
+				}
+				setTimeout(function() {
+					reject("transition timeout");
+				}, __.TRANSITION_TIMEOUT);
+			});
+		};
+		/**
+		 * observe an element´s css animation returning a resolved Promises when the CSS animation is finished
+		 * @param {HTMLElement} element_ - DOMelement/target to attach the EventListener to
+		 * @param {string|null} animationTriggerClass_ - class the triggers the CSS animation (otional)
+		 * @returns {Promise} Promise returning the animation target
+		 */
+		exports.handleCSSAnimation = function(element_, animationTriggerClass_) {
+			return new Promise(function(resolve, reject) {
+				if (!element_ || !element_.addEventListener) {
+					reject("missing params");
+				}
+				element_.addEventListener('animationend', function animationCallBack() {
+					element_.removeEventListener('animationend', animationCallBack);
+					if (!!animationTriggerClass_) {
+						element_.classList.remove(animationTriggerClass_);
+					}
+					resolve(element_);
+				});
+				if (!!animationTriggerClass_) {
+					element_.classList.add(animationTriggerClass_);
+				}
+				setTimeout(function() {
+					reject("animation timeout");
+				}, __.TRANSITION_TIMEOUT);
+			});
+		};
+		/**
+		 * @param {string} selector_ - dom css selector
+		 * @param {HTMLElement|null} context_ - dom context
+		 * @returns {HTMLElement|null} matching HTML Element
+		 */
+		exports.getElement = function(selector_, context_) {
+			var context = context_ || document;
+			return context.querySelector(selector_) || __.getDummyElement();
+		};
+		/**
+		 * checks if an element a layer content
+		 * @param {string} selector_ - dom css selector
+		 * @returns {boolean} is in layer context or not
+		 */
+		exports.selectorIsInLayerContext = function(selector_) {
+			var selector = '.nm-layer-opened .nm-layer ' + selector_;
+			return !!document.querySelector(selector);
+		};
+		/**
+		 * @description check if element is in viewport
+		 * @param {HTMLElement} element - element to check for
+		 * @returns {boolean} - returns if element is viewport or not
+		 */
+		exports.isInViewport = function(element) {
+			var rect = element.getBoundingClientRect(),
+				html = document.documentElement;
+			return (rect.top >= 0 && rect.left >= 0 && rect.bottom <= (window.innerHeight || html.clientHeight) && rect.right <= (window.innerWidth || html.clientWidth));
+		};
+		/**
+		 * @description get the visible vertical percentage of an element in the viewport
+		 * @param {HTMLElement} element - element to check for
+		 * @returns {number}
+		 */
+		exports.getVisibleVerticalPercentageInViewport = function(element) {
+			var rect = element.getBoundingClientRect(),
+				pixelVisible = window.innerHeight - rect.top;
+			if (rect.top < 0) {
+				pixelVisible = rect.bottom;
+			}
+			if (pixelVisible <= 0) {
+				return 0;
+			}
+			if (pixelVisible >= element.clientHeight) {
+				return 100;
+			}
+			return (pixelVisible / element.clientHeight) * 100;
+		};
+		/**
+		 * @description Calculates the percentage of the viewport which is covered
+		 * by the given element. If the element is smaller than the viewport
+		 * and completely in the viewport, this function returns 100.
+		 * @param {HTMLElement} element to check for
+		 * @returns {number} percentage of the viewport covered by the element
+		 */
+		exports.getViewportPercentageCovered = function(element) {
+			if(!element) {
+				return 0;
+			}
+
+			var rect = element.getBoundingClientRect();
+			var viewPortHeight = window.innerHeight;
+
+			// the element is fully above the viewport
+			if (rect.top < 0 && rect.bottom <= 0) {
+				return 0;
+			}
+
+			// the element is fully below the viewport
+			if (rect.top > viewPortHeight) {
+				return 0;
+			}
+
+			// the element is fully in the viewport, we return 100
+			// even if the viewport is not fully covered by the elem
+			// if we don't do this, small element may never be played
+			// because they represent only a small percentage of the
+			// viewport
+			if (rect.top >= 0 && rect.bottom <= viewPortHeight) {
+				return 100;
+			}
+
+			// the element is partially above the viewport, we need
+			// to calculate the viewport percentage covered by the
+			// element
+			if (rect.top < 0 && rect.bottom <= viewPortHeight) {
+				return (rect.bottom / viewPortHeight) * 100;
+			}
+
+			// the element is partially below the viewport, we need
+			// to calculate the viewport percentage covered by the
+			// element
+			if (rect.top >= 0 && rect.top < viewPortHeight && rect.bottom > viewPortHeight) {
+				return ((viewPortHeight - rect.top) / viewPortHeight) * 100;
+			}
+
+			// the element is bigger than the viewport
+			if (rect.top <=0 && rect.bottom >= viewPortHeight) {
+				return 100;
+			}
+
+			// should never happen since all cases are already handled above
+			return 0;
+		};
+		/**
+		 * check if an HTMLElement is a dummy fallback element of type '_'
+		 * @param {HTMLElement|string} el_ - element or selector to check
+		 * @returns {boolean} matching HTML Element
+		 */
+		exports.isElement = function(el_) {
+			var el = (typeof el_ === 'string') ? document.querySelector(el_) : el_;
+			return !!el && el.tagName !== "_" && __.isValidDOMElement(el);
+		};
+		/**
+		 * get a list of Elements by their matching CSS Selector
+		 * @param {string} selector_ - dom css selector
+		 * @param {HTMLElement|null} context_ - dom context
+		 * @returns {array} array with matching HTML Elements
+		 */
+		exports.getElementsArray = function(selector_, context_) {
+			var context = context_ || document;
+			return [].slice.call(context.querySelectorAll(selector_));
+		};
+		/**
+		 * remove an element from the DOM
+		 * @param {HTMLElement} el_ - dom context
+		 * @returns {void}
+		 */
+		exports.removeElement = function(el_) {
+			if (el_ && el_.parentNode) {
+				el_.parentNode.removeChild(el_);
+			}
+		};
+		__.now = function() {
+			return new Date().getTime();
+		};
+		//===DEBOUNCE and THROTTLE
+		// https://css-tricks.com/debouncing-throttling-explained-examples/
+		/**
+		 * Debounce a function so that it will only fire once
+		 * @Example
+		 * window.addEventListener("resize",DOM_UTILS.debounce(myFunction, 500));
+		 *
+		 * http://davidwalsh.name/javascript-debounce-function
+		 *
+		 * @param  {function} func_ - The function to execute
+		 * @param  {int} wait_ - How many milliseconds to debounce
+		 * @param  {boolean} immediate_ - If true, fires at the leading edge
+		 * @return {function} debounced/wrapped function
+		 */
+		exports.debounce = function _debounce(func_, wait_, immediate_) {
+			var timeout, later, context, callNow, args;
+			return function() {
+				context = this; //eslint-disable-line
+				args = arguments; //eslint-disable-line
+				later = function() {
+					timeout = null;
+					if (!immediate_) {
+						func_.apply(context, args); //eslint-disable-line
+					}
+				};
+				callNow = immediate_ && !timeout;
+				clearTimeout(timeout);
+				timeout = setTimeout(later, wait_);
+				if (callNow) {
+					func_.apply(context, args); //eslint-disable-line
+				}
+			};
+		};
+		/**
+		 * Throttle a function so that it will not exceed a specified rate
+		 * @Example
+		 * window.addEventListener("resize",throttle(myFunction, 500));
+		 * @param {function} func_ - The function to execute
+		 * @param  {number} wait_ - How many milliseconds to debounce
+		 * @return {function} throttled/wrapped function
+		 */
+		exports.throttle = function _throttle(func_, wait_) {
+			var context, now, remaining, later, args, result, timeout = null,
+				previous = 0;
+			later = function() {
+				previous = __.now();
+				timeout = null;
+				result = func_.apply(context, args);
+				context = args = null;
+			};
+			return function() {
+				now = __.now();
+				remaining = wait_ - (now - previous);
+				context = this; //eslint-disable-line
+				args = arguments;
+				if (remaining <= 0) {
+					clearTimeout(timeout);
+					timeout = null;
+					previous = now;
+					result = func_.apply(context, args);
+					context = args = null;
+				} else if (!timeout) {
+					timeout = setTimeout(later, remaining);
+				}
+				return result;
+			};
+		};
+		/*
+		 * scroll window animation method
+		 * @param {number} posY_ - scroll to value
+		 * @param {number|object} durationOrOptions_ - duration im milliseconds or custom otions
+		 * @returns {Promise}
+		 */
+		exports.scrollTo = function(posY_, durationOrOptions_) {
+			var options = durationOrOptions_;
+			if (typeof durationOrOptions_ === 'number') {
+				options = {
+					'duration': durationOrOptions_
+				};
+			}
+			return ANIMATE.animateWindowY(posY_, options);
+		};
+		/*
+		 * scroll element animation method - x-axis
+		 * @param {number} posX_ - scroll to value
+		 * @param {number|object} durationOrOptions_ - duration im milliseconds or custom otions
+		 * @returns {Promise}
+		 */
+		exports.animateElementX = function(posX_, element_, durationOrOptions_) {
+			var options = durationOrOptions_;
+			if (typeof durationOrOptions_ === 'number') {
+				options = {
+					'duration': durationOrOptions_,
+					'property': 'scrollLeft'
+				};
+			}
+			return ANIMATE.animateElementProperty(posX_, element_, options);
+		};
+		/*
+		 * scroll element animation method - y-axis
+		 * @param {number} posX_ - scroll to value
+		 * @param {number|object} durationOrOptions_ - duration im milliseconds or custom otions
+		 * @returns {Promise}
+		 */
+		exports.animateElementY = function(posY_, element_, durationOrOptions_) {
+			var options = durationOrOptions_;
+			if (typeof durationOrOptions_ === 'number') {
+				options = {
+					'duration': durationOrOptions_,
+					'property': 'scrollTop'
+				};
+			}
+			return ANIMATE.animateElementProperty(posY_, element_, options);
+		};
+		/**
+		 * preloadImagePromise∂
+		 * @param  {String} src_ - image source
+		 * @return {Promise} image wrapped in a Promise
+		 */
+		__.preloadImagePromise = function(src_) {
+			return new Promise(function(resolve, reject) {
+				var image = new Image();
+				image.src = src_;
+				image.onload = function() {
+					resolve(image);
+				};
+				image.onerror = function(e) {
+					reject(e);
+				};
+			});
+		};
+		/**
+		 * preloadImages
+		 * @param  {Array} imagesArray_ - array of images
+		 * @return {Promise} loading state of all Images wrapped in a Promise
+		 */
+		exports.preloadImages = function(imagesArray_) {
+			var preloadPromises = [];
+			imagesArray_.forEach(function(img) {
+				preloadPromises.push(__.preloadImagePromise(img.src));
+			});
+			return Promise.all(preloadPromises);
+		};
+
+		/**
+		 * get element´s absolute y position (including scroll)
+		 * @param{HTMLElement} element_ - element to check
+		 * @returns {Number} position Y
+		 */
+		exports.getElementsAbsoluteTopPosition = function(element_) {
+			var elementTop = element_.getBoundingClientRect().top;
+			return (window.scrollY + elementTop);
+		};
+		/*
+		 * public initialize method
+		 */
+		exports.initialize = function() {
+			return Promise.resolve('dom-item.js');
+		};
+		exports.initializePromise = exports.initialize;
+		return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 209:
+/*!******************************!*\
+  !*** ./js/app/core/cache.js ***!
+  \******************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+    /*'core/mediator'*/
+], __WEBPACK_AMD_DEFINE_RESULT__ = function( /*MEDIATOR*/ ) {
+    "use strict";
+    // set defaults
+    var _oDefaults = {
+        sType: 'sessionStorage'
+    };
+    // nemo.mediator channel
+    var _oMessage = {
+        _sChannel: 'core.cache'
+    };
+    /**
+     * Normalizes the object passed to the API functions
+     * @param {Object} oOptions_ raw options object as passed to the public API functions
+     * @return {Object}
+     */
+    var _normalizeOptions = function(oOptions_) {
+        oOptions_ = oOptions_ || {};
+        // no type - use default
+        if (typeof oOptions_ === 'object' && !oOptions_.type) {
+            oOptions_.type = _oDefaults.sType;
+        }
+        // handle String AND object
+        return {
+            "sType": typeof oOptions_ === 'string' ? oOptions_ : oOptions_.type,
+            "failsafeSet": !!oOptions_.failsafeSet
+        };
+    };
+    /**
+     * Reads the stored values
+     * @private
+     * @param {String} namespace	The 'key' to store the data under
+     * @param {String} sKey_		Identifier to grab
+     * @param {String || Object}	Indicates the type ('localStorage','sessionStorage')
+     * Object {
+    		type: {String}, 'localStorage','sessionStorage'
+    	}
+     * @return {Value}
+     */
+    var _read = function(namespace, sKey_, oOptions_) {
+        var _sType = _normalizeOptions(oOptions_).sType;
+        var data = JSON.parse(window[_sType].getItem(namespace));
+        return (data?data[sKey_]:null);
+        // return window[_sType].getItem(namespace)[sKey_];
+    };
+    /**
+     * Writes a value
+     * @private
+     * @param {String} namespace	The 'key' to store the data under
+     * @param {String} sKey_		Identifier to grab
+     * @param {Object} sValue_		Value to store
+     * @param {String || Object}	String: indicates the type ( 'localStorage','sessionStorage')
+     * Object
+    	{
+    		type: {String}, 'localStorage','sessionStorage',
+    	}
+     * @return {Void}
+     */
+    var _write = function(namespace, sKey_, sValue_, oOptions_) {
+        var _options = _normalizeOptions(oOptions_);
+        var _sType = _options.sType;
+        /*MEDIATOR.publish(_oMessage._sChannel, {
+        	action: 'update',
+        	type: _sType,
+        	key: sKey_
+        });*/
+        try {
+            var data = window[_sType].getItem(namespace);
+            if (data === null) {
+                data = {};
+            } else {
+                data = JSON.parse(data);
+            }
+            data[sKey_] = sValue_;
+            data = JSON.stringify(data);
+            window[_sType].setItem(namespace, data);
+            return true;
+        } catch (e) {
+            if (!!_options.failsafeSet) {
+                _options.failsafeSet = false;
+                return _write(namespace, sKey_, sValue_, _options);
+            }
+            return false;
+        }
+    };
+    /**
+     * Clears the cache
+     * @private
+     * @param {String} namespace	The 'key' to store the data under
+     * @param {String || Object}	Indicates the type ( 'localStorage','sessionStorage')
+     * Object
+    	{
+    		type: {String}, 'localStorage','sessionStorage',
+    	}
+     * @return {Void}
+     */
+    var _clear = function(namespace, oOptions_) {
+        var _sType = _normalizeOptions(oOptions_).sType;
+        /*MEDIATOR.publish(_oMessage._sChannel, {
+        	action: 'update',
+        	type: _sType,
+        	key: 'clear'
+        });*/
+        window[_sType].removeItem(namespace);
+    };
+    /**
+     * Returns the number of key-value pairs currently present.
+     * Pass the 'sType_' to distinguish between the different storages
+     * @private
+     * @param {String} namespace	The 'key' to store the data under
+     * @param {String || Object}	Indicates the type ( 'localStorage','sessionStorage' )
+     * Object
+    	{
+    		type: {String}, 'localStorage','sessionStorage'
+    	}
+     * @return {Bool}
+     */
+    var _length = function(namespace, oOptions_) {
+        var storageType = _normalizeOptions(oOptions_).sType;
+        var data = JSON.parse(window[storageType].getItem(namespace));
+        var num = 0;
+        if (Object.keys && !!data) {
+            num = Object.keys(data).length;
+        } else {
+            for (var prop in data) {
+                if (data.hasOwnProperty(prop)) {
+                    num = num + 1;
+                }
+            }
+        }
+        return num;
+    };
+    /**
+     * Public API
+     */
+    return {
+        /**
+         * API: Reads the stored values
+         * @param {String} namespace	The 'key' to store the data under
+         * @param {String} sKey_		Identifier to grab
+         * @param {String || Object}	Indicates the type ( 'localStorage','sessionStorage' )
+         * Object
+        	{
+        		type: {String}, 'localStorage','sessionStorage'
+        	}
+         * @return {Value}
+         */
+        getItem: function(namespace, sKey_, oOptions_) {
+            sKey_ = encodeURIComponent(sKey_);
+            return _read(namespace, sKey_, oOptions_);
+        },
+        /**
+         * API: Writes a value
+         * @param {String} namespace	The 'key' to store the data under
+         * @param {String} sKey_		Identifier to grab
+         * @param {Object} sValue_		Value to store
+         * @param {Object|String} oOptions_|sType_, additional options (expires: session) or sType_
+         * @return {Void}
+         */
+        setItem: function(namespace, sKey_, sValue_, oOptions_) {
+            sKey_ = encodeURIComponent(sKey_);
+            return _write(namespace, sKey_, sValue_, oOptions_);
+        },
+        /**
+         * API: Deletes a value
+         * @param {String} namespace	The 'key' under the data is stored
+         * @param {String} sKey_		Identifier to delete
+         * @param {Object|String}		oOptions_|sType_, or sType_
+         * @return {Void}
+         */
+        removeItem: function(namespace, sKey_, oOptions_) {
+            sKey_ = encodeURIComponent(sKey_);
+            _write(namespace, sKey_, null, oOptions_);
+        },
+        /**
+         * API: Clears the chache for given 'namespace'
+         * @param {String} namespace	The 'key' under the data is stored
+         * @param {Object|String}		oOptions_|sType_, or sType_
+         * @return {Void}
+         */
+        clear: function(namespace, oOptions_) {
+            _clear(namespace, oOptions_);
+        },
+        /**
+         * API: Returns the number of key-value pairs currently present stored under 'namespace'
+         * @param {String}		namespace	The 'key' under the data is stored
+         * @param {String}		An additional key to store values under
+         * @param {Object|String} oOptions_|sType_, or sType_
+         * @return {Number}
+         */
+        length: function(namespace, oOptions_) {
+            //			throw new Error('not implemented');
+            return _length(namespace, oOptions_);
+        }
+    };
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+
+/***/ 210:
+/*!***************************************!*\
+  !*** ./js/app/core/static-content.js ***!
+  \***************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @description static Content Controller.
+ * Gets and sets (html) content from js templates while using same the layer api as the ajax content.
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	"use strict";
+	var __ = {},
+		exports = {
+			__: __
+		};
+	//storage for all url patterns an their callBack functions
+	__.registeredPatterns = {};
+	__.JS_LAYER_REGEX = (/(jslayer:)(\w|\.|-|_)+(,)?/gi);
+	/**
+	 * Gets the content from the cace or the supplied URI
+	 * @param  {String} urlString_ - URI
+	 * @returns {Promise} rendered content (html string) wrapped in another Promise (getLayerContent)
+	 */
+	exports.getContent = function (urlString_) {
+		return __.getLayerContent(urlString_);
+	};
+	exports.isStaticContentRequest = function (urlString_) {
+		return __.isStaticLayerRequest(urlString_);
+	};
+	//the url pattern matches a static layer request
+	__.isStaticLayerRequest = function (urlString_) {
+		return !!urlString_.match(__.JS_LAYER_REGEX);
+	};
+	/**
+	 * @param {string} urlString_ - url string
+	 * @return {object} url params as json
+	 */
+	__.parseParams = function (urlString_) {
+		var params = {}, urlString;
+		//get all the other params from this url
+		urlString = (urlString_ || '').replace(__.JS_LAYER_REGEX, '');
+		urlString.split(",").forEach(function (p) {
+			var kv = p.split("=");
+			params[kv[0]] = kv[1];
+		});
+		return params;
+	};
+	/**
+	 *
+	 */
+	__.parsePattern = function (urlString_) {
+		var match = (urlString_ || '').match(__.JS_LAYER_REGEX);
+		if (!!match) {
+			return match[0].split(",")[0];
+		} else {
+			return null;
+		}
+	};
+	/**
+	 * fetch static content for a layer
+	 * @param {object} params_ - special params for this request
+	 * @return {Promise} html string for layers wrapped in a Promise
+	 */
+	__.getLayerContent = function (urlString_) {
+		var promise, params = __.parseParams(urlString_),
+			patternName;
+		patternName = __.parsePattern(urlString_);
+		if (exports.isRegisterPattern(patternName)) {
+			//get callback Promise
+			promise = __.registeredPatterns[patternName](params);
+		} else {
+			promise = Promise.reject("pattern " + patternName + " id not registered!!");
+		}
+		return promise;
+	};
+	//__.buildLayerContent=function(){};
+	/**
+	 * register an url pattern and its callBack
+	 *@param {string} patternName_ - name of the pattern e.g. 'jslayer:mediathek'
+	 *@param {function} callBackPromise_ - promise function to be called when the url pattern matches
+	 *@return {void}
+	 */
+	exports.registerStaticRequest = function (patternName_, callBackPromise_) {
+		__.registeredPatterns[patternName_] = callBackPromise_;
+	};
+	/**
+	 * check if a patern is registered for callbacks
+	 * @param {string} patternName_ - name isf the pattern
+	 * @return {boolean} registered or not
+	 */
+	exports.isRegisterPattern = function (patternName_) {
+		return !!__.registeredPatterns[patternName_] && typeof __.registeredPatterns[patternName_] === "function";
+	};
+	exports.initializePromise = function (eventBus_) {
+		return new Promise(function (resolve) {
+			resolve("core/static-content.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 211:
+/*!************************************!*\
+  !*** ./js/app/core/crs/crs-api.js ***!
+  \************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * Library for accessing the CRS-API (Version 2.16)
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! utils/ajax */ 6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(AJAX) {
+		'use strict';
+		// object for private Methods
+		var __ = {},
+		// public API
+		exports = {
+			__: __
+		},
+		_requestOptions = {
+			withCredentials: false,
+			requestMethod: 'POST',
+			contentType: 'json'
+		},
+		_requestNames =  {
+			'products' : 'Products',
+			'defaults' : 'Defaults'
+		},
+		_errorResponseMessage = 'Some Error occured during the Request:';
+
+		/**
+		 * private function sending a CRS request
+		 * @param {String} url - the requestUrl
+		 * @param {Object} requestData - the request body
+		 * @return {Promise} a Promise for the data
+		 */
+		__.crsRequest = function(url, requestData) {
+			return new Promise(function (resolve, reject) {
+				AJAX.getJSON(url, JSON.stringify(requestData), _requestOptions).then(function (data) {
+					if (__.isErrorResponse(data)) {
+						console.log('crs-api: ' + data.Response.Error.Description);
+						reject(_errorResponseMessage + ' ' + data.Response.Error.Description);
+					} else {
+						resolve(data);
+					}
+				}, function (error) {
+					reject(_errorResponseMessage + ' ' + error);
+				});
+			});
+		};
+
+		/**
+		 * private function preparing the data
+		 * @param {String} name - the requestname
+		 * @param {String} domain - the domain of the request
+		 * @param {Object} product - the product of the request
+		 * @param {Object} vehicle - the vehicle of the request
+		 * @returns {Object} the prepared data
+		 */
+		__.prepareRequestData = function(name, domain, product, vehicle) {
+			var data = {'Request':{}};
+			if (!!name && !!domain && !!vehicle) {
+				data.Request['@Name'] = name;
+				data.Request['@Domain'] = domain;
+				data.Request['Vehicle'] = vehicle;
+				if (!!product && typeof product === 'object' && Object.keys(product).length > 0) {
+					data.Request['Product'] = product;
+				}
+			}
+			return data;
+		};
+
+		/**
+		 * private function preparing the products reponse data, stripping it from unnecessaary wrappings
+		 * @param {Object} reponseData - the products reponseData
+		 * @returns {Object} the productdata
+		 */
+		__.prepareProductsResponse = function(reponseData) {
+			if (!!reponseData && !!reponseData.Response && !!reponseData.Response.Products && !!reponseData.Response.Products.Product) {
+				return reponseData.Response.Products;
+			}
+			return {};
+		};
+
+		/**
+		 * private function preparing the product reponse data, stripping it from unnecessaary wrappings and Values
+		 * @param {Object} reponseData - the products reponseData
+		 * @returns {Object} return the productdata
+		 */
+		__.prepareProductDataResponse = function(reponseData) {
+			var returnValue = {};
+			if (!!reponseData && !!reponseData.Response && !!reponseData.Response.Parameters) {
+				returnValue.Parameters = reponseData.Response.Parameters;
+				if (!!reponseData.Response.Error){
+					returnValue.Error = reponseData.Response.Error;
+				}
+			}
+			return returnValue;
+		};
+
+		/**
+		 * private function preparing the product request data
+		 * @param {Object} product - the product of the request
+		 * @param {Object} productParameter - the changed parameter
+		 * @returns {Object} the prepared data
+		 */
+		__.prepareProducRequestData = function(product, productParameter) {
+			var returnValue = !!product ? product : {};
+			if (!!product && !!productParameter && !!productParameter.Parameter) {
+				returnValue.Parameter = productParameter.Parameter;
+			}
+			return returnValue;
+		};
+
+		/**
+		 * private function determining whether the data is an Error or not
+		 * @param {Object} reponseData - the response data
+		 * @returns {Boolean} whether the data is an Error or not
+		 */
+		__.isErrorResponse = function(reponseData) {
+			if (!reponseData || !reponseData.Response || (!!reponseData.Response.Error && reponseData.Response.Error['@ErrorType'] !== "User")) {
+				return true;
+			}
+			return false;
+		};
+
+		/**
+		 * public function returning the products for a vehicle
+		 * @param {String} url -  the url for the request
+		 * @param {String} domain - the domain for the request e.g. VTP.AUDI.IE
+		 * @param {Object} vehicle - the vehicle for the request e.g. {"Key": "BQ12AA", "@Type": "New", "PriceModel": "17850.00", "PriceTotal": "17850.00", "Year": "2018"}
+		 * @returns {Promise} returns a Promise for the products
+		 */
+		exports.getProducts = function(url, domain, vehicle) {
+			var requestData = __.prepareRequestData(_requestNames.products, domain, {}, vehicle);
+			return __.crsRequest(url, requestData).then(function(data){
+				return __.prepareProductsResponse(data);
+			});
+		};
+
+		/**
+		 * public function returning the default data for a product
+		 * @param {String} url -  the url for the request
+		 * @param {String} domain - the domain for the request e.g. VTP.AUDI.IE
+		 * @param {Object} product - the product for the request e.g. {"@ID": "AC"}
+		 * @param {Object} vehicle - the vehicle for the request e.g. {"Key": "BQ12AA", "@Type": "New", "PriceModel": "17850.00", "PriceTotal": "17850.00", "Year": "2018"}
+		 * @returns {Promise} returns a Promise for the productdata
+		 */
+		exports.getDefaultDataForProduct = function(url, domain, product, vehicle) {
+			var requestData = __.prepareRequestData(_requestNames.defaults, domain, product, vehicle);
+			return __.crsRequest(url, requestData).then(function(data){
+				return __.prepareProductDataResponse(data);
+			});
+		};
+
+		/**
+		 * public function returning the data for a product
+		 * @param {String} url -  the url for the request
+		 * @param {String} domain - the domain for the request e.g. VTP.AUDI.IE
+		 * @param {Object} product - the product for the request e.g. {"@ID": "AC"}
+		 * @param {Object} productParameter - the productParameter for the request e.g. "Parameter": [{"@ID": "Duration","#text": "48"}]
+		 * @param {Object} vehicle - the vehicle for the request e.g. {"Key": "BQ12AA", "@Type": "New", "PriceModel": "17850.00", "PriceTotal": "17850.00", "Year": "2018"}
+		 * @returns {Promise} returns a Promise for the productdata
+		 */
+		exports.getDataForProduct = function(url, domain, product, productParameter, vehicle) {
+			var productData = __.prepareProducRequestData(product, productParameter);
+			return exports.getDefaultDataForProduct(url, domain, productData, vehicle);
+		};
+
+		/*
+		 * public initialize method
+		 */
+		exports.initializePromise = function(eventBus_) {
+			return Promise.resolve('core/crs/crs-api.js');
+		};
+		return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 225:
+/*!***************************************!*\
+  !*** ./js/app/bundles/core-bundle.js ***!
+  \***************************************/
+/*! exports provided: EVENTS, COMMON, ANIMATE, DOM_UTILS, SCROLL, AJAX, FETCH, SETUPS, LAYER_API, LAYER_CMS, LAYER_ELEMENT, LAYER_JSLAYER, CONTENT, CRS */
+/*! all exports used */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_events__ = __webpack_require__(/*! events */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_events___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_events__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_common__ = __webpack_require__(/*! utils/common */ 18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_common___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_utils_common__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_animate__ = __webpack_require__(/*! utils/animate */ 57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_animate___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_utils_animate__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_utils_dom__ = __webpack_require__(/*! utils/dom */ 2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_utils_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_utils_dom__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_core_scroll__ = __webpack_require__(/*! core/scroll */ 19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_core_scroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_core_scroll__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_utils_ajax__ = __webpack_require__(/*! utils/ajax */ 6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_utils_ajax___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_utils_ajax__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_utils_fetch__ = __webpack_require__(/*! utils/fetch */ 226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_utils_fetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_utils_fetch__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_setups__ = __webpack_require__(/*! setups */ 227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_setups___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_setups__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_core_layer_api__ = __webpack_require__(/*! core/layer/api */ 10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_core_layer_api___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_core_layer_api__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_core_layer_cms__ = __webpack_require__(/*! core/layer/cms */ 68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_core_layer_cms___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_core_layer_cms__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_core_layer_element__ = __webpack_require__(/*! core/layer/element */ 58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_core_layer_element___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_core_layer_element__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_core_layer_jslayer__ = __webpack_require__(/*! core/layer/jslayer */ 28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_core_layer_jslayer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_core_layer_jslayer__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_core_content__ = __webpack_require__(/*! core/content */ 15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_core_content___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_core_content__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_core_crs_crs_api__ = __webpack_require__(/*! core/crs/crs-api */ 211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_core_crs_crs_api___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_core_crs_crs_api__);
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "EVENTS", function() { return __WEBPACK_IMPORTED_MODULE_0_events___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "COMMON", function() { return __WEBPACK_IMPORTED_MODULE_1_utils_common___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "ANIMATE", function() { return __WEBPACK_IMPORTED_MODULE_2_utils_animate___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "DOM_UTILS", function() { return __WEBPACK_IMPORTED_MODULE_3_utils_dom___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "SCROLL", function() { return __WEBPACK_IMPORTED_MODULE_4_core_scroll___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "AJAX", function() { return __WEBPACK_IMPORTED_MODULE_5_utils_ajax___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "FETCH", function() { return __WEBPACK_IMPORTED_MODULE_6_utils_fetch___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "SETUPS", function() { return __WEBPACK_IMPORTED_MODULE_7_setups___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "LAYER_API", function() { return __WEBPACK_IMPORTED_MODULE_8_core_layer_api___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "LAYER_CMS", function() { return __WEBPACK_IMPORTED_MODULE_9_core_layer_cms___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "LAYER_ELEMENT", function() { return __WEBPACK_IMPORTED_MODULE_10_core_layer_element___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "LAYER_JSLAYER", function() { return __WEBPACK_IMPORTED_MODULE_11_core_layer_jslayer___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "CONTENT", function() { return __WEBPACK_IMPORTED_MODULE_12_core_content___default.a; });
+/* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "CRS", function() { return __WEBPACK_IMPORTED_MODULE_13_core_crs_crs_api___default.a; });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ 226:
+/*!*******************************!*\
+  !*** ./js/app/utils/fetch.js ***!
+  \*******************************/
+/*! no static exports found */
+/*! exports used: default */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	"use strict";
+	var exports = {};
+	//process status
+	function processStatus(response_) { // process status
+		if (response_.status === 200 || response_.status === 0) {
+			return Promise.resolve(response_);
+		} else {
+			return Promise.reject(new Error('Error fetching: ' + response_.url));
+		}
+	}
+	/**
+	 * get BLOB from request response
+	 * @param {object} response_ - response object
+	 * @returns {object} BLOB
+	 */
+	function parseBlob(response_) {
+		return response_.blob();
+	}
+	/**
+	 * get JSON from request response
+	 * @param {object} response_ - response object
+	 * @returns {object} JSON object
+	 */
+	function parseJson(response_) {
+		return response_.json();
+	}
+	/**
+	 * merge default request options
+	 * @param {object} options_ - specific options for this request
+	 * @returns {object} options object
+	 */
+	function generateRequestOptions(options_) {
+		return options_ || {};
+	}
+	/**
+	 * get a BLOB (Binary Large OBject) from resource url
+	 * @param {string} url_ - url to fetch BLOB from
+	 * @param {object} options_ - request options
+	 * @returns {Promise} BLOG wrapped in a promise
+	 */
+	exports.getBlob = function(url_, options_) {
+		var OPTIONS = options_ || {};
+		return fetch(url_, OPTIONS).then(processStatus).then(parseBlob);
+	};
+	/**
+	 * get a JSON from resource url
+	 * @param {string} url_ - url to fetch BLOB from
+	 * @param {object} options_ - request options
+	 * @returns {Promise} JSON wrapped in a promise
+	 */
+	exports.getJson = function(url_, options_) {
+		var options = generateRequestOptions(options_);
+		return fetch(url_, options).then(processStatus).then(parseJson);
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 227:
+/*!**************************!*\
+  !*** ./js/app/setups.js ***!
+  \**************************/
+/*! no static exports found */
+/*! exports used: default */
+/***/ (function(module, exports) {
+
+/**
+ * global Storage for setup params
+ * will initialized before the main application
+ */
+var SETUPS = SETUPS || (//eslint-disable-line
+/**
+ * @exports setups
+ */
+
+function() {
+	'use strict';
+	var
+	//Private
+	__ = {},
+		//Public API
+		exports = {
+			__: __
+		};
+	__.stored = {};
+	/**
+	 * @param {string} key
+	 * @param {*} value
+	 */
+	exports.set = function(key, value) {
+		__.stored[key] = value;
+	};
+
+	/**
+	 * @param {string} key
+	 * @param {*} value
+	 * @returns {boolean} removed
+	 */
+	exports.unset = function(key) {
+		if (key in __.stored) {
+			delete __.stored[key];
+			return true;
+		} else {
+			return false;
+		}
+	};
+	/**
+	 * @param {string} key
+	 * @returns {*} - stored value
+	 */
+	exports.get = function(key) {
+		return __.stored[key] || null;
+	};
+	return exports;
+})();
+
+
+/***/ }),
+
+/***/ 228:
+/*!********************************!*\
+  !*** ./js/app/router-state.js ***!
+  \********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint unused: true, undef: true, quotmark: single */
+
+/**
+ * 0.2.2 do not cut-off 'data-layer-tpl' from url
+ * 0.2.1 update URL_PAGE_SEPARATOR separator
+ * 0.2.0 #parseHash adds url-params to returned result now
+ * 0.1.0 initial version
+ */
+
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function RouterState () {
+
+	'use strict';
+
+	/**
+	 * @description _State constructor
+	 * @namespace
+	 * @param {String} pathname state pathname
+	 * @param {String} hash state hash
+	 * @param {String} hash channel to execute
+	 */
+	var _State = function(pathname, hash) {
+		this.pathname = pathname || '';
+		this.hash = hash || '';
+		this.changes = [];
+		this.init();
+	};
+
+	_State.URL_PARAM_SEPARATOR = '&';
+
+	_State.URL_PAGE_SEPARATOR = '~_~';
+
+	_State.VERSION = '0.2.1';
+
+
+	/**
+	 * @description Initializes the state. Detects necessary changes (i.e.
+	 * differences between pathname and hash/page).
+	 * @returns {Boolean}
+	 */
+	_State.prototype.init = function(pathname, hash) {
+		var obj;
+		if (!!hash) { this.hash = hash; }
+		this.hashObjects = this.parseHash(this.hash);
+		this.attrs = {};
+		for (obj in this.hashObjects) {
+			// At init check if page in hash is different from pathname.
+			if (obj === 'page') {
+				if (this.hashObjects.page !== this.pathname) {
+					this.changes.push([obj, this.hashObjects[obj], 1]);
+				}
+			}
+			// find attrs
+			else if (obj.match(/^data/g)) {
+				this.attrs[obj] = this.hashObjects[obj];
+			}
+			else {
+				this.changes.push([obj, this.hashObjects[obj], 1]);
+			}
+		}
+	};
+
+	/**
+	 * @description Updates the state by the pages hash.
+	 * Detects necessary changes.
+	 * @returns {Boolean}
+	 */
+	_State.prototype.update = function(hash) {
+		var
+		// cache objects locally
+		currentHashObjects = this.hashObjects,
+			current,
+			key;
+		this.hash = hash;
+		this.hashObjects = this.parseHash(hash);
+		this.changes = [];
+		this.currentAttrs = this.attrs || {};
+		this.attrs = {};
+
+		// filter attrs
+		for (key in this.hashObjects) {
+			// find attrs
+			if (key.match(/^data/g)) {
+				this.attrs[key] = this.hashObjects[key];
+			}
+			// find items to open
+			else if (this.hashObjects[key] !== currentHashObjects[key]) {
+				this.changes.push([key, this.hashObjects[key], 1]);
+			}
+		}
+
+		// find items and metadata to close (except `page` which can't be closed)
+		//
+		for (current in currentHashObjects) {
+			if (!this.hashObjects[current] && current !== 'page') {
+				this.changes.push([current, currentHashObjects[current], 0]);
+			}
+		}
+
+		/*
+		 * check if `page` is set. if not, fall back to pathname,
+		 * but only if page has been set before.
+		 */
+		if (!this.hashObjects.page && !!currentHashObjects.page) {
+			this.hashObjects.page = this.pathname;
+			this.changes.push(['page', this.pathname, 1]);
+		}
+	};
+
+	/**
+	 * @description Parses the hash.
+	 * @returns {Object} hash data by channel
+	 */
+	_State.prototype.parseHash = function(hash) {
+
+		var sections, obj = {}, i, l,pl;
+
+		hash = hash || '';
+
+		// remove leading # from hash
+		if (hash.match(/^#/)) {
+			hash = hash.substring(1);
+		}
+
+		var k, s, v;
+
+		if (!!hash) {
+
+			sections = hash.split(_State.URL_PAGE_SEPARATOR);
+
+			l = sections.length;
+
+			// taken with courtesy from http://stackoverflow.com/a/2880929/351423
+
+			var match,
+				pl     = /\+/g,  // Regex for replacing addition symbol with a space
+				search = /([^&=]+)=?([^&]*)/g;
+			var decode = function (s) { return decodeURIComponent(s.replace(pl, ' ')); };
+
+			for (i = 0; s = sections[i], i < l; i++) {
+
+				while ((match = search.exec(s)) !== null) {
+
+					k = decode(match[1]);
+					v = decode(match[2]);
+
+					obj[k] = v;
+				}
+			}
+		}
+
+		return obj;
+	};
+
+
+	/**
+	 * @description Returns and resets changes.
+	 * @returns {Array} Data to publish.
+	 *
+	 * NOTE: what about renaming to #getAndResetChanges !?
+	 */
+	_State.prototype.getChanges = function() {
+		var localChanges = this.changes;
+		this.changes = [];
+		return localChanges;
+	};
+
+	_State.prototype.getAttrs = function() {
+		var localAttrs = this.attrs || {};
+		return localAttrs;
+	};
+
+	_State.prototype.getCurrentAttrs = function() {
+		var localAttrs = this.currentAttrs || {};
+		return localAttrs;
+	};
+
+	return _State;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 28:
+/*!**************************************!*\
+  !*** ./js/app/core/layer/jslayer.js ***!
+  \**************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! core/layer/api */ 10),
+	__webpack_require__(/*! events */ 0),
+	__webpack_require__(/*! core/template */ 5),
+	__webpack_require__(/*! router */ 8),
+	__webpack_require__(/*! utils/dom */ 2)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function( LAYER, EVENTS, TPL, ROUTER, DOM_UTILS) {//eslint-disable-line max-params
+	"use strict";
+
+	var __ = {};
+	var exports = {
+		__: __
+	};
+
+	__.callbacks = {};
+	__.layer=null;
+	// Store keys from url if not yet registered (or found in DOM).
+	__.pending=null;
+
+	__.openLayersSinceLastClose = 0;
+
+	__.initialize = function() {
+		ROUTER.register( '.nm-jslayerLink', 'jslayer' );
+		ROUTER.register( '.nm-j-jslayer .nm-button-close', 'jslayer', 'close' );
+		__.eventBus.on( 'jslayer.open', exports.handleJslayerOpen );
+		__.eventBus.on( 'jslayer.close', exports.handleJslayerClose );
+		__.domDelegate = DOM_UTILS.getEventDelegate('body');
+		__.domDelegate.on('click', '.nm-j-jslayer .nm-button-back', __.handleBackClick);
+	};
+
+	/*
+	 * Get the HTML from the callback and open a layer.
+	 */
+	__.processLayer = function(key, id) {
+		var layerStr = __.callbacks[key].call( {}, id );
+		LAYER.open( 'jslayer', layerStr, exports.handleCloseRequest ).then( function( layer ) {
+			__.layer = layer;
+			__.layer.key = key;
+			__.layer.id = id;
+			__.openLayersSinceLastClose += 1;
+			if(__.openLayersSinceLastClose > 1){
+				__.layer.element.classList.add('nm-jslayer-show-backbutton');
+			} else {
+				__.layer.element.classList.remove('nm-jslayer-show-backbutton');
+			}
+		}, function( err ) {
+			console.log( 'jslayer.handleJslayerOpen:', err );
+		});
+	};
+
+	/**
+	 * handleBackClick
+	 * handles click on jslayer back button
+	 * @return {void} returns nothing
+	 */
+	__.handleBackClick = function () {
+		__.openLayersSinceLastClose -= 2;
+		history.back();
+	};
+
+	/**
+	 * Register a callback for a router event.
+	 * @param {DOM Node} id - The link element to listen to.
+	 * @param {Function} callback - The callback that is called to
+	 * 	retrieve the layer content.
+	 */
+	exports.register = function( idStr, callback ) {
+		__.callbacks[idStr] = callback;
+		// The idStr is currently pending from a deeplink, open it immediately.
+		if( !!( __.pending && __.pending.length === 2 && __.pending[0] && idStr === __.pending[0] ) ) {
+			__.processLayer(idStr, __.pending[1]);
+		}
+	};
+
+	/**
+	 * Handles jslayer.open events as triggered by the router module.
+	 */
+	exports.handleJslayerOpen = function(jslayerObj) {
+		var idStr = !!(jslayerObj[0] && jslayerObj[0].jslayer) ? jslayerObj[0].jslayer : null;
+		var key;
+		var id;
+		var parts;
+		if(!idStr) {
+			return;
+		}
+
+		// Clean the idStr from # and full urls.
+		if( idStr.indexOf('#') > -1 ) {
+			idStr = idStr.split('#')[1];
+		}
+
+		// no prefix, key & id are the same.
+		key = id = idStr;
+		// prefix found.
+		if(idStr.indexOf('.') > -1) {
+			parts = idStr.split('.');
+			key = parts[0];
+			id = parts[1];
+		}
+		if( !!__.callbacks[key] && typeof __.callbacks[key] === 'function' ) {
+			__.processLayer(key, id);
+		}
+		else {
+			__.pending = [key, id];
+		}
+	};
+
+	exports.handleJslayerClose = function() {
+		if(!!(__.layer && __.layer.close)) {
+			__.layer.close();
+			__.eventBus.emit(EVENTS.LAYER_CLOSE, {
+					element: __.layer.element
+				}
+			);
+			__.pending = null;
+			__.openLayersSinceLastClose = 0;
+		}
+	};
+
+	exports.handleCloseRequest = function() {
+		var url = __.layer.key;
+		if(!!__.layer.id) {
+			url = url + '.' + __.layer.id;
+		}
+		ROUTER.close('jslayer', url);
+		__.openLayersSinceLastClose = 0;
+	};
+
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.initialize();
+			resolve("core/layer/jslayer.js");
+		});
+	};
+
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 36:
+/*!*********************************!*\
+  !*** ./js/app/core/jsloader.js ***!
+  \*********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! events */ 0), __webpack_require__(/*! core/signal */ 4)], __WEBPACK_AMD_DEFINE_RESULT__ = function(EVENTS, SIGNAL) {
+	"use strict";
+	var __ = {},
+		exports = {
+			'__': __
+		};
+	/**
+	 * load js asynchronously via require
+	 * @param {String} url_ - the URL of the js source
+	 * @return {Promise} - resolves when successfully loaded, rejects else
+	 */
+	exports.loadURL = function(url_) {
+		var script;
+		return new Promise(function(resolve, reject) {
+			script = document.createElement("script");
+			script.type = "text/javascript";
+			script.onerror= function() {
+				reject(new Error('could not load Script from '+url_));
+			};
+			if (script.readyState) {//IE
+				script.onreadystatechange = function() {
+					if (script.readyState === "loaded" || script.readyState === "complete") {
+						script.onreadystatechange = null;
+						resolve();
+					}
+				};
+			} else { //Others
+				script.onload = function() {
+					resolve();
+				};
+			}
+			script.src = url_;
+			document.getElementsByTagName("head")[0].appendChild(script);
+		});
+	};
+	__.initialize = function() {
+		console.log('DOMReady jsloader.js -- initialize');
+	};
+	__.eventBus = SIGNAL.getEmitter();
+	__.eventBus.once(EVENTS.APP_READY, __.initialize);
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 39:
+/*!****************************************!*\
+  !*** ./js/app/core/layer/animation.js ***!
+  \****************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* global Promise */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! utils/dom */ 2)], __WEBPACK_AMD_DEFINE_RESULT__ = function(DOM_UTILS) {
+	"use strict";
+	var __ = {},
+		exports = {
+			__: __
+		};
+
+	__.oDefaults = {
+		selectorLayer: ".nm-layer",
+		classLayerVisible: "nm-layer-visible",
+		classLayerShaderVisible: "nm-layer-shader-visible",
+		classBodyLayerOpened: "nm-layer-opened",
+		classHidden: "nm-hidden"
+	};
+	__.scrollPosition = 0;
+
+	/*
+	 * To be called before the first layer is opened.
+	 * Opens the shader.
+	 * @return {Promise} shader
+	 */
+	exports.showShader = function() {
+		return new Promise(function(resolve) {
+			// save current body scroll-position for after layer close
+			__.scrollPosition = document.body.scrollTop;
+			document.body.scrollTop = 0;
+			document.body.classList.add(__.oDefaults.classBodyLayerOpened);
+			__.wait(20).then(function() {
+				if (!__.shader) {
+					exports.initialize();
+				}
+				if (__.shader) {
+				__.shader.classList.remove(__.oDefaults.classHidden);
+				__.shader.classList.add(__.oDefaults.classLayerShaderVisible);
+				}
+			}).then(function() {
+				__.wait(280).then(resolve);
+			});
+		});
+	};
+
+	/*
+	 * wait Promise to delay function calls
+	 * @param  {number} delay_ delay in milliseconds
+	 * @return {Promise}
+	 */
+	__.wait = function(delay_) {
+		return new Promise(function(resolve) {
+			setTimeout(resolve, delay_);
+		});
+	};
+	/*
+	 * To be called after the last layer has been closed.
+	 * Closes the shader.
+	 */
+	exports.hideShader = function() {
+		return new Promise(function(resolve) {
+			document.body.classList.remove(__.oDefaults.classBodyLayerOpened);
+			__.shader.classList.remove(__.oDefaults.classLayerShaderVisible);
+			__.shader.classList.add(__.oDefaults.classHidden);
+
+			//reset body scroll-position to pre-layer value
+			document.body.scrollTop = __.scrollPosition;
+			__.scrollPosition = 0; // reset
+			resolve(__.shader);
+		});
+	};
+	/**
+	 * findCurrentLayerOfType
+	 * @param  {string} layerType_ ("cms","conflict","tranfer",…)
+	 * @return {Layer|null}  Layer instace or null
+	 */
+	__.findCurrentLayerOfType = function(layerType_) {
+		var layer = DOM_UTILS.getElement(__.oDefaults.selectorLayer + "[data-layer-type='" + layerType_ + "']");
+		return DOM_UTILS.closest(layer, ".nm-layer-wrapper");
+	};
+
+	/*
+	 * Starts an animation that opens a layer.
+	 * @param {String} html - The html element to be animated.
+	 * @param {String} guid - The unique id for easy DOM lookup.
+	 * @returns A Promise object.
+	 */
+	exports.open = function(element, layerObj) {
+		var layerEl, promise;
+		// `html` `layerObj` must be given.
+		if (!element || !layerObj) {
+			promise = Promise.reject(new TypeError( true ? "'element'" : "'layerObj'"));
+		} else {
+			layerEl = document.body.appendChild(element);
+
+			// If this is the first layer, call __.openLayer after exports.showShader; if not, call it
+			// immediately.
+			if (DOM_UTILS.isElement(__.oDefaults.selectorLayer)) {
+				//return Promise(layer)
+				promise = exports.showShader().then(function() {
+					return __.openLayer(layerEl, layerObj);
+				});
+			} else {
+				//return Promise(layer)
+				promise = __.openLayer(layerEl, layerObj);
+			}
+		}
+		return promise;
+	};
+	/*
+	 * internal openLayer method
+	 * @param  {HTMLElement} layerEl_ [description]
+	 * @param  {Layer} layer_  Layer instance
+	 * @return {Promise}
+	 */
+	__.openLayer = function(layerEl_, layer_) {
+		return new Promise(function(resolve) {
+			//resolve layer before fedeIn CSS transition starts
+			resolve(layer_);
+			// add class, with a short delay.
+			__.wait(20).then(function() {
+				//layerEl_.find(__.oDefaults.selectorLayer).addClass(__.oDefaults.classLayerVisible).attr('data-layer-type', layer_.type);
+				var layer = DOM_UTILS.getElement(__.oDefaults.selectorLayer, layerEl_);
+				layer.classList.add(__.oDefaults.classLayerVisible);
+				layer.setAttribute('data-layer-type', layer_.type);
+			});
+			// css layer transition is .5s, sremove class after little more than 500ms.
+			__.wait(530).then(function() {
+				document.body.classList.add('nm-' + layer_.type + '-layer-opened');
+				//resolve(layer_);
+			});
+		});
+	};
+	/*
+	 * Starts an animation that closes a layer.
+	 * @param {String} html - The html element to be animated.
+	 * @param {String} guid - The unique id for easy DOM lookup.
+	 * @returns A Promise object.
+	 */
+	exports.close = function(element, layerObj) {
+		var layer, promise;
+		// console.log("close", layerObj);
+		// `html` `layerObj` must be given.
+		if (!element || !layerObj) {
+			promise = Promise.reject(new TypeError( true ? "'element'" : "'layerObj'"));
+		} else {
+			layer = DOM_UTILS.getElement(__.oDefaults.selectorLayer, element);
+			if(DOM_UTILS.isElement(layer)) {
+				layer.classList.remove(__.oDefaults.classLayerVisible);
+				layer.removeAttribute('data-layer-type');
+			}
+
+			//wait for CSS fadeOut Trasition 0.5s
+			promise = __.wait(500).then(function() {
+				if (!DOM_UTILS.isElement(element)) {
+					return Promise.reject("element to be removed is missing!!!");
+				}
+				DOM_UTILS.removeElement(element);
+
+				/*var closingPromise;
+				//last visible layer=>remove shader
+				if (__.isLastVisibleLayer()) {
+					closingPromise = exports.hideShader();
+				} else {
+					if (__.isShaderNeeded()) {
+						closingPromise = exports.hideShader();
+					} else {
+						closingPromise = Promise.resolve();
+					}
+				}*/
+
+				document.body.classList.remove('nm-' + layerObj.type + '-layer-opened');
+				return Promise.resolve(layerObj);
+			});
+		}
+		return promise;
+	};
+
+	exports.toggleShader = function() {
+		if (__.isShaderNotNeeded()) {
+			exports.hideShader();
+		} else {
+			console.log("Shader remains visible");
+		}
+	};
+
+	/*
+	 * check if the shader has to be removed
+	 * @return {boolean}
+	 */
+	__.isShaderNotNeeded = function() {
+		return (__.getVisibleLayers().length === 0);
+	};
+
+	/*
+	 * check if the current layer is the last one opened
+	 * @return {Boolean}
+	 */
+	__.isLastVisibleLayer = function() {
+		return (__.getVisibleLayers().length === 1);
+	};
+
+	/*
+	 * get the number of layer visible (opacity=1)
+	 * @return {boolean}
+	 */
+	__.getVisibleLayers = function() {
+		return DOM_UTILS.getElementsArray(__.oDefaults.selectorLayer + '.' + __.oDefaults.classLayerVisible);
+	};
+
+	/*
+	 * Starts an animation that replaces a layer.
+	 * @param {String} html - The html element to be animated.
+	 * @param {String} guid - The unique id for easy DOM lookup.
+	 * @returns A Promise object.
+	 */
+	exports.replace = function(element, layerObj) {
+		var layerType, oldLayer, layerEl, promise;
+		// `html` `layerObj` must be given.
+		if (!element || !layerObj) {
+			promise = Promise.reject(new TypeError( true ? "'element'" : "'layerObj'"));
+		} else {
+			promise = new Promise(function(resolve, reject) {
+				layerType = layerObj.type;
+				oldLayer = __.findCurrentLayerOfType(layerType);
+
+				if (!DOM_UTILS.isElement(oldLayer)) {
+					reject(new TypeError("noLayer of type " + layerObj.type));
+				} else {
+					//fadeOut old layer from DOM
+					oldLayer.classList.remove(__.oDefaults.classLayerVisible);
+					layerEl = document.body.appendChild(element);
+					// add class, with a short delay (longer for replace because we run a fadeout on the old layer).
+					__.wait(500).then(function() {
+						var layer = DOM_UTILS.getElement(__.oDefaults.selectorLayer, layerEl);
+						layer.classList.add(__.oDefaults.classLayerVisible);
+						layer.setAttribute('data-layer-type', layerObj.type);
+					});
+					// css layer transition is .5s, so resolve after a little more than 500ms.
+					document.body.classList.add('nm-' + layerObj.type + '-layer-opened');
+					__.wait(530).then(function() {
+						document.body.removeChild(oldLayer);
+						resolve(layerObj);
+					});
+				}
+			});
+		}
+		return promise;
+	};
+	exports.initialize = function() {
+		if (!DOM_UTILS.isElement('.nm-layer-shader')) {
+			document.body.insertAdjacentHTML('beforeend', '<div class="nm-layer-shader nm-hidden"></div>');
+			__.shader = DOM_UTILS.getElement('.nm-layer-shader');
+		}
+	};
+
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			exports.initialize();
+			resolve("core/layer/animation.js");
+		});
+	};
+	// Return API.
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 5:
+/*!*********************************!*\
+  !*** ./js/app/core/template.js ***!
+  \*********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! doT */ 7)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function(doT) {
+	"use strict";
+	var __ = {},
+		exports = {
+			__: __
+		};
+	/**
+	 * Returns a rendered string.
+	 * @param {String} template - a valid doT template string.
+	 * @param {Object} data - The data to render the template with.
+	 * @example
+	 * template.render('<div>{{=it.foo}}</div>', {foo: 'bar'});
+	 * // <div>bar</div>
+	 */
+	exports.render = function(tpl, data) {
+		return doT.template(tpl)(data);
+	};
+
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 57:
+/*!*********************************!*\
+  !*** ./js/app/utils/animate.js ***!
+  \*********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	'use strict';
+	//Private Methods
+	var __ = {},
+		//Public API
+		exports = {
+			__: __
+		};
+	//reference to the current window scroll animation
+	__.currentWindowAnimation = null;
+	//reference to the current element animation
+	__.currentElementAnimation = null;
+	__.DEFAULT_ANIMATION_TIME = 500;
+	__.RENDER_INTERVAL_LIMIT = 160;
+	__.FPS = 60;
+	__.FRAME_INTERVAL = 1000 / __.FPS;
+	__.TERMINATION_THRESHOLD = 5000;
+	//proxy for window.requestAnimationFrame
+	//@returns {integer} requestAnimationFrameID_;
+	__.requestAnimationFrame = function(fn_) {
+		if (typeof fn_ === "function") {
+			return window.requestAnimationFrame(fn_);
+		} else {
+			console.warn("inconsistent '__.requestAnimationFrame' call without function");
+			return null;
+		}
+	};
+	//proxy for window.cancelAnimationFrame
+	__.cancelAnimationFrameFn = function(id_) {
+		if (!isNaN(id_)) {
+			window.cancelAnimationFrame(id_);
+		} else {
+			console.warn("inconsistent '__.cancelAnimationFrameFn' call without id");
+		}
+	};
+	/**
+	 *proxy window scrollPossitons
+	 *@returns {object} x and y scroll postions
+	 */
+	__.getWindowScrollPosition = function() {
+		return {
+			y: window.pageYOffset,
+			x: window.pageXOffset
+		};
+	};
+	//returned function is bound to animation instance
+	__.getAnimationFunction = function(type_) {
+		var fn;
+		switch (type_) {
+			case 'none':
+			case 'linear':
+				fn = __.noEasing;
+				break;
+			case 'easeInQuad':
+				fn = __.easeInQuad;
+				break;
+			case 'easeOutExpo':
+				fn = __.easeOutExpo;
+				break;
+			case 'easeInOutSine':
+				fn = __.easeInOutSine;
+				break;
+			case 'easeInSine':
+				fn = __.easeInSine;
+				break;
+			case 'easeOutSine':
+			default:
+				fn = __.easeOutSineFn;
+		}
+		return fn;
+	};
+	//===============easing functions===================
+	//http://robertpenner.com/easing/
+	//http://upshots.org/actionscript/jsas-understanding-easing
+	/**
+	 * @example:
+	 *	var nextStep,bound = this,
+	 *		t = bound.elapsedTime.toFixed(0), //currentTime
+	 *		d = bound.duration, //duration
+	 *		c = bound.valueChange,//value change/diff
+	 *		b = bound.startValue; //initial/start value
+	 *		nextStep=__.easeInOutSine(t,b,c,d);
+	 * @param {number} t - current time/elapsed time in ms or frames
+	 * @param {number} b - start value befor the tween began
+	 * @param {number} c - value difference from start to end
+	 * @param {number} d - overall duration for this animation in ms or frames
+	 * @returns {number} next calculated value
+	 */
+	__.easeInOutSine = function easeInOutSine(t, b, c, d) {
+		return c / 2 * (1 - Math.cos(Math.PI * t / d)) + b;
+	};
+	__.easeInSine = function easeInSine(t, b, c, d) {
+		return c * (1 - Math.cos(t / d * (Math.PI / 2))) + b;
+	};
+	__.easeOutSineFn = function easeOutSineFn(t, b, c, d) {
+		return c * (1 - Math.cos(t / d * (Math.PI / 2))) + b;
+	};
+	__.noEasing = function noEasing(t, b, c, d) {
+		return c * t / d + b;
+	};
+	__.easeInQuad = function easeInQuad(t, b, c, d) {
+		return c * (t /= d) * t + b;//eslint-disable-line
+	};
+	__.easeOutExpo = function easeOutExpo(t, b, c, d) {
+		return c * (-Math.pow(2, -10 * t / d) + 1) + b;
+	};
+	/*
+	// t: current time, b: begInnIng value, c: change In value, d: duration
+	__.easeInSine = function(x, t, b, c, d) {
+		return function easeInSine() {
+			return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+		};
+	}; // t: current time, b: begInnIng value, c: change In value, d: duration
+	__.easeOutSine = function(x, t, b, c, d) {
+		return function easeOutSine() {
+			return c * Math.sin(t / d * (Math.PI / 2)) + b;
+		};
+	};*/
+	//merge defaults with additional options
+	__.mergeOptions = function(defaultOptions_, optional_) {
+		var opt;
+		//copy optional setups
+		for (opt in optional_) {
+			if (optional_.hasOwnProperty(opt)) {
+				defaultOptions_[opt] = optional_[opt];
+			}
+		}
+		return defaultOptions_;
+	};
+	/**
+	 * check animation direction (animate values up or down/left or right/in or out)
+	 * @param {number} startValue_ - initial value (value on start)
+	 * @param {number} targetValue_ - target (value on end)
+	 * @returns {boolean} - is inimating up (up||right||in)
+	 */
+	__.increaseValues = function(startValue_, targetValue_) {
+		return (targetValue_ > startValue_);
+	};
+	//set duration and elapsed time
+	/**
+	 * animate window position to the top (this function is bound to an Animation instance)
+	 * gets called on every frame via requestAnimationFrame
+	 * @returns {void}
+	 */
+	__.renderWindowY = function() {
+		var bound = this; //eslint-disable-line
+		//change window´s scroll position
+		__.scrollWindow(0, bound.currentValue);
+	};
+	/**
+	 * animate element property like 'scollLeft','opacity'…(this function is bound to an Animation instance)
+	 * gets called on every frame via requestAnimationFrame
+	 * @returns {void}
+	 */
+	__.renderElementProperty = function() {
+		var bound = this; //eslint-disable-line
+		//change element's property value
+		bound.element[bound.options.property] = bound.currentValue;
+	};
+	//proxy for winfow.scrollTo method
+	__.scrollWindow = function(xPos_, yPos_) {
+		window.scrollTo(xPos_, yPos_);
+	};
+	//=================
+	/**
+	 * constructor function for Animations
+	 * @param {number} startValue_ - start position/value
+	 * @param {number} targetValue_ - target position/value
+	 * @param {object} options_ - additional options like duration,element,…
+	 * @returns {object} animation instance
+	 */
+	__.Animation = function(startValue_, targetValue_, options_) {
+		var _defaultOptions = {
+			duration: 0,
+			element: window,
+			easing: 'none'
+		};
+		this.options = __.mergeOptions(_defaultOptions, options_);
+		this.startTime = null; //animation start
+		this.elapsedTime = 0; //elepased time in ms
+		this.animationFrameID = null;
+		//duration fot this animation
+		this.duration = this.options.duration;
+		//startvalue to be set on animation start
+		this.startValue = startValue_;
+		this.currentValue = this.startValue;
+		//max/target value to be set on animation start
+		this.targetValue = targetValue_;
+		//max distance/delta to be set on animation start
+		this.valueChange = this.targetValue - this.startValue;
+		this.delta = Math.abs(this.valueChange);
+		//promise to hanlde this animation
+		this.promiseResolveFn = null;
+		this.promiseRejectFn = null;
+		//render function
+		this.render = null;
+		//animation direction (up||down increase||decrease)
+		this.increase = __.increaseValues(this.startValue, this.targetValue);
+		//get easing function and bind it to this instance/context
+		this.updateStepFn = __.getAnimationFunction(this.options.easing);
+		//this.updateStep = this.updateStep.bind(this); //bind function to this context
+		this.element = this.options.element; //element or window animation
+		this.lastFrameTime = null;
+		return this;
+	};
+	/**
+	 * set elapsed time between two frame calls
+	 * sets values for startTime,elapsedTime,lastFrame
+	 * @param {DOMHighResTimeStamp} - repaint timestamp (performance.now())
+	 * @returns{boolean} - repaint slot
+	 */
+	__.Animation.prototype.setDeltaTime = function(timestamp_) {
+		var now = timestamp_||0,
+			repaint, elapsedMsSinceLastFrame;
+		this.startTime = (this.startTime || now); //set start time if now yet started
+		this.elapsedTime = now - this.startTime;
+		//console.info((now - this.startTime).toFixed(2), now.toFixed(2), this.startTime.toFixed(2));
+		this.lastFrameTime = this.lastFrameTime || now;
+		//throttle requestAnimationFrame to avoid repaint blocking __.RENDER_INTERVAL_LIMIT (160ms)
+		elapsedMsSinceLastFrame = (now - this.lastFrameTime);
+		//console.log(elapsedMsSinceLastFrame);
+		if (elapsedMsSinceLastFrame < __.RENDER_INTERVAL_LIMIT) {
+			this.lastFrameTime = now;
+			//console.warn("paint"+(this.elapsedTime/1000).toFixed(2)+"  "+(elapsedMsSinceLastFrame/1000).toFixed(2));
+			repaint = true;
+		} else {
+			repaint = false;
+			console.warn("skipped repaint frame: " + elapsedMsSinceLastFrame);
+		}
+		return repaint;
+	};
+	/**
+	 * stop animation of this instance
+	 * cancels requestAnimationFrame loop
+	 * @returns{void}
+	 */
+	__.Animation.prototype.stopAnimation = function(terminated_) {
+		if (terminated_) {
+			this.promiseRejectFn(new Error("Animation was terminated"));
+		} else {
+			this.promiseResolveFn(this);
+		}
+		__.cancelAnimationFrameFn(this.animationFrameID);
+		if (this.element === window) {
+			__.currentWindowAnimation = null;
+		} else {
+			__.currentElementAnimation = null;
+		}
+	};
+	/**
+	 * checks if th target value has been reached
+	 * @returns {boolean} - target reached or not
+	 */
+	__.Animation.prototype.targetReached = function() {
+		var dist = Math.abs(this.currentValue - this.targetValue);
+		return dist < .05;
+	};
+	/**
+	 * start animation on this instance
+	 * triggers requestAnimationFrame loop
+	 * @param{Function} renderFunction_ - custom render function for this animation
+	 * @returns{void}
+	 */
+	__.Animation.prototype.startAnimation = function(renderFunction_) {
+		var that = this;
+		return new Promise(function(resolve, reject) {
+			if (typeof renderFunction_ !== "function") {
+				console.warn("no param 'renderFunction_' was given for the animation");
+				reject(new Error("no param 'renderFunction_' was given for the animation"));
+				return false;
+			}
+			that.promiseResolveFn = resolve;
+			that.promiseRejectFn = reject;
+			//bind custonm render function
+			that.render = renderFunction_.bind(that);
+			//start animation loop
+			that.animationFrameFn();
+		});
+	};
+	__.Animation.prototype.requestAnimationFrame = function() {
+		var terminated = (this.elapsedTime >= __.TERMINATION_THRESHOLD);
+		if (terminated || this.targetReached()) {
+			if (terminated) {
+				console.warn("Animation was terminated", this);
+			}
+			this.stopAnimation(terminated);
+		} else {
+			this.animationFrameID = __.requestAnimationFrame(this.animationFrameFn.bind(this));
+		}
+	};
+	/**
+	 * animate value (this function is bound to an Animation instance)
+	 * gets called on every frame via requestAnimationFrame
+	 * @param {DOMHighResTimeStamp} timeStamp_ - timestamp (DOMHighResTimeStamp) requestAnimationFrame param
+	 * @returns {void}
+	 */
+	__.Animation.prototype.animationFrameFn = function(timeStamp_) {
+		var that = this, //eslint-disable-line
+			t, b, c, d, nextValue;
+		//throttle loop:repaint if frame rate is high enough
+		if (that.setDeltaTime(timeStamp_)) {
+			t = that.elapsedTime.toFixed(0); //currentTime
+			d = that.duration; //duration
+			c = that.valueChange;
+			b = that.startValue; //change in value
+			nextValue = that.updateStepFn(t, b, c, d);
+			//increase value up
+			if (that.increase) {
+				that.currentValue = Math.min(that.targetValue, nextValue);
+			} else {
+				//decrease value
+				that.currentValue = Math.max(that.targetValue, nextValue);
+			}
+			//render value to its Item in the dom
+			that.render();
+		}
+		//start animation loop if 'targetReached' condition has not yet been fullfilled
+		that.requestAnimationFrame();
+	};
+	/*
+	 * scroll element to animation method
+	 * @param {number} posY_ - scroll to value
+	 * @param {number} options_ - options (duration,easing)
+	 * @returns {Promise}
+	 */
+	exports.animateWindowY = function(posY_, options_) {
+		var startScrollPosition = Math.round(__.getWindowScrollPosition().y),
+			options = options_ || {
+				'duration': __.DEFAULT_ANIMATION_TIME,
+				'easing': 'linear'
+			};
+		//stop current animation
+		if (__.currentWindowAnimation && __.currentWindowAnimation.stopAnimation) {
+			__.currentWindowAnimation.stopAnimation(true);
+			__.currentWindowAnimation = null;
+		}
+		__.currentWindowAnimation = new __.Animation(startScrollPosition, posY_, options);
+		//check if animation is needed
+		if (isNaN(posY_) || Math.round(posY_) < 0 || __.currentWindowAnimation.delta === 0) {
+			__.currentWindowAnimation = null;
+			return Promise.reject(new Error('scrollTo --> scrollYFinal is smaller than 0 - wrong value - must be > 0'));
+		}
+		return __.currentWindowAnimation.startAnimation(__.renderWindowY);
+	};
+	/*
+	 * animate element's property
+	 * @param {number} targetValue_ - scroll to value
+	 * @param {HTMLElement} element_ - element to scroll (using scrollLeft)
+	 * @param {object} options_ - animation options (duration,easing,...)
+	 * @returns {Promise}
+	 */
+	//TODO animateProperty,animateCSS
+	exports.animateElementProperty = function(targetValue_, element_, options_) {
+		var startPosition,
+			options = options_ || {
+				'duration': __.DEFAULT_ANIMATION_TIME,
+				'easing': 'easeOutSine'
+			};
+		options.element = element_;
+		options.property = options.property;
+		//stop current animation
+		if (__.currentElementAnimation && __.currentElementAnimation.stopAnimation) {
+			__.currentElementAnimation.stopAnimation(true);
+			__.currentElementAnimation = null;
+		}
+		startPosition = Math.round(element_[options.property] || 0);
+		__.currentElementAnimation = new __.Animation(startPosition, targetValue_, options);
+		//check if animation is needed
+		if (!options.property||isNaN(targetValue_) || !element_ || __.currentElementAnimation.delta === 0) {
+			__.currentElementAnimation = null;
+			return Promise.reject(new Error('animateElementX --> wrong  params'));
+		}
+		return __.currentElementAnimation.startAnimation(__.renderElementProperty);
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 58:
+/*!**************************************!*\
+  !*** ./js/app/core/layer/element.js ***!
+  \**************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! utils/dom */ 2),
+	__webpack_require__(/*! core/jsloader */ 36)
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(DOM_UTILS, JSLOADER) {
+	"use strict";
+	var __, exports;
+	__ = {};
+	exports = {
+		__: __
+	};
+
+	__.BASE_CLASS = 'nm-layer-wrapper';
+
+	__.loadedScripts = [];
+
+	exports.create = function(html) {
+		var container, child;
+		container = document.createElement('div');
+		container.className = __.BASE_CLASS;
+		__.globalEval(html);
+		container.innerHTML = html;
+
+		// return child if it already has a class
+		child = container.firstChild;
+		if ( !!child.className && child.classList.contains(__.BASE_CLASS)) {
+			return child;
+		}
+		return container;
+	};
+
+	exports.update = function(el, html) {
+		__.globalEval(html);
+		el.innerHTML = html;
+		return true;
+	};
+
+	// Evaluates inline javascripts in a global context
+	__.globalEval = function(code_) {
+		var code, scripts;
+		code = document.createElement('div');
+		code.insertAdjacentHTML('beforeend', code_.trim());
+		//scripts = Array.prototype.slice.call(code.querySelectorAll("script"));
+		scripts = DOM_UTILS.getElementsArray("script", code);
+
+		//no inline script tags?
+		if (!scripts.length) {
+			return;
+		}
+
+		window.asyncLoadingJS = false;
+		__.evalScripts(scripts);
+	};
+
+	__.evalScripts = function (scripts) {
+		var script, item, strictMode, indirect = eval;
+		while (scripts.length) {
+			script = scripts.splice(0, 1);
+			item = script[0];
+			//use strcit mode?
+			strictMode = (item.text.indexOf("use strict") > -1);
+			// If the code includes a valid, prologue position
+			// strict mode pragma, execute code by injecting a
+			// script tag into the document.
+			if (item.getAttribute('src')) {
+				// we have to load a script, so we really need to create a new script tag for it
+				// WARNING: if the loaded script calls it's own callback we need to reset window.asyncLoadingJS there to continue loading
+				if (!window.asyncLoadingJS) {
+					if (__.loadedScripts.indexOf(item.getAttribute('src')) < 0) {
+						__.loadedScripts.push(item.getAttribute('src'));
+						window.asyncLoadingJS = true;
+
+						JSLOADER.loadURL(item.getAttribute('src')).then(function(){
+							window.asyncLoadingJS = false;
+						}).catch(function(err) {
+							window.asyncLoadingJS = false;
+						});
+
+					}
+				} else {
+					console.warn('defered eval of js. WARNING: if the loaded script calls it\'s own callback we need to reset window.asyncLoadingJS there to continue loading');
+					setTimeout(function() {//eslint-disable-line no-loop-func
+						scripts.splice(0, 0, item);
+						__.evalScripts(scripts, strictMode);
+					}, 100);
+				}
+			} else if (strictMode) {
+				script = document.createElement("script");
+				script.text = item.text;
+				//IE<9 Bugfix
+				var head = document.head || document.getElementsByTagName('head')[0];
+				head.appendChild(script).parentNode.removeChild(script);
+			} else {
+				// Otherwise, avoid the DOM node creation, insertion
+				// and removal by using an indirect global eval
+				indirect(item);
+			}
+		}
+	};
+
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 6:
+/*!******************************!*\
+  !*** ./js/app/utils/ajax.js ***!
+  \******************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint maxlen: 155 */
+/*global Promise, XDomainRequest*/
+/**
+ * @description module to handle AJAX calls
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! utils/common */ 18)], __WEBPACK_AMD_DEFINE_RESULT__ = function(COMMON) {
+		'use strict';
+		window.i18n=window.i18n||{};
+		var
+		//Private Methods
+			__ = {},
+			//Public API
+			exports = {
+				__: __
+			};
+		/**
+		 * oDefaults contains all needed
+		 * options which can be overwritten by
+		 * passing an 'options_' argument to the
+		 * getRequest function
+		 */
+		__.oDefaults = {
+			xhrTimeout: 2000,
+			options: {
+				withCredentials: true,
+				requestMethod: 'GET',
+				contentType: 'json'
+			},
+			defaultHeaders: {
+				'X-Requested-With': 'XMLHttpRequest',
+				'contentType': 'application/x-www-form-urlencoded',
+				'accept': {
+					'*': 'text/javascript, text/html, application/xml, text/xml, */*',
+					'xml': 'application/xml, text/xml',
+					'html': 'text/html',
+					'text': 'text/plain',
+					'json': 'application/json, text/javascript',
+					'js': 'application/javascript, text/javascript'
+				}
+			}
+		};
+		/**
+		 * receive a Promise containing the complete XHR Object and CallBacks
+		 * promise gets rejected or resolved during XHR initialization or upon response
+		 */
+		__.getRequest = function(url_, data_, options_) {
+			if (!!url_) {
+				// Return a new promise.
+				return new Promise(function(resolve, reject) {
+					//copy defaults into options
+					var options = COMMON.extend({}, __.oDefaults.options),
+						isPostRequest = false,
+						isCORSrequest = false,
+						requestBody = null,
+						url,xhr,requestTimeout,errMsg,sendSetTimeout;
+					//extend options if any 'options_' params are available
+					if (!!options_) {
+						options = COMMON.extend(options, options_);
+					}
+					//is POST request flag
+					isPostRequest = (options.requestMethod.toUpperCase() === "POST");
+					//add GET params to existing URL (only for GET requests)
+					if (!isPostRequest) {
+						url = __.serializeGetParams(url_, data_);
+					}
+					url=url||url_;
+					isCORSrequest = exports.isCrossDomainRequest(url);
+					// create XHR with or without CORS
+					/*jslint maxlen: 160 */
+					xhr = (isCORSrequest === true) ? __.createCORSRequest(options.requestMethod, url) : __.createPlainRequest(options.requestMethod, url);
+					//if CORS selected but not available in this environment
+					if (xhr === null) {
+						reject(new Error(window.i18n['error.message.XHR_TIMEOUT']||'No CrossDomain-XHR (CORS) available!!!'));
+						return;
+					}
+					//build requestBody data for Post requests
+					if (isPostRequest) {
+						requestBody = __.serializeData(data_);
+					}
+					//set request headers
+					__.setHeaders(xhr, options, (requestBody && requestBody.length) || 0);
+					//set credentials
+					__.setCredentials(xhr, options);
+					//
+					//only XDomainRequest and XMLHttpRequest2 use onload EventHandler!!!
+					if (__.hasOnLoadEvent(xhr)) {
+						xhr.onload = function() {
+							//console.log(xhr.status, xhr.responseText);
+							//clear custom timeout callback
+							clearTimeout(requestTimeout);
+							requestTimeout = null;
+							// This is called even on 404 etc
+							// so check the status
+							if ((xhr.status === 200 && !!xhr.responseText)) {
+								// Resolve the promise with the response text
+								resolve(xhr.responseText);
+							} else {
+								// Otherwise reject with the status text
+								// which will hopefully be a meaningful error
+								errMsg = xhr.statusText;
+								//if aborted because a timeout occurred
+								if (xhr.aborted === true && !errMsg) {
+									errMsg = window.i18n['error.message.XHR_REQUEST_ABORTED']||'Request aborted';
+								}
+								reject(new Error(errMsg));
+							}
+						};
+						//handle request timeouts
+						xhr.ontimeout = function() {
+							//abort calls onload callBack with aborted=true!!
+							xhr.abort();
+							xhr.aborted = true;
+							reject(new Error((window.i18n['error.message.XHR_TIMEOUT']||'XHR Timeout Error after ') + __.oDefaults.xhrTimeout + " ms"));
+						};
+					} else {
+						//I am a legacy IE8 with old XMLHttpRequest1
+						xhr.onreadystatechange = function() {
+							if (xhr.aborted === true) {
+								return;
+							}
+							if (xhr.readyState === 4 /* complete */ ) {
+								if (xhr.status === 200) {
+									// Resolve the promise with the response text
+									resolve(xhr.responseText);
+								} else {
+									errMsg = xhr.statusText;
+									reject(new Error(errMsg));
+								}
+							}
+						};
+						//handle request timeouts for ols XMLHttpRequests
+						xhr.ontimeout = function() {
+							xhr.abort();
+							xhr.onreadystatechange = function() {};
+							if (xhr.onerror) {
+								xhr.onerror();
+							}
+						};
+					}
+					// Handle network errors
+					xhr.onerror = function() {
+						reject(new Error('Network Error'));
+					};
+					// Make the request=====================
+					//special BUGfix for XDomainRequests unsind a send Timeout
+					// 'Suggested that some initialization time may be required to prep the XDomainRequest prior to send being called.'
+					// http://social.msdn.microsoft.com/Forums/en-US/iewebdevelopment/thread/30ef3add-767c-4436-b8a9-f1ca19b4812e
+					var sendSetTimeout = 0;
+					if (__.isXDomainRequest(xhr)) {
+						sendSetTimeout = 200;
+						setTimeout(function() {
+							//set requestBody (postData) for POST requets
+							xhr.send(requestBody || null);
+						}, sendSetTimeout);
+					} else {
+						//set requestBody (postData) for POST requets
+						xhr.send(requestBody || null);
+					}
+					// requestTimeout to abort ajax request after a given period of time
+					requestTimeout = setTimeout(xhr.ontimeout, (__.oDefaults.xhrTimeout + sendSetTimeout));
+				});
+			} else {
+				return Promise.reject(new TypeError("AJAX: URL param is missing"));
+			}
+		};
+		/**
+		 * check if the request uses a XMLHttpRequest1 Spec (old IE8)
+		 * and has no support vor 'onload' event handler
+		 */
+		__.hasOnLoadEvent = function(xhr_) {
+			// FIXME: In Safari xhr_.onload seems to be null as well :(.
+			//if ((xhr_.onload !== undefined && xhr_.onload !== null) || 'undefined' !== typeof mss) {
+			if (xhr_.constructor === XMLHttpRequest) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+		/**
+		 * check if the request uses a XDomainRequest
+		 * XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+		 */
+		__.isXDomainRequest = function(xhr_) {
+			if (typeof XDomainRequest !== 'undefined' && !!xhr_.constructor && xhr_.constructor === XDomainRequest) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+		__.isTrueObject = function(obj) {
+			// Objects are of type 'object' but have not length attribute.
+			if (typeof obj === 'object' && !obj.length) {
+				return true;
+			}
+			return false;
+		};
+		__.isArray = function(obj) {
+			// Arrays are of type 'object' and have a length attribute.
+			if (typeof obj==='object' && obj.length !== undefined) {
+				return true;
+			}
+			return false;
+		};
+		/**
+		 * serializeData:
+		 */
+		__.serializeData = function(data_) {
+			var str = [],
+				p, n, v, i;
+			// Data is undefined or null.
+			if (data_ === undefined || data_ === null) {
+				return null;
+			}
+			if (typeof data_==='object') {
+				// if data_ is an array and the first element is an object
+				// we assume it's form data.
+				if (__.isArray(data_)) {
+					if (!!data_[0] && __.isTrueObject(data_[0])) {
+						for (i = data_.length - 1; i >= 0; i--) {
+							// Make sure it's really form data (has name and value attributes).
+							if (!!data_[i].name && data_[i].value !== undefined) {
+								n = data_[i].name;
+								v = data_[i].value;
+								str.unshift(encodeURIComponent(n) + '=' + encodeURIComponent(v));
+							}
+						}
+						str = str.join('&').replace(/%20/g, '+');
+						return (str.length ? str : null);
+					}
+					return null;
+				}
+				// Objects are serialized by their keys/values.
+				else if (__.isTrueObject(data_)) {
+					for (p in data_) {
+						if (data_.hasOwnProperty(p)) {
+							str.push(encodeURIComponent(p) + '=' + encodeURIComponent(data_[p]));
+						}
+					}
+				}
+				// spaces should be + according to spec
+				str = str.join('&').replace(/%20/g, '+');
+				return (str.length ? str : null);
+			}
+			// Data is already serialized.
+			if (typeof data_ === 'string') {
+				return data_;
+			} else {
+				return null;
+			}
+		};
+		/**
+		 * serializeGetData: serialize GET params and add them to the url
+		 */
+		__.serializeGetParams = function(url_, data_) {
+			var str;
+			if (!!data_) {
+				str = __.serializeData(data_);
+				//if no valid GET params available return the raw url
+				if (!str) {
+					return url_;
+				}
+				//join url with new url params
+				//URL already has get params?
+				//add request params with a leading '&'
+				if (url_.indexOf("?") > 0) {
+					str = "&" + str;
+				}
+				//add request params with a leading '?''
+				else {
+					str = "?" + str;
+				}
+				str = url_ + str;
+				return str;
+			}
+			//if no GET params available return the raw url
+			else {
+				return url_;
+			}
+		};
+		/**
+		 * set the http request header params
+		 */
+		__.setHeaders = function(xhr, options_, postDataContentLength_) {
+			var headers = {},
+				h; /*jslint maxlen: 160 */
+			headers['Accept'] = headers['Accept'] || __.oDefaults.defaultHeaders['accept'][options_['contentType']] || __.oDefaults.defaultHeaders['accept']['*'];
+			headers['Content-type'] = __.oDefaults.defaultHeaders['contentType'];
+			//set request content length for POST data
+			if (postDataContentLength_ > 0) {
+				headers["Content-type"] = "application/x-www-form-urlencoded";
+				//headers['Content-length'] = postDataContentLength_;
+			}
+			try {
+				for (h in headers) {
+					headers.hasOwnProperty(h) && 'setRequestHeader' in xhr && xhr.setRequestHeader(h, headers[h]);
+				}
+			} catch (ex) {
+				console.error("AJAX setRequestHeader failed:" + ex);
+			}
+		};
+		/**
+		 * Set http credentials (CORS)
+		 */
+		__.setCredentials = function(xhr, options_) {
+			if (typeof options_['withCredentials'] !== 'undefined' && typeof xhr.withCredentials !== 'undefined') {
+				xhr.withCredentials = !!options_['withCredentials'];
+			}
+		};
+		/**
+		 * create plain Request (GET or POST)
+		 */
+		__.createPlainRequest = function(method, url) {
+			var xhr = new XMLHttpRequest();
+			xhr.open(method, url);
+			// Handle network timeout
+			xhr.timeout = __.oDefaults.xhrTimeout;
+			return xhr;
+		};
+		/**
+		 * create CORS Request (GET or POST)
+		 */
+		__.createCORSRequest = function(method, url) {
+			var xhr = new XMLHttpRequest();
+			if ('withCredentials' in xhr) {
+				// Check if the XMLHttpRequest object has a "withCredentials" property.
+				// "withCredentials" only exists on XMLHTTPRequest2 objects.
+				xhr.open(method, url, true);
+				// Handle network timeout
+				xhr.timeout = __.oDefaults.xhrTimeout;
+			} else if (typeof XDomainRequest !== 'undefined') {
+				// Otherwise, check if XDomainRequest.
+				// XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+				xhr = new XDomainRequest();
+				xhr.open(method, url);
+				//BUG
+				xhr.onprogress = function() {};
+				// Handle network timeout
+				xhr.timeout = __.oDefaults.xhrTimeout;
+			} else {
+				// Otherwise, CORS is not supported by the browser.
+				xhr = null;
+			}
+			return xhr;
+		};
+		/**
+		 * @param {string} url - serviceURL
+		 * @param {object} data_ - request params (for GET or POST requests)
+		 * @param {string} options_ - options e.g. special request header like 'withCredentials:true' for CORS requests
+		 * @returns {Promise} - Promise => ... .then(resolveFN,rejectFN)
+		 * @example
+		 * //version request
+		 * var url = __.getDpuUrl() + "/version";
+		 * var carline = exports.getCarline();
+		 * AJAX.getJSON(url, {
+		 *	context: __.storage.header.context,
+		 *	carline: carline
+		 * });
+		 * @example
+		 * //CORS POST request
+		 * AJAX.getJSON('/', {
+		 *	foo: 'bar',
+		 *	baz: true
+		 * }, {
+		 *	requestMethod: 'POST',
+		 *	withCredentials: true
+		 * });
+		 */
+		exports.getJSON = function(url, data_, options_) {
+			return __.getRequest(url, data_, options_).then(function(data) {
+				if (typeof data === "string") {
+					return JSON.parse(data);
+				} else {
+					return data;
+				}
+			}).catch(function(err) {
+				console.info('getJSON failed for', '\''+url+'\'', 'Error: ',(!!err.message)?err.message:err);
+				throw err;
+			});
+		};
+		/**
+		 * @param {string} url - url for thi simple get request
+		 * @param {object} data_ - data params for this request
+		 * @param {object} options_ - additional XHR options for this request
+		 * @returns {Promise}
+		 */
+		exports.getContent = function(url, data_, options_) {
+			return __.getRequest(url, data_, options_);
+		};
+		/**
+		 * check for CORS requests
+		 * @param {string} url_
+		 * @return {boolean}
+		 */
+		exports.isCrossDomainRequest = function(url_) {
+			//relative path
+			if (!url_ || url_.indexOf("http") < 0) {
+				return false;
+			}
+			var origin = window.location.origin || (window.location.protocol + "//" + window.location.hostname);
+			return (url_.indexOf(origin) < 0);
+		};
+		/**
+		 * JSONP (cross domain ajax request without CORS)
+		 * adopted from (https://github.com/sobstel/jsonp.js/blob/master/jsonp.js)
+		 * @param {string} src_
+		 * @return {Promise}
+		 */
+		exports.getJSONP = function(url_) {
+			return new Promise(function(resolve, reject) {
+				var timeout = __.oDefaults.xhrTimeout,url,
+					callback_name = 'jsonp_callback',
+					prefix, script, timeout_trigger = window.setTimeout(function() {
+						window[callback_name] = function() {};
+						reject("JSONP Error");
+					}, timeout);
+				window[callback_name] = function(data) {
+					window.clearTimeout(timeout_trigger);
+					resolve(data);
+				};
+				//add 'callback' request param
+				if (url_.indexOf(callback_name) < 0) {
+					prefix = url_.indexOf("?") < 0 ? "?" : "&";
+					url = url_ + prefix + "callback=" + callback_name;
+				}
+				script = document.createElement('script');
+				script.type = 'text/javascript';
+				script.async = true;
+				script.src = url||url_;
+				document.getElementsByTagName('head')[0].appendChild(script);
+			});
+		};
+		/**
+		 * public api methods
+		 */
+		return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 68:
+/*!**********************************!*\
+  !*** ./js/app/core/layer/cms.js ***!
+  \**********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! core/layer/api */ 10),
+	__webpack_require__(/*! core/content */ 15),
+	__webpack_require__(/*! events */ 0),
+	__webpack_require__(/*! core/template */ 5),
+	__webpack_require__(/*! router */ 8),
+	__webpack_require__(/*! utils/dom */ 2),
+	__webpack_require__(/*! text!templates/error-layer.tpl */ 69)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function(LAYER_API, CONTENT, EVENTS, TEMPLATE, ROUTER, DOM_UTILS, ERROR_LAYER_TPL) {//eslint-disable-line max-params
+	"use strict";
+	var __, exports;
+		// internals
+		__ = {};
+		// api
+		exports = {
+			__: __
+		};
+
+	/*
+	 * DOM selectors and IDs.
+	 */
+	__.LAYER_TPL_ID = 'nm-id-default-data-layer-tpl';
+	__.LAYER_CLOSE_LINK_SELECTOR = '.nm-button-close';
+	// Default layer type
+	__.defaultLayerType= 'cms';
+	// Storage for the template sting
+	__.templateStr = null;
+	// The current layer object
+	__.layer=null;
+	// The data for the next layer;
+	// [data, attrs, replacedAttrs]
+	__.nextLayerData = null;
+	__.openLayersSinceLastClose = 0;
+	__.backButtonEl = null;
+
+	/*
+	 * Looks up the template string in the DOM, stores and returns it.
+	 */
+	__.getTemplateStr = function(attrs) {
+		var templateEl, templateSelector;
+		templateSelector = '#' + __.LAYER_TPL_ID;
+		if(!!attrs && !!attrs['data-layer-tpl']) {
+			templateSelector = '#nm-id-' + attrs['data-layer-tpl'] + '-layer-tpl';
+		}
+		templateEl = document.querySelector(templateSelector);
+		return templateEl.innerHTML || '';
+	};
+
+	/*
+	 * Subscribes to layerOpen and layerClose
+	 */
+	__.addEvents = function() {
+		__.eventBus.on(EVENTS.LAYER_OPEN, exports.handleLayerOpen);
+		__.eventBus.on(EVENTS.LAYER_CLOSE, exports.handleLayerClose);
+		/*
+		 * register .nm-layerLink clicks
+		 */
+		ROUTER.register('.nm-layerLink', 'layer');
+		ROUTER.register('#nm-id-layer-tab-navigation a', 'layer');
+		ROUTER.register('.nm-layer .nm-button-close', 'layer', 'close');
+		ROUTER.register('.nm-layer .nm-button-cancel', 'layer', 'close');
+		ROUTER.register('.nm-layerClose', 'layer', 'close');
+	};
+
+	__.initialize = function() {
+		__.addEvents();
+	};
+
+	__.handleError = function() {
+		var tplStr;
+		tplStr = TEMPLATE.render(ERROR_LAYER_TPL, {errorMessage: window.i18n['error-layer.unknown-error'] || 'Es ist ein unbekannter Fehler aufgetreten'});
+		LAYER_API.open('error', tplStr).then(function(layer) {
+			//var btn = layer.getElement().querySelector('.nm-error-layer .nm-j-ok-btn');
+			__.domEventDelegate.on('click', '.nm-error-layer .nm-j-ok-btn', __.layerCloseHandler);
+
+		}).catch(function(err) { console.log(err); });
+		history.back();
+	};
+
+
+	__.layerCloseHandler = function(e) {
+		if(e.preventDefault) {
+			e.preventDefault();
+		}
+		LAYER_API.requestCloseall();
+		__.domEventDelegate.off('click', '.nm-error-layer .nm-j-ok-btn', __.layerCloseHandler);
+	};
+
+	/*
+	 * Starts a new layer process (if none is currently being processed.)
+	 */
+	__.next = function() {
+		var url, attrs;
+		// Abort if there is no new data.
+		if(!__.nextLayerData) {
+			return;
+		}
+		// store data and empty queue var.
+		url = __.nextLayerData[0];
+		attrs = __.nextLayerData[1];
+		__.nextLayerData = null;
+		CONTENT.getContent(url,false).then(function(content) {
+			var layerContent;
+			var isLayer = content.indexOf('<html');
+
+			if( isLayer !== -1 ) {
+				__.handleError();
+			}
+
+			layerContent = TEMPLATE.render(__.getTemplateStr(attrs), {'content': content});
+			if(!__.layer || __.layer.type==='cms') {
+				return LAYER_API.open('cms', layerContent, exports.handleCloseRequest).then(function(layer) {
+					__.layer = layer;
+					__.layer.url = url;
+					__.controlBackButton(__.layer);
+				}).catch(function(err) {
+					console.error(err);
+					//throw err;
+				});
+			}
+			else {
+				console.warn("could not Open Layer");
+			}
+		}).catch(__.handleError);
+	};
+
+	__.controlBackButton = function(layer) {
+		var backButtons,context;
+		if(__.openLayersSinceLastClose > 1) {
+			context=layer.getElement();
+			if(context){
+				backButtons = DOM_UTILS.getElementsArray('.nm-button-back',context);
+				backButtons.forEach(function(button) {
+					button.classList.remove('nm-hidden');
+					context.classList.add('nm-layer-show-button-back');
+					button.addEventListener('click', __.handleLayerBack);
+				});
+			}
+		}
+	};
+
+	__.handleLayerBack = function() {
+		history.back();
+		__.openLayersSinceLastClose -= 2;
+	};
+	/**
+	 * Handles a layer.open event
+	 * @param {Object} data - The event payload.
+	 * @returns {void}
+	 */
+	exports.handleLayerOpen = function(data) {
+		if(!!this && typeof this.preventDefault === 'function') {
+			this.preventDefault();
+		}
+		__.nextLayerData = [data[0].layer, data[1], data[2]];
+		__.openLayersSinceLastClose += 1;
+		__.next();
+	};
+	/**
+	 * Handles a layer.close event
+	 * @param {Object} data - The event payload.
+	 * @returns {void}
+	 */
+	exports.handleLayerClose = function(data) {
+		if(!!this && typeof this.preventDefault === 'function') {
+			this.preventDefault();
+		}
+		__.openLayersSinceLastClose = 0;
+		if(!__.layer) {
+			return false;
+		}
+		__.layer.close().then(function() {
+			// everything's fine.
+			__.layer = undefined;
+			__.next();
+		}, function(err) {
+			console.error(err);
+		});
+	};
+
+	exports.handleCloseRequest = function() {
+		ROUTER.close('layer', __.layer.url);
+	};
+
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.domEventDelegate = DOM_UTILS.getEventDelegate('body');
+			__.initialize();
+			resolve("core/layer/cms.js");
+		});
+	};
+	return exports;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+
+/***/ 69:
+/*!****************************************************************************!*\
+  !*** /opt/app/nemo/node_modules/raw-loader!./js/templates/error-layer.tpl ***!
+  \****************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"nm-layer-wrapper nm-layer-wrapper-dialogue\">\n\t<div class=\"nm-layer nm-layer-dialogue nm-error-layer nm-layer-visible\">\n\t\t<div class=\"nm-layer-inner\">\n\t\t\t<div class=\"nm-layer-dialogue-content clearfix\">\n\t\t\t\t{{var errorHeadline = window.i18n['error-layer.headline']; }}\n\t\t\t\t<h1 class=\"nm-h2\">{{=errorHeadline}}</h1>\n\t\t\t\t{{ var defaultErrorMessage = window.i18n['error-layer.unknown-error'] || 'Es ist ein unbekannter Fehler aufgetreten'; }}\n\t\t\t\t<p class=\"nm-c3 nm-error nm-error-layer-message\" style=\"float:none;\" data-defaultErrorMessage=\"{{=defaultErrorMessage}}\"> {{=it.errorMessage}} </p> <!-- TODO: i18n -->\n\t\t\t\t<a class=\"nm-b1 nm-j-ok-btn\" style=\"float:right;\" href=\"#\">\n\t\t\t\t\t{{ var ok = window.i18n['ok-label'] || 'OK'; }}\n\t\t\t\t\t<span>{{=ok}}</span>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n"
+
+/***/ }),
+
+/***/ 8:
+/*!**************************!*\
+  !*** ./js/app/router.js ***!
+  \**************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* jshint unused: true, undef: true */
+/*global SETUPS*/
+/*
+ * triggers 'page.open', 'page.leave', 'page.abort'
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	__webpack_require__(/*! jquery */ 1),
+	__webpack_require__(/*! router-state */ 228),
+	__webpack_require__(/*! events */ 0),
+	__webpack_require__(/*! core/signal */ 4)
+], __WEBPACK_AMD_DEFINE_RESULT__ = function Router (jQuery, State_, EVENTS, EMITTER) {
+	"use strict";
+
+	var
+	__ = {},
+	exports = {
+		__: __
+	},
+
+	/**
+	 * scroll pos before hash change (applies only for empty new hash)
+	 */
+	_scrollPos = false,
+
+	/**
+	 * abourted state
+	 */
+	_aborted = false;
+	__.pathBase="";
+	/**
+	 * @describe Can we use pushState etc.?
+	 * @return {Boolean}
+	 */
+	exports.history_available = (function() {
+		return !!(window.history && history.pushState);
+	}());
+
+	/**
+	 * registered selectors and channels
+	 */
+	__.registered = [];
+	/**
+	 * construct new hash string from old hash and new key value pair
+	 */
+	__.newHashString = function(oldHash, keyName, value, action, attrs) {//eslint-disable-line max-params
+		var hashParts,hashValue,
+			hashObjects = {},
+			key, attr;
+
+		action = action || 'open';
+		attrs = attrs || {};
+
+		if (!keyName) {
+			return oldHash;
+		}
+
+		hashObjects = __.state.parseHash(oldHash);
+
+		// remove key from hash if action is 'close'
+		if (action === 'close') {
+			if (hashObjects[keyName] !== undefined) {
+				delete hashObjects[keyName];
+			}
+		}
+		// ... or add new value
+		else {
+			hashObjects[keyName] = value;
+		}
+
+		hashParts = [];
+
+		for (key in hashObjects) {
+			if ( !!hashObjects[key]) {
+				if (action === 'close' && key.match(/data-/)) {
+					continue;
+				}
+				if (key === 'page') {
+					history.pushState({pageLoad: true}, null, hashObjects[key]);
+					__.updatePathBase();
+					__.handleHistoryChange({state: {pageLoad: true}});
+					continue;
+				}
+				hashValue=hashObjects[key];
+				if(!!hashValue){
+					hashParts.push(key + '=' + hashValue);
+				}
+			}
+		}
+		for (attr in attrs) {
+			if (!!attrs[attr]) {
+				hashParts.push('data-' + attr + '=' + attrs[attr]);
+			}
+		}
+		var result;
+		if (!new RegExp(State_.URL_PAGE_SEPARATOR).test(oldHash)) {
+			result = hashParts.join(State_.URL_PARAM_SEPARATOR);
+		}
+		else {
+			result = hashParts.join(State_.URL_PAGE_SEPARATOR);
+		}
+
+		return result;
+	};
+
+	__.getChannelAttributes = function(el, channel) {
+		var channelAttributes = {},
+			key,
+			nodeName,
+			i,
+			n = el.attributes.length;
+
+		for (i = n - 1; i > -1; i--) {
+
+			nodeName = el.attributes[i].nodeName;
+
+			if (nodeName.match(/^data/) && nodeName.match(channel)) {
+				key = nodeName.replace(/^data-/, '');
+				channelAttributes[key] = el.attributes[i].nodeValue;
+			}
+		}
+
+		return channelAttributes;
+	};
+
+	/**
+	 * publish necessary events
+	 */
+	__.publishChanges = function(changes, attrs, currentAttrs) {
+
+		var change,
+			type,
+			pathName,
+			data, evtName,
+			i, l;
+
+		for (i = 0, l = changes.length; i < l; i++) {
+			change = changes[i];
+			if (change[0] === 'page') {
+				pathName = change[2] === 0 ? location.pathname : change[1];
+
+				// FIXME: replace with EVENTS
+				//
+				__.eventBus.emit(EVENTS.PAGE_OPEN, {
+					pathname: pathName
+				});
+			}
+			else {
+
+				type = (change[2] === 0) ? '.close' : '.open';
+				data = {};
+				data[change[0]] = change[1];
+				evtName = change[0] + type;
+
+				__.eventBus.emit(evtName, [data, attrs, currentAttrs]);
+			}
+		}
+	};
+
+	__.hashIsEmpty = function(hash_){
+		var hash = "";
+		if(hash_) {
+			hash = hash_;
+		}
+		return hash.length === 0;
+	};
+
+	__.hashHasRegex = function(hash_,regex){
+		return regex.test(hash_);
+	};
+
+	__.hasInvalidHashParam = function(hash_){
+		var url_regex = /\/\//gi,
+			invalid = false;
+
+		if(hash_) {
+			if(hash_.indexOf("=") > 0) {
+				hash_ = hash_.split('=')[1];
+			}
+			invalid = __.hashIsEmpty(hash_);
+			invalid = invalid === true ? true : __.hashHasRegex(hash_,url_regex);
+		}
+		return invalid;
+	};
+
+	__.tryHashUpdate = function(newHashString) {
+
+		// reset _aborted.
+		_aborted = false;
+
+		// FIXME: replace with EVENTS
+		//
+		// trigger page.leave to provoce page.abort events.
+		__.eventBus.emit(EVENTS.PAGE_LEAVE);
+
+		// if page.abort has not been triggered, change hash.
+		if (!_aborted) {
+			if (newHashString) {
+				_scrollPos = false;
+				location.hash = newHashString;
+			} else {
+				_scrollPos = document.body.scrollTop;
+				location.hash = '';
+			}
+		}
+	};
+	__.createState = function(pathname, hash) {
+
+		hash = hash || '';
+		pathname = pathname || '';
+
+		return new State_(pathname, hash);
+	};
+
+	__.handleHistoryChange = function(event) {
+		// wir haben entweder einen page-link event, oder ein history back auf einen vorherigen page-load
+		if (event.state && !!event.state.pageLoad) {
+			__.publishChanges([['page', location.pathname, 0]], [], []);
+		}
+	};
+
+	__.initialize = function () {
+		__.eventBus=EMITTER.getEmitter();
+		window.addEventListener('popstate', __.handleHistoryChange);
+		// listen to hashchange
+		window.addEventListener('hashchange',__.handleHashChange,false);
+		 if (__.hasInvalidHashParam(location.hash)){
+			console.error("invalid hash param", location.hash);
+			__.eventBus.emit(EVENTS.ERROR);
+			location.hash = location.hash.split('#')[0];
+			return false;
+		}
+		// console.info('Router::init()');
+
+		// TODO: check function scope
+		//
+		__.state = __.createState(location.pathname, location.hash);
+
+		var _notify = function () {
+			__.publishChanges(__.state.getChanges(), __.state.getAttrs(), __.state.getCurrentAttrs());
+		};
+		window.setTimeout(_notify, 100);
+		__.updatePathBase();
+	};
+	
+	__.updatePathBase = function() {
+		__.pathBase= window.location.pathname.split('/');
+		//remove page "pagename.html"
+		__.pathBase.pop();
+		__.pathBase.push("");
+		__.pathBase=__.pathBase.join('/');
+		//remove spaces
+		__.pathBase=__.pathBase.split(" ").join("");
+		SETUPS.set('nemo.core.router.pathBase',__.pathBase);
+	}
+
+	__.handleHashChange=function(){
+		if(__.hasInvalidHashParam(location.hash)){
+				console.error("invalid hash param", location.hash);
+				__.eventBus.emit(EVENTS.ERROR);
+				location.hash = location.hash.split('#')[0];
+				return false;
+			}
+			// reset scroll pos for empty hash
+			if (_scrollPos) {
+				document.body.scrollTop = _scrollPos;
+				console.log("scrollTop is " + _scrollPos);
+			}
+			//
+			var _hash = location.hash.split('#')[1] || '';
+			_hash = '#'+_hash;
+			__.eventBus.emit(EVENTS.HASH_CHANGE, _hash);
+			__.state.update(_hash);
+			__.publishChanges(__.state.getChanges(), __.state.getAttrs(),	__.state.getCurrentAttrs());
+		};
+
+	__.reset = function() {
+		__.state = this.createState(location.pathname, '');
+		__.registered = [];
+	};
+
+	__.addUrlSelector = function(url, urlSelector) {
+		var selectorPos = url.lastIndexOf('.html');
+		var newurl =
+			url.substring(0, selectorPos) +
+			'.' + urlSelector +
+			url.substring(selectorPos);
+		return newurl;
+	};
+
+	__.getPreviousPageData = function(location_) {
+		return {
+			pathName: location_.pathname,
+			hashIdentifier: ((location_.hash && location_.hash.indexOf("page=") >= 0) ? 'page' : ''),
+			hashShort: ((location_.hash && location_.hash.indexOf("page=") >= 0) ? location_.hash.split("page=")[1] : ''),
+			hash: location_.hash,
+			url: location_.pathname + location_.hash
+		};
+	};
+
+	exports.register = function(selector, keyName, action) {
+		var targetPath,
+			channelAttributes;
+
+		action = action || 'open';
+
+		__.registered.push([selector, keyName, action]);
+		console.info("ROUTER.register++++ selector: "+selector+", keyName: "+keyName+", action: "+action);
+		__.legacyEventBus=jQuery("body");
+		__.legacyEventBus.on("click",selector, function(event) {
+			var $link,
+				iframePath,
+				$el = jQuery(this);
+
+			if (event.target.tagName === 'A') {
+				$link = jQuery(event.target);
+			} else {
+				$link = jQuery(event.target).closest('a');
+			}
+
+			if( jQuery('body.nm-layer-iframelayer').length !== 0 ) {
+				console.log('IframelayerFallback-Mode');
+
+				if ($link.hasClass('nm-layerLink')) {
+					// if we are inside an iframe layer
+					// make sure that links that change the iframe content
+					// have the same 'iframelayer' selector
+					iframePath = jQuery($link).attr('href');
+					if (iframePath.indexOf('.iframelayer.') < 0) {
+						iframePath = __.addUrlSelector(iframePath, 'iframelayer');
+						jQuery($link).attr('href', iframePath);
+					}
+					return true;
+				}
+			}
+
+			if( $link.hasClass('js-link-extern') ) {
+				return true;
+			}
+
+			if( jQuery('body.nm-layer-fallback').length !== 0 ) {
+				console.log('Fallback-Mode');
+				return true;
+			}
+
+			event.preventDefault();
+			if (jQuery(event.target).hasClass('j-stop-propagation')) {
+				event.stopPropagation();
+			}
+
+			targetPath = ($el.attr('href'))? $el.attr('href') : $el.attr('data-href');
+			channelAttributes = __.getChannelAttributes($el[0], keyName);
+
+			if (typeof targetPath==='undefined') {
+				targetPath = jQuery(event.target).parents('a').attr('href');
+			}
+			__.previousPage = __.getPreviousPageData(window.location);
+			__.tryHashUpdate(__.newHashString(location.hash, keyName, targetPath, action, channelAttributes));
+			//return false;
+		});
+	};
+
+	exports.open = function(keyName, href) {
+		__.tryHashUpdate(__.newHashString(location.hash, keyName, href, 'open'));
+	};
+
+	exports.close = function(keyName, href) {
+		__.tryHashUpdate(__.newHashString(location.hash, keyName, href, 'close'));
+	};
+
+	exports.getPreviousPage = function() {
+		return (__.previousPage ? __.previousPage : null);
+	};
+
+	exports.getState = function() {
+		return __.state;
+	};
+
+	exports.getRegistered = function() {
+		return __.registered;
+	};
+
+	exports.getPathBase = function() {
+		return __.pathBase||"";
+	};
+
+
+	exports.initializePromise = function(eventBus_) {
+		return new Promise(function(resolve) {
+			__.eventBus = eventBus_;
+			__.initialize();
+			resolve("router.js");
+		});
+	};
+	return exports;
+
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ })
+
+},[225]);
+});
+//# sourceMappingURL=bundle.core.js.map

@@ -1,0 +1,727 @@
+/*! release#17.55.1 */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("bundle.core"), require("bundle.vendor"));
+	else if(typeof define === 'function' && define.amd)
+		define("bundle.home", ["bundle.core", "bundle.vendor"], factory);
+	else if(typeof exports === 'object')
+		exports["bundle.home"] = factory(require("bundle.core"), require("bundle.vendor"));
+	else
+		root["bundle.home"] = factory(root["bundle.core"], root["bundle.vendor"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_4__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/*!******************************!*\
+  !*** external "bundle.core" ***!
+  \******************************/
+/*! no static exports found */
+/*! exports used: DOM_UTILS, EVENTS */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
+
+/***/ }),
+/* 1 */
+/*!*************************************!*\
+  !*** ./components/includes/home.js ***!
+  \*************************************/
+/*! exports provided:  */
+/*! all exports used */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_model_band_model_band__ = __webpack_require__(/*! model-band/model-band */ 2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_dealer_search_dealer_search__ = __webpack_require__(/*! dealer-search/dealer-search */ 3);
+
+
+
+/***/ }),
+/* 2 */
+/*!*********************************************!*\
+  !*** ./components/model-band/model-band.js ***!
+  \*********************************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+/**
+ * some selector variables
+ */
+__.oDefaults = {
+	selectorModul: '.nm-module-model-band',
+	selectorImageInModul: '.nm-module-model-band img',
+	selectorNavigationItem: '.nm-model-band-tab-navigation li',
+	selectorModelContainer: '.nm-model-band-container-models',
+	selectorContainerWrap: '.nm-model-band-container',
+	selectorContainer: '.nm-model-band-container > ul',
+	selectorTypesContainer: '.nm-model-band-container-types',
+	selectorContainerItem: '.nm-model-band-container-item',
+	selectorContainerItemVisible: '.nm-model-band-container-item-visible',
+	selectorContainerItemInner: '.nm-model-band-container-item-inner',
+	selectorContainerItemHeadline: '.nm-model-band-container-headline',
+	selectorEecContainer: '.nm-model-band-eec-explanation',
+	selectorArrowButton: '.nm-model-band-stripe-navigation-item',
+	selectorPrevButton: '.nm-model-band-stripe-prev',
+	selectorNextButton: '.nm-model-band-stripe-next',
+	selectorStripeContainer: '.nm-model-band-stripe-container',
+	selectorStripeWrap: '.nm-model-band-stripe-wrap',
+	selectorStripeModelWrap: '.nm-model-band-stripe-models-wrap',
+	selectorStripeTypeWrap: '.nm-model-band-stripe-types-wrap',
+	selectorStripe: '.nm-model-band-stripe',
+	selectorStripeList: '.nm-model-band-stripe > ul',
+	selectorStripeItem: '.nm-model-band-stripe-item',
+	selectorInput: '.nm-model-band-input',
+	selectorModelInputs: '.nm-model-band-models-input',
+	selectorTypeInputs: '.nm-model-band-types-input',
+	selectorDefaultInputs: '.nm-model-band-default-input',
+	classStripeContainerHidden: 'nm-model-band-stripe-container-hidden',
+	classContainerIsOpen: 'nm-j-model-band-container-is-open',
+	classContainerSticky: 'nm-j-model-band-container-sticky',
+	classContainerItemVisible: 'nm-model-band-container-item-visible',
+	classShowPrevArrow: 'nm-j-model-band-show-prev-arrow',
+	classShowNextArrow: 'nm-j-model-band-show-next-arrow',
+	classPrevButton: 'nm-model-band-stripe-prev',
+	classDefaultTab: '#nm-model-band-tab-nav-models',
+	classDefaultItem: '#nm-model-band-models-default'
+};
+
+__.scrollDuration = 500;
+/**
+ * public initialize method
+ * @returns {undefined}
+ */
+function init() {
+	__.reset();
+	__.addEvents();
+
+	setTimeout(function() {
+		__.resizeModule();
+	}, 1000);
+	console.log('init: model-band');
+}
+/** private functions */
+/**
+ * private function adding events
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	window.addEventListener('resize', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.resizeModule, 50));
+	window.addEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.scrollHandler, 100));
+	__.domEventDelegate.on('scroll', __.oDefaults.selectorStripe, __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.stripeScrollHandler, 100));
+	__.domEventDelegate.on('click', __.oDefaults.selectorNavigationItem, __.handleNavItemClick);
+	__.domEventDelegate.on('click', __.oDefaults.selectorPrevButton, __.handlePrevNextClick);
+	__.domEventDelegate.on('click', __.oDefaults.selectorNextButton, __.handlePrevNextClick);
+	__.domEventDelegate.on('click', __.oDefaults.selectorStripeItem, __.handleStripeItemClick);
+	__.domEventDelegate.on('click', __.oDefaults.selectorDefaultInputs, __.handleDefaultInputClick);
+};
+/**
+ * private funtion resetting all inputs
+ * @returns {undefined}
+ */
+__.reset = function(){
+	var defaultTabInput = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.classDefaultTab),
+	defaultItemInput = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.classDefaultItem);
+	defaultTabInput.checked = true;
+	defaultItemInput.checked = true;
+};
+/**
+ * private function for getting the current module
+ * @param {HTMLElement} target_ - event target
+ * @returns {HTMLElement} module container/context
+ */
+__.getCurrentModule = function(target_) {
+	if (!target_) {
+		return null;
+	}
+	return __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(target_, __.oDefaults.selectorModul);
+};
+/**
+ * private function for getting the visible stripe
+ * @param {HTMLElement} module_ - model band module
+ * @returns {HTMLElement} HTML Element
+ */
+__.getVisibleStripe = function(module_) {
+	var stripes = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorStripe, __.getCurrentModule(module_)),
+		visibleStripe = null;
+	stripes.forEach(function(stripe) {
+		var isVisible = window.getComputedStyle(stripe.parentNode, null).getPropertyValue("display");
+		if (isVisible === "block") {
+			visibleStripe = stripe;
+		}
+	});
+	return visibleStripe;
+};
+/**
+ * private function for getting the visible stripe index
+ * @param {HTMLElement} module_ - model band module
+ * @returns {Integer} Integer
+ */
+__.getVisibleStripeIndex = function(module_) {
+	var stripes = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorStripe, __.getCurrentModule(module_)),
+		visibleIndex = null;
+	stripes.forEach(function(stripe, index) {
+		var isVisible = window.getComputedStyle(stripe.parentNode, null).getPropertyValue("display");
+		if (isVisible === "block") {
+			visibleIndex = index;
+		}
+	});
+	return visibleIndex;
+};
+
+/**
+ * private function returning the current selected item
+ * @param {DOMElement} stripe - the visible Stripe containing the item
+ * @return {DOMElement} current selected item
+ */
+__.getCurrentSelectedItem = function(module) {
+	var currentInput = __.getVisibleStripeIndex(module) === 0 ? __.oDefaults.selectorModelInputs : __.oDefaults.selectorTypeInputs,
+	currentIndex = parseInt(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(currentInput + ':checked').getAttribute('data-index'), 10);
+
+	if (currentIndex) {
+		return __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement('[data-index="' + currentIndex + '"]' ,__.getVisibleStripe());
+	}
+	return null;
+};
+
+/**
+ * private function for scrolling event handling
+ * @param {Event} event_ - scroll event
+ * @returns {undefined} nothing
+ */
+__.stripeScrollHandler = function(event_) {
+	var stripe = event_.target,
+		stripeWrap = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(stripe, __.oDefaults.selectorStripeWrap),
+		stripeItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorStripeItem, stripe);
+	if (!!stripeItems && !!stripeWrap) {
+		__.hideNavigationArrows(stripeItems, stripeWrap);
+	}
+};
+/**
+ * private function for scrolling event handling
+ * @param {Event} event_ - scroll event
+ * @returns {undefined} nothing
+ */
+__.scrollHandler = function(event_) {
+	var modelBandModules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorModul);
+	modelBandModules.forEach(function(module) {
+		var container = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerWrap, module),
+			containerStartPos = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsAbsoluteTopPosition(container),
+			eecContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorEecContainer, container),
+			eecHeight = eecContainer.scrollHeight,
+			currentItem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerItemVisible),
+			visibleHeadline = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerItemHeadline, currentItem),
+			headlineHeight = visibleHeadline.scrollHeight,
+			containerEndPos = containerStartPos + container.clientHeight - eecHeight - headlineHeight;
+
+		if (container.classList.contains(__.oDefaults.classContainerIsOpen) && window.pageYOffset > containerStartPos && window.pageYOffset < containerEndPos) {
+			container.classList.add(__.oDefaults.classContainerSticky);
+			currentItem.style.paddingTop = headlineHeight + "px";
+		}
+		else {
+			container.classList.remove(__.oDefaults.classContainerSticky);
+			currentItem.style.paddingTop = "0px";
+		}
+	});
+};
+/**
+ * private function for resizing elements in module
+ * @returns {undefined} nothing
+ */
+__.resizeModule = function() {
+	var stripe, stripeItems, stripeWrap, stripeContainer,
+	modelBandModules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorModul);
+
+	modelBandModules.forEach(function(module) {
+		stripeContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripeContainer, module);
+		stripeContainer.classList.remove(__.oDefaults.classStripeContainerHidden);
+		stripe = __.getVisibleStripe(module);
+
+		if (!!stripe) {
+			__.setContainerItemHeight(module);
+			__.setContainerHeight(module);
+
+			stripeWrap = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(stripe, __.oDefaults.selectorStripeWrap);
+			stripeItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorStripeItem, stripe);
+
+			setTimeout(function() {
+				__.hideNavigationArrows(stripeItems, stripeWrap);
+			}, 500);
+		}
+	});
+};
+/**
+ * private function to check if all images are already loaded before showing stripe
+ * @returns {undefined}
+ */
+__.checkForLoadedImages = function() {
+	var modelBandModules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorModul);
+	modelBandModules.forEach(function(module) {
+		var images = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorImageInModul, module),
+			stripeContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripeContainer, module);
+		__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].preloadImages(images).then(function() {
+			stripeContainer.classList.remove(__.oDefaults.classStripeContainerHidden);
+			__.resizeModule();
+		}).catch(function(error) {
+			console.log("model-band: checkForLoadedImages - no images loaded", error);
+			stripeContainer.classList.remove(__.oDefaults.classStripeContainerHidden);
+			__.resizeModule();
+		});
+	});
+};
+/**
+ * private function for adding navigation click
+ * @param {Event} event_ - click event
+ * @returns {void} nothing
+ */
+__.handleNavItemClick = function(event_) {
+	var module = __.getCurrentModule(event_.target);
+	setTimeout(function() {
+		var stripe = __.getVisibleStripe(module);
+		stripe.scrollLeft = 0;
+		__.resetItems(module);
+		__.resetInputs(module);
+		__.setContainerItemHeight(module);
+	}, 0);
+	setTimeout(function() {
+		var stripe = __.getVisibleStripe(module),
+			stripeItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorStripeItem, stripe),
+			stripeWrap = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(stripe, __.oDefaults.selectorStripeWrap);
+		__.hideNavigationArrows(stripeItems, stripeWrap);
+	}, 500);
+};
+/**
+ * private function for adding expand container click handler
+ * @param {Event} event_ - click event
+ * @returns {undefined}
+ */
+__.handleStripeItemClick = function(event_) {
+	var context = this,
+		module = __.getCurrentModule(context),
+		currentStripe = __.getVisibleStripe(context),
+		stripeContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(currentStripe, __.oDefaults.selectorStripeContainer),
+		currentItem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(context, __.oDefaults.selectorStripeItem),
+		container = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerWrap),
+		currentContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorContainer, container)[__.getVisibleStripeIndex(context)],
+		containerItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorContainerItem, currentContainer),
+		currentInput,
+		newHeight,
+		currentIndex,
+		modulePosY = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsAbsoluteTopPosition(module),
+		itemPosX = 0,
+		containerWidth = stripeContainer.clientWidth,
+		itemWidth = currentItem.clientWidth,
+		scrollDuration = 500;
+
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].scrollTo(modulePosY, 200);
+	setTimeout(function() {
+		newHeight = 0;
+		currentIndex = -1;
+		currentInput = __.getVisibleStripeIndex(context) === 0 ? __.oDefaults.selectorModelInputs : __.oDefaults.selectorTypeInputs;
+		currentIndex = parseInt(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(currentInput + ':checked').getAttribute('data-index'), 10);
+
+		if (currentIndex >= 0) {
+			if (container.classList.contains(__.oDefaults.classContainerIsOpen)) {
+				containerItems.forEach(function(item) {
+					item.style.height = 0;
+					item.classList.remove(__.oDefaults.classContainerItemVisible);
+				});
+			} else {
+				container.classList.add(__.oDefaults.classContainerIsOpen);
+			}
+
+			newHeight = parseInt(currentItem.getAttribute('data-height'), 10);
+
+			currentIndex = parseInt(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(currentInput + ':checked').getAttribute('data-index'), 10);
+			containerItems[currentIndex].style.height = 'auto';
+			containerItems[currentIndex].classList.add(__.oDefaults.classContainerItemVisible);
+			container.style.height = newHeight + 'px';
+			itemPosX = (currentIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+			scrollDuration = scrollDuration * (Math.abs(itemPosX - currentStripe.scrollLeft) / containerWidth);
+			__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].animateElementX(itemPosX, currentStripe, scrollDuration);
+		}
+	}, 0);
+};
+/**
+ * private function to handle prev & next click on stripe
+ * @param {Event} event_ - click event
+ * @returns {undefined}
+ */
+__.handlePrevNextClick = function(event_) {
+	var direction = "next",
+	target = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(event_.target, __.oDefaults.selectorArrowButton);
+	if (!target) {
+		return;
+	}
+	if (target.classList.contains(__.oDefaults.classPrevButton)) {
+		direction = "prev";
+	}
+	__.translateStripe(target, direction);
+};
+/**
+ * private function to handle default input
+  * @param {Event} event_ - click event
+ * @returns {void} nothing
+ */
+__.handleDefaultInputClick = function(event_) {
+	var module = __.getCurrentModule(event_.target);
+	if (!!module) {
+		__.resetItems(module);
+	}
+};
+/**
+ * private function to reset input by activating the invisible default input
+ * @param {HTMLElement} context_ - HTML Element
+ * @returns {undefined}
+ */
+__.resetInputs = function(context_) {
+	var defaultInputs = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorDefaultInputs, context_),
+		inputs = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorInput, context_);
+	inputs.forEach(function(item) {
+		item.checked = false;
+	});
+	defaultInputs.forEach(function(item) {
+		item.checked = true;
+	});
+};
+/**
+ * private function to reset items
+ * @param {HTMLElement} context_ - HTML Element
+ * @returns {undefined}
+ */
+__.resetItems = function(context_) {
+	var container = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerWrap, context_),
+		containerItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorContainerItem, context_);
+	container.classList.remove(__.oDefaults.classContainerIsOpen);
+	container.style.height = "0px";
+	containerItems.forEach(function(item) {
+		item.style.height = "0px";
+		item.classList.remove(__.oDefaults.classContainerItemVisible);
+	});
+};
+/**
+ * private function setting data attributes of current height
+ * @param {HTMLElement} context_ - context element
+ * @returns {undefined}
+ */
+__.setContainerItemHeight = function(context_) {
+	var modelStripeWrap = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripeModelWrap, context_),
+		typeStripeWrap = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripeTypeWrap, context_),
+		modelContainerItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorModelContainer + ' ' + __.oDefaults.selectorContainerItem, context_),
+		typeContainerItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorTypesContainer + ' ' + __.oDefaults.selectorContainerItem, context_);
+
+	modelContainerItems.forEach(function(item, i) {
+		__.setItemHeight(item, i, modelStripeWrap);
+	});
+	typeContainerItems.forEach(function(item, i) {
+		__.setItemHeight(item, i, typeStripeWrap);
+	});
+};
+/**
+ * private function setting data attributes of current height
+ * @param {HTMLElement} item_ - stripe item
+ * @param {integer} index_ - selected index
+ * @param {HTMLElement} context_ - context element
+ * @returns {undefined}
+ */
+__.setItemHeight = function(item_, index_, context_) {
+	var stripeItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorStripeItem, context_),
+		container = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerWrap),
+		eecContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorEecContainer, container),
+		itemInner = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerItemInner, item_),
+		height = itemInner.scrollHeight + eecContainer.scrollHeight;
+
+	// set data-height for all the cars in the visible modelband
+	stripeItems[index_].setAttribute('data-height', height);
+	// set data-height for the open container
+	item_.setAttribute('data-height', height);
+};
+
+/** private function setting the height of the containers
+ * @param {DOMElement} module - the model-band module
+ * @returns {undefined}
+ */
+__.setContainerHeight = function(module) {
+	var currentSelectedItem = __.getCurrentSelectedItem(module),
+	container = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorContainerWrap, module);
+	if (!!currentSelectedItem) {
+		container.style.height = currentSelectedItem.getAttribute('data-height') + "px";
+	}
+};
+
+/**
+ * private function for translating the stripe
+ * @param {HTMLElement} context_ - context module
+ * @param {String} direction_ - 'next' or 'previous'
+ * @returns {void} nothing
+ */
+__.translateStripe = function(context_, direction_) {
+	var newTranslate, scrollDuration,
+		stripeContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripeContainer, __.getCurrentModule(context_)),
+		stripeWrap = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(context_, __.oDefaults.selectorStripeWrap),
+		stripe = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripe, stripeWrap),
+		stripeList = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripeList, stripeWrap),
+		stripeItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorStripeItem);
+
+	if (stripeList.clientWidth > stripeContainer.clientWidth) {
+		stripeWrap.classList.remove(__.oDefaults.classShowPrevArrow);
+		stripeWrap.classList.remove(__.oDefaults.classShowNextArrow);
+
+		newTranslate = __.calculateNewScrollPosition(stripeContainer, stripe.scrollLeft, direction_, stripeList.clientWidth);
+		scrollDuration = __.calculateScrollDuration(stripeContainer, stripe.scrollLeft, newTranslate);
+		__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].animateElementX(newTranslate, stripe, scrollDuration).then(function() {
+			__.hideNavigationArrows(stripeItems, stripe);
+		});
+	}
+};
+/**
+ * @description private function calculating the duration for the scrolling
+ * @param {DOMElement} stripeContainer_ - the container of the stripes
+ * @param {DOMElement} currentPos_ - the left scroll position of the stripe
+ * @param {NUMBER} newTranslate_ - the new scroll position
+ * @returns {NUMBER} the duration of the scrollings
+ */
+__.calculateScrollDuration = function(stripeContainer_, currentPos_, newTranslate_) {
+	return __.scrollDuration * (Math.abs(currentPos_ - newTranslate_)/stripeContainer_.clientWidth);
+};
+
+/**
+ * @description private function calculating the new scroll position
+ * @param {DOMElement} stripeContainer_ - the container of the stripes
+ * @param {DOMElement} currentPos_ - the left scroll position of the stripe
+ * @param {String} direction_ - "next" or "prev"
+ * @param {NUMBER} stripeWidth_ - the width of the stripe
+ * @returns {NUMBER} the new scroll position
+ */
+__.calculateNewScrollPosition = function(stripeContainer_, currentPos_, direction_, stripeWidth_) {
+	var newTranslate,
+	containerWidth = stripeContainer_.clientWidth;
+
+	if (direction_ === "next") {
+		newTranslate = Math.min(currentPos_ + containerWidth, stripeWidth_ - containerWidth);
+	} else {
+		newTranslate = Math.max(0, currentPos_ - containerWidth);
+	}
+	return newTranslate;
+};
+/**
+ * private function for hiding navigation arrows when neccessary
+ * @param {Array} items_ -stripe items
+ * @param {HtmlElement} stripe_ - stripe
+ * @returns {void} nothing
+ */
+__.hideNavigationArrows = function(items_, stripe_) {
+	var stripeWrap = stripe_,
+		stripe = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorStripe, stripe_);
+	stripeWrap.classList.remove(__.oDefaults.classShowPrevArrow);
+	stripeWrap.classList.remove(__.oDefaults.classShowNextArrow);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isVisible(items_[0], stripe, true) === false) {
+		stripeWrap.classList.add(__.oDefaults.classShowPrevArrow);
+	}
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isVisible(items_[items_.length - 1], stripe, true) === false) {
+		stripeWrap.classList.add(__.oDefaults.classShowNextArrow);
+	}
+};
+/* ---------------- DOM UTILS END ---------------- */
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	__.domEventDelegate = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getEventDelegate('body');
+	init();
+});
+
+
+/***/ }),
+/* 3 */
+/*!***************************************************!*\
+  !*** ./components/dealer-search/dealer-search.js ***!
+  \***************************************************/
+/*! exports provided: __ */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+
+
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+__.oDefaults = {
+	selectorDealerSearchModule: '.nm-module-dealer-search',
+	selectorSearchInputfield: '.nm-dealer-search-inputfield',
+	selectorDealerSearchButton: '.nm-dealer-search-button',
+	selectorDealerSearchMapImage: '.nm-dealer-search-image-container',
+	selectorDealerGPSButton: '.nm-dealer-search-gps-icon'
+};
+/**
+ * public initialize method
+ * @returns {undefined}
+ */
+function init() {
+	var dealerSearchModule = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorDealerSearchModule);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(dealerSearchModule)) {
+		__.addEvents();
+		console.log('init: dealer-search');
+	}
+}
+/** private functions */
+
+/**
+ * Opens a new window and loads the url coresponding to the dsh module.
+ */
+__.openDshModule = function(urlParam) {
+	var dealerSearchModule = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorDealerSearchModule);
+	var url;
+	if(!!dealerSearchModule.getAttribute("data-dsh-url")) {
+		url = dealerSearchModule.getAttribute("data-dsh-url");
+	}
+
+	if(!!urlParam) {
+		url += urlParam;
+	}
+
+	window.open(url);
+};
+
+__.handleSearchHandler = function(){
+	var dealerSearchInputfield = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorSearchInputfield);
+	var searchValue = dealerSearchInputfield.value;
+	var urlParam;
+	if(!!searchValue) {
+		urlParam = "#search="+searchValue;
+	}
+	__.openDshModule(urlParam);
+};
+
+/**
+ * Call the search handler if the event key is 'Enter'
+ */
+__.handleEnterSearchHandler = function(e){
+	if (!e) {
+		return;
+	}
+	if (e.key === 'Enter') {
+		__.handleSearchHandler();
+	}
+};
+
+__.handleGPSLocation = function(){
+	var urlParam = "#geolocation=true";
+	__.openDshModule(urlParam);
+};
+
+/**
+ * private function adding events
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	__.domEventDelegate.on('click', __.oDefaults.selectorDealerSearchButton, __.handleSearchHandler);
+	__.domEventDelegate.on('click', __.oDefaults.selectorDealerSearchMapImage, __.handleSearchHandler);
+	__.domEventDelegate.on('click', __.oDefaults.selectorDealerGPSButton, __.handleGPSLocation);
+	__.domEventDelegate.on('keyup', __.oDefaults.selectorSearchInputfield, __.handleEnterSearchHandler);
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	__.domEventDelegate = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getEventDelegate('body');
+	var globalEventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].PAGE_READY, init);
+	init();
+});
+
+
+/***/ }),
+/* 4 */
+/*!********************************!*\
+  !*** external "bundle.vendor" ***!
+  \********************************/
+/*! no static exports found */
+/*! exports used: SIGNAL */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
+
+/***/ })
+/******/ ]);
+});
+//# sourceMappingURL=bundle.home.js.map

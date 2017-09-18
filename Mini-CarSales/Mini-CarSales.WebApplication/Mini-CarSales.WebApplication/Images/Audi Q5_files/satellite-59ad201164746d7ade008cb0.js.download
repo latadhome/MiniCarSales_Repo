@@ -1,0 +1,334 @@
+_satellite.pushBlockingScript(function(event, target, $variables){
+  (function(parent) {
+
+  parent._qOffensive={};
+
+  var _=parent._qOffensive;
+
+  _.felgen=function()
+  {
+    var v=parent._query.getCartItemBySubcategory("Felgen");
+
+    if(typeof(v) !== "undefined") {
+      return parent._query.getMBVOfProduct(v);
+    }
+
+    return "";
+  }
+
+  _.ausstattungslinie=function()
+  {
+    
+    var v=parent._query.getCartItemBySubcategory("ausstattungslinie");
+
+    if(typeof(v) !== "undefined") {
+      return v.productInfo.productID
+    }
+
+    return "";
+    
+     /*
+     // expected value: "s7-sportback" (a7 modell was selected)
+     // take the second last item out of window path for the modell
+     var v1 = [];
+     var v2 = [];
+
+     if(v1 = window.location.pathname.split("/")) {
+
+        i = v1.length - 2;
+        v2 = v1[i].split("-");
+       
+        if(typeof(v2[1]) === "string") {
+          return v2[1].toLowerCase();
+        } else {
+          return v2[0].toLowerCase();
+        }
+
+     } else {
+        return "";
+     }
+     */
+
+  }
+
+  _.sideblades=function()
+  {
+
+    var v=parent._query.getCartItemBySubcategory("sideblades");
+
+    // not always available
+    if(typeof(v) !== "undefined") {
+      return parent._query.getMBVOfProduct(v);
+    }
+
+    return "";
+
+  }
+
+  _.extcolor=function()
+  {
+   var v=parent._query.getCartItemByProductType("extcolor");
+
+    if(typeof(v) !== "undefined") {
+      return parent._query.getMBVOfProduct(v);
+    }
+
+    return "";
+
+  }
+
+  _.prString=function()
+  {
+    try{
+
+      var lastConfiguration=JSON.parse(localStorage.lastConfiguration);
+      var prString=window._query.getParamByName("prString",lastConfiguration.url);
+
+      //var url=lastConfiguration.url;
+      //if(typeof(lastConfiguration.assets)==="object"&&typeof(lastConfiguration.assets.exterior_front)!='undefined')var configurationImageURL=lastConfiguration.assets.exterior_front;
+      //else var configurationImageURL='';
+
+    }catch(e){
+      var prString='';
+    }
+    return prString;
+  }
+
+  _.price=function()
+  {
+    try{
+      var lastConfiguration=JSON.parse(localStorage.lastConfiguration);
+      var price=lastConfiguration.price;
+    }catch(e){
+      var price="";
+    }
+    return price;
+  }
+
+  _.modell=function()
+  {
+
+    // expected value: "q2", "a3", "a7"
+    
+    var returnVal = _satellite.getVar("page.attributes.modelLine");
+    
+    if(!(typeof(returnVal) === "string" && returnVal.length > 0)) {
+        
+        // model line was not set in the datalayer, try to extract from URL (legacy method)
+        // take the second last item out of window hash for the modell
+        // e.g. "s8-plus" from "#page=/de/brand/de/neuwagen/a8/s8-plus/motor.html"
+        var v1 = "";
+    
+        if(v1 = window.location.pathname.split("/")) {
+            i = v1.length - 2;
+            returnVal = v1[i].toLowerCase();
+        } else {
+            returnVal =  "";
+        }
+            
+    }
+    
+    return returnVal;
+    
+  }
+
+  _.year=function()
+  {
+
+    var returnVal = digitalData.page.attributes.modelYear;
+    
+    if(!(typeof(returnVal) === "string" && returnVal.length > 0)) {        
+        returnVal =  "";
+    }
+    
+    return returnVal;
+    
+  }
+
+  _.audicode=function()
+  {
+
+    if(typeof(webAnalyticsData) === "object") {
+
+       if(typeof(webAnalyticsData.event) === "object") {
+
+           var e = webAnalyticsData.event;
+
+           for (var key in e) {
+
+                if (typeof(e[key]["attributes"]) !== "undefined") {
+
+                   if (typeof(e[key]["attributes"]["audicode"]) === "string") {
+                       return e[key]["attributes"]["audicode"];
+                   }
+
+                }
+
+           }
+
+       }
+
+    }
+
+    return "";
+
+  }
+
+  _.basispreis=function()
+  {
+
+    if(typeof(digitalData.cart) !== "undefined") {
+        if((v=digitalData.cart.price.engineBasePrice) !== "undefined") return v;
+    }
+
+    return "";
+  }
+
+  _.sonderaustattung=function()
+  {
+
+    if(typeof(digitalData.cart) !== "undefined") {
+
+        if(digitalData.cart.price !== "undefined") {
+
+            var ddp = digitalData.cart.price;
+            return (ddp.cartTotal - ddp.engineBasePrice).toString();
+        }
+
+    }
+
+    return "";
+
+  }
+
+  _.kraftstoffart=function()
+  {
+
+    if(typeof(_query.getCartItemBySubcategory("motor")) === "object") {
+
+        var v=_query.getCartItemBySubcategory("motor").productInfo.productName;
+
+        v = v.toLowerCase();
+
+        if(v.indexOf("e-tron") > -1) return "e-tron";
+        if(v.indexOf("g-tron") > -1) return "g-tron";
+        if(v.indexOf("tdi") > -1) return "diesel";
+        return "benzin";
+    }
+
+    return "";
+
+  }
+
+  _.orderid=function()
+  {
+    
+    var cartID = "";
+    
+    var rand = Math.random() + "";
+    var rand = rand * 10000000000000;
+ 
+    if(typeof(webAnalyticsData.cart) !== "undefined") {
+
+        if(typeof(webAnalyticsData.cart.cartID) === "string" && webAnalyticsData.cart.cartID.length > 0) {
+
+            cartID = webAnalyticsData.cart.cartID;
+        }
+
+    }
+    
+    if(cartID === "" && typeof(digitalData.cart) !== "undefined") {
+
+        if(typeof(digitalData.cart.cartID) === "string" && digitalData.cart.cartID.length > 0) {
+
+            cartID = digitalData.cart.cartID;
+        }
+
+    }
+    
+    if(cartID === "") {
+        cartID = rand ;
+    }
+
+    return cartID;
+
+  }
+
+  _.carttotal=function()
+  {
+
+    if(typeof(webAnalyticsData.cart) !== "undefined") {
+
+        if(typeof(webAnalyticsData.cart.price.cartTotal) === "number") {
+            return webAnalyticsData.cart.price.cartTotal.toString();
+        }
+
+    }
+
+    return "";
+
+  }
+
+  _.checkString=function(checkString, strict)
+  {
+    
+    var pId = webAnalyticsData.page.pageInfo.pageID;
+
+    // strict = exact string match
+    if(typeof(strict) !== "undefined" && strict) {
+      
+        if(pId === checkString) return true;
+      
+    } else {
+      
+    	  if(pId.indexOf(checkString) > -1) return true;
+      
+    }
+
+    return false;
+
+/*
+    var wPath = window.location.pathname;
+    var wHash = window.location.hash;
+
+    console.log("Flood wPath " + wPath);
+    console.log("Flood wHash " + wHash);
+    
+    if(typeof(onlyPathBool) === "undefined") onlyPathBool = false;
+
+    if(onlyPathBool) {
+
+        if(wPath.indexOf(checkString) > -1) return true;
+
+    } else {
+
+        if(wPath.indexOf(checkString) > -1 || (wHash.length > 0 && wHash.indexOf(checkString) > -1)) return true;
+
+    }
+
+    return false;
+*/
+    
+  }
+    
+
+  _.checkDomain=function(checkString)
+  {
+
+    var wHost = window.location.hostname;
+    if(wHost.indexOf(checkString) > -1) return true;
+
+    return false;
+
+  }
+  
+  _.roundPrice=function(checkString)
+  {
+    
+    checkString = Number(checkString);
+    return checkString.toFixed(2).toString();
+
+  }
+  
+}(window))
+});

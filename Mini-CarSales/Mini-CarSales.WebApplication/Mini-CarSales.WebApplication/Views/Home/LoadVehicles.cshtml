@@ -1,0 +1,59 @@
+﻿
+@model IEnumerable<Mini_CarSales.Models.VehicleDetails>
+    
+
+
+
+@foreach (var item in Model)
+{
+        <tr class="row">
+            <td class="col-lg-6" style="padding-top:0.5em;padding-bottom:0.5em">
+                <img style="height:300px;width:500px" class="img-responsive" src="@Url.Content(@item.ImagePath)" />
+            </td>
+
+            <td class="col-lg-6" style="padding-top:0.5em;padding-bottom:0.5em">
+                @*<span class="row">
+                        ID: @item.Id
+                    </span>*@
+                <span class="row">
+                    <span class="col-lg-4"></span>
+                    <span class="col-lg-6"></span>
+                    <span class="col-lg-2"><button class="btn btn-default" style="height:30px;width:30px;" onclick="location.href='@Url.Action("GetVehicle", "Home",new { id=@item.Id})'"><span class="glyphicon glyphicon-edit"></span></button></span>                   
+                </span>
+                <span class="row">
+                    <span class="col-lg-4">Make</span>
+                    <span class="col-lg-4">Model</span>
+                    <span class="col-lg-4">Engine</span>
+
+                </span>
+                <span class="row">
+                    <span class="col-lg-4"><b> @item.MakeName</b></span>
+                    <span class="col-lg-4"> <b>@item.ModelName</b></span>
+                    <span class="col-lg-4"> <b>@item.EngineName</b></span>
+                </span>
+                <br />
+                <span class="row">
+                    <span class="col-lg-4">Doors</span>
+                    <span class="col-lg-4">Wheels</span>
+                    <span class="col-lg-4">Type</span>
+
+                </span>
+                <span class="row">
+                    <span class="col-lg-4"><b> @item.Doors</b></span>
+                    <span class="col-lg-4"> <b>@item.Wheels</b></span>
+                    <span class="col-lg-4"> <b>@item.Type</b></span>
+                </span>
+
+                <br />
+            </td>
+        </tr>
+       }
+   
+@*<div class="pagination pagination-lg">
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+           new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true })
+</div>*@
+
+
+

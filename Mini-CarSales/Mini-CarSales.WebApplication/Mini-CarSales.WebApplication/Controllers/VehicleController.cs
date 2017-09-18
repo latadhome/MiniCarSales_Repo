@@ -24,5 +24,15 @@ namespace Mini_CarSales.WebApplication.Controllers
         {
             return View();
         }
+
+        public ActionResult AddCar()
+        {
+            return View();
+        }
+
+        public ActionResult AddBike()
+        {
+            return View();
+        }
     }
 }

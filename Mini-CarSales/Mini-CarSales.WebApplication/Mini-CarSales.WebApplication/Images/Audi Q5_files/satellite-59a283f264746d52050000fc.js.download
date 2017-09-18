@@ -1,0 +1,151 @@
+// --------------------------------------------------------
+// helper function - which calls the direct call rule, which sends the pixel
+function triggerTags(callType)
+{
+  
+  var _FLhelper = window._qOffensive;
+  
+  _satellite.setVar("programmaticFloodlight_callType", callType);
+  
+  // filter country from TLD and fire country spcifix FL pixel
+  if(_FLhelper.checkDomain("audi.de")) {
+		_satellite.track("DeFloodlightCheckSites");
+  }
+  
+  if(_FLhelper.checkDomain("audi.ie")) {
+		_satellite.track("IeFloodlightCheckSites");
+  }
+  
+}
+
+
+// --------------------------------------------------------
+// trigger functions - trigger the single events, they call triggerTags();
+
+// ------
+// to be able to track audi code
+$(window).on("config_save",function() {
+  _satellite.notify("Floodlight, config_save event");
+  window.setTimeout(function(){triggerTags("config_save")},2000);
+});
+
+// ------
+// to be able to track brochure downloads
+document.addEventListener('click', function(data) {
+  
+  _satellite.notify("Floodlight, click event");
+
+  // check for add to configuration button
+  if( typeof(data) !== "undefined"
+      && typeof(data.target) !== "undefined"
+      && typeof(data.target.innerText) === "string") 
+  {
+    var btnText = data.target.innerText;
+    btnText = btnText.toLowerCase();
+
+    if (btnText.indexOf('add') > -1 && btnText.indexOf('to') > -1  && btnText.indexOf('configuration') > -1) {
+      triggerTags("add_to_configuration");
+    }
+    
+  }
+
+})
+
+// ------
+// to be able to track cart_add && cart_conflict_solved
+document.addEventListener('trackingApiParseApiCall', function(data) {
+  
+  _satellite.notify("Floodlight_, trackingApiParseApiCall event");
+  console.log(data.detail);
+  
+  var evts = data.detail[0].event;
+  
+  for (var i = 0; i < evts.length; i++) {
+    
+    var evt = evts[i];
+
+    // cart_add or cart_conflict_solved
+  	if(evt.eventInfo.eventAction === "cart_add" || evt.eventInfo.eventAction === "cart_conflict_solved") {
+       triggerTags("cart");
+  	}
+    
+    // diff. download scenarios
+  	if(evt.eventInfo.type === "download") {
+
+      if(evt.eventInfo.eventName.toLowerCase().indexOf("brochure") > -1) {
+      	_satellite.notify("Floodlight, download event: brochure download");
+      	triggerTags("brochure_download");
+      }
+      
+      if(evt.eventInfo.eventName.toLowerCase().indexOf("guide") > -1) {
+      	_satellite.notify("Floodlight, download event: product_guide download");
+      	triggerTags("product_guide");
+      }
+
+  	}
+    
+  	if(evt.eventInfo.eventAction === "page_load" && evt.eventInfo.type === "view") {
+       _satellite.notify("Floodlight, page_load view event: " + webAnalyticsData.page.pageInfo.pageID);
+      	triggerTags("page_load");
+  	}
+    
+  	if(evt.eventInfo.eventAction === "layer_show" && evt.eventInfo.type === "view") {
+       _satellite.notify("Floodlight, layer_show event: " + webAnalyticsData.page.pageInfo.pageID);
+      	triggerTags("layer_show");
+  	}
+    
+
+    if(evt.eventInfo.eventAction === "click") {
+      
+      if(evt.eventInfo.eventName.toLowerCase() === "print") {
+         _satellite.notify("Floodlight, click/print event");
+         triggerTags("print");
+      }
+
+    }
+      
+    
+    /*
+    // cart_add or cart_conflict_solved
+  	if(evt.eventInfo.eventAction === "config_start" || evt.eventInfo.type === "car") {
+      triggerTags("config_start");
+  	}
+    */
+    
+  }
+
+})
+
+
+/*
+
+$(window).on("hashchange",function() {
+  
+_satellite.notify("Floodlight, hashchange01");
+  
+  if(typeof(window.floodlightLastLayer) === "undefined") {
+    window.floodlightLastLayer = "";
+  }
+
+  var wHash = window.location.hash;
+  var wLastL = window.floodlightLastLayer;
+  
+  if(wLastL.length === 0 || wLastL.indexOf("layer") === -1) {
+      _satellite.notify("Floodlight, hashchange event: " + window.location.hash);
+      //window.setTimeout(function(){triggerTags("hashchange")},2000);
+  } else {
+			_satellite.notify("Floodlight, hashchange event cancelled (only layer closed): " + window.location.hash);
+  }
+  
+  window.floodlightLastLayer = wHash;
+  
+});
+// ------
+// a pageload of e.g. the summary page doesnt trigger hashchange event
+// execute also on pageload to be able to track direct entries into configurator
+$(window).on("load",function() {
+  //_satellite.notify("Floodlight, load event");
+  //window.setTimeout(function(){triggerTags("load")},2000);
+});
+
+*/

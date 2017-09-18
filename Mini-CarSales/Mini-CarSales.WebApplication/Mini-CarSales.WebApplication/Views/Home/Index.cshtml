@@ -1,79 +1,86 @@
 ﻿
-@model IEnumerable<Mini_CarSales.Models.VehicleDetails>
 
 @{
     ViewBag.Title = "List Of Vehicles";
 }
 
-<div class="row">
-    <div class="col-lg-offset-5">
-        <h2>List Of Vehicles</h2>
-    </div>
-    <div class="col-lg-offset-1 col-lg-2">
-        @Html.ActionLink("Create New", "CreateVehicle","Vehicle")
-    </div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<div class="container" style="border:solid 1px;padding-top:1em" >
+    @*<div class="row">
+        <div class="col-lg-offset-5">
+            <h2>List Of Vehicles</h2>
+        </div>
+    </div>*@
+   
+
+
+    @{
+        AjaxOptions options = new AjaxOptions()
+        {
+            Url = Url.Action("LoadVehicles"),
+            UpdateTargetId = "DataSetion",
+            //Confirm = "Are you sure you want to refresh the data?",
+            //OnBegin = "BeginRequest",
+            //OnSuccess = "",
+            //OnComplete = "",
+            //OnFailure = "",
+            HttpMethod = "GET",
+            LoadingElementId = "loadingText",
+            LoadingElementDuration = 6000
+        };
+    }
+
+   
+
+
+
+    
+
+    @using (Ajax.BeginForm(options))
+    {
+        <div class="row" style="background-color:lightblue;padding-top:1em">
+            <div class="col-lg-5">
+                <label>
+                   <b>Vehicle Type :</b> @Html.DropDownList("vehTypeId", new SelectList(new[] { "All", "Car", "Bike" }, "--Select--"), new { style = "height:50px;width:300px" })
+                </label>
+                <button class="btn btn-default" style="height:50px;width:50px"><span class="glyphicon glyphicon-refresh"><span id="loadingText" style="display: none"></span> </span></button>
+            </div>
+            
+            <div class="col-lg-2">
+               <input type="button" class="btn btn-primary" style = "height:50px;width:150px" value="CreateVehicle" onclick="location.href='@Url.Action("CreateVehicle", "Vehicle")'" />
+            </div>
+            <span> </span>
+            <div class="col-lg-2">
+               <input type="button" class="btn btn-primary" style = "height:50px;width:150px" value="AddCar" onclick="location.href='@Url.Action("AddCar", "Vehicle")'" />
+            </div>
+            <span> </span>
+            <div class="col-lg-2">
+               <input type="button" class="btn btn-primary" style="height:50px;width:150px" value="AddBike" onclick="location.href='@Url.Action("AddBike", "Vehicle")'" />
+            </div>
+            
+        </div>
+
+    }
+
+
+    <table class="table" style="padding-top:2em">
+        <thead>
+            <tr></tr>
+
+        </thead>
+        <tbody id="DataSetion">
+            @Html.Action("LoadVehicles", new { vehTypeId = "" })
+        </tbody>
+
+
+    </table>
+
+    @*<div id="DataSetion">
+            @Html.Action("LoadVehicles", new { vehTypeId = "" }, new { vehTypeId = "" })
+        </div>*@
+
+
+
 </div>
-
-<body >
-    <div >
-        
-        <table class="table">
-            <thead>
-                <tr></tr>
-
-            </thead>
-            <tbody>
-                @{
-                    foreach (var item in Model)
-                    {
-                        <tr class="row">
-                            <td class="col-lg-6">
-                                <img style="height:300px;width:500px" class="img-responsive thumbnail" src="@Url.Content(@item.ImagePath)" />
-                            </td>
-                            
-                            <td class="col-lg-6">
-                                @*<span class="row">
-                                    ID: @item.Id
-                                </span>*@
-                                <span class="row">
-                                    <span class="col-lg-4"></span>
-                                    <span class="col-lg-6"></span>
-                                    <span class="col-lg-2"><button class="btn btn-default" style="height:30px;width:30px;"><span class="glyphicon glyphicon-edit"></span></button></span>
-
-                                </span>
-                                <span class="row">
-                                    <span class="col-lg-4">Make</span>
-                                    <span class="col-lg-4">Model</span>
-                                    <span class="col-lg-4">Engine</span>
-                                   
-                                </span>
-                                <span class="row">
-                                    <span class="col-lg-4"><b> @item.MakeName</b></span>
-                                    <span class="col-lg-4"> <b>@item.ModelName</b></span>
-                                    <span class="col-lg-4"> <b>@item.EngineName</b></span>
-                                </span>
-                                <br/>
-                                <span class="row">
-                                    <span class="col-lg-4">Doors</span>
-                                    <span class="col-lg-4">Wheels</span>
-                                    <span class="col-lg-4">Type</span>
-
-                                </span>
-                                <span class="row">
-                                    <span class="col-lg-4"><b> @item.Doors</b></span>
-                                    <span class="col-lg-4"> <b>@item.Wheels</b></span>
-                                    <span class="col-lg-4"> <b>@item.Type</b></span>
-                                </span>
-                               
-                               <br />                                                          
-                            </td>                                                                                                              
-                        </tr>
-                }
-                }
-            </tbody>
-
-
-        </table>
-
-    </div>
-</body>

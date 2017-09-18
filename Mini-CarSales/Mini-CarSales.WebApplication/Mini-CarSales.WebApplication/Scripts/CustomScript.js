@@ -27,7 +27,11 @@
                     $('#img-upload').attr('src', e.target.result);
                 }
 
+               
+                alert("Hi");
                 reader.readAsDataURL(input.files[0]);
+                uploadFile(input.files[0]);
+
             }
         }
 
@@ -35,3 +39,19 @@
             readURL(this);
         });
     });
+
+
+    uploadFile = function (file) {
+        var fd = new FormData();
+        fd.append('file', file);
+        alert(file.name);
+        $.ajax({
+            url: '~/Images',
+            type: "POST",
+            contentType: false, // Not to set any content header  
+            processData: false, // Not to process data  
+            data: fd,
+            success: function (result) { alert("Success") },
+            error: function (err) { }
+        });
+    }

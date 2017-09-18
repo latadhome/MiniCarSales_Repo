@@ -1,0 +1,1341 @@
+/** IE Custom Function in order to enable JavaScript core functionality */
+// Enable CustomEvent object
+var locationRegex = new RegExp(window.location.host);
+
+if (typeof CustomEvent !== 'function') {
+	(function() {
+		function CustomEvent(event, params) {
+			params = params || {
+				bubbles : false,
+				cancelable : false,
+				detail : undefined
+			};
+			var evt = document.createEvent('CustomEvent');
+			evt.initCustomEvent(event, params.bubbles, params.cancelable,
+					params.detail);
+			return evt;
+		}
+		CustomEvent.prototype = window.Event.prototype;
+		window.CustomEvent = CustomEvent;
+	})();
+}
+
+// try
+// {
+window.AnalyticsInfo = function() {
+	var self = this;
+
+	var _ = {
+		account : 'audiag.log'
+	}
+
+	this.getAnalyticsTool = function() {
+		return _satellite.getToolsByType('sc')[0];
+	}
+
+	this.getVisitorTool = function() {
+		return _satellite.getToolsByType('visitor_id')[0];
+	}
+	var analytics = self.getAnalyticsTool();
+	var visitor = self.getVisitorTool();
+
+	this.isAdobeCookieReady = function() {
+		var visitor = self.getVisitorTool();
+		var s = analytics.getS();
+		window.tms.debug([ s.cookieDomain, visitor.instance.cookieDomain ]);
+		if (typeof (s.cookieDomain) === 'string'
+				|| typeof (visitor.instance.cookieDomain) === 'string')
+			return true;
+		return false;
+	};
+	this.onCookieReady = function(fn) {
+		// this function was intended to execute a callback when the adobe
+		// cookies are set... as too much effort, we do not need this atm.
+		throw new Error('not implemented yet');
+
+		// var c = 0;
+		// var t = 50;
+		// function check()
+		// {
+		// c++;
+
+		// window.tms.debug('Check cookie ready: ' + self.isAdobeCookieReady());
+		// if (self.isAdobeCookieReady() === true)
+		// {
+		// return fn();
+		// }
+		// if (c > 150) return;
+		// var n = t + (t * c * 0.3);
+		// window.tms.debug('timeout: ' + n);
+		// return window.setTimeout(check, n);
+		// }
+
+		// check();
+	};
+	this.getCookieAcceptance = function() {
+
+		var cookieAcceptance = 0;
+		if (typeof (navigator) === 'object' && navigator.cookieEnabled !== true)
+			return cookieAcceptance;
+
+		// debugger;
+
+		var visitor = self.getVisitorTool();
+		var s = analytics.getS();
+		var cookieDomain = null;
+
+		if (typeof (s) === 'object' && typeof (s.cookieDomain) === 'string')
+			cookieDomain = s.cookieDomain;
+		if (typeof (visitor) === 'object'
+				&& typeof (visitor.instance.cookieDomain) === 'string')
+			cookieDomain = visitor.instance.cookieDomain;
+
+		console.log('set cookie domain: ', s.cookieDomain,
+				visitor.instance.cookieDomain, cookieDomain);
+
+		if (cookieDomain === null)
+			return '[1|3]';
+
+		var reg = new RegExp(cookieDomain);
+		var cookieDomainTest = reg.test(window.location.hostname);
+
+		console.warn('cookieDomaintest', cookieDomainTest,
+				typeof (cookieDomain), s);
+
+		if (cookieDomainTest === true)
+			cookieAcceptance = '1';
+		else if (cookieDomainTest === false)
+			cookieAcceptance = '3';
+
+		return cookieAcceptance;
+	};
+	// debugger;
+	var data = {
+		Page : {
+			url : window.location.href,
+			hostname : window.location.hostname
+		},
+		DTM : {
+			buildDate : _satellite.buildDate,
+			libraryName : _satellite.configurationSettings.settings.libraryName,
+			isStaging : _satellite.configurationSettings.settings.isStaging,
+			dataElementsLength : Object.keys(_satellite.dataElements).length,
+			directCallRulesLength : _satellite.directCallRules.length,
+			pageLoadRulesLength : _satellite.pageLoadRules.length,
+			AnalyticsTool : (typeof (analytics) !== 'undefined') ? {
+				id : analytics.id,
+				version : analytics.getS().version,
+				account : analytics.settings.account,
+				euCookie : analytics.settings.euCookie,
+				trackingServer : analytics.settings.initVars.trackingServer,
+				trackingServerSecure : analytics.settings.initVars.trackingServerSecure,
+			}
+					: 'N/A',
+			MCVIDTool : (typeof (visitor) !== 'undefined') ? {
+				loadOn : visitor.settings.loadOn
+			} : 'N/A'
+		},
+		Api : {
+			version : window.TagManager.versionNumber,
+			gitCommitHash : window.TagManager.gitCommitHash,
+			buildDate : window.TagManager.buildDate
+		},
+		Error : {
+			errorMessage : ''
+		}
+	}
+
+	this.getData = function() {
+		return data;
+	}
+
+}
+
+/**
+ * AnalyticsStorage is a class to abstract the functionalities for handling
+ * cookies in order to make the api more reusable.
+ */
+window.AnalyticsStorage = function(opts) {
+	if (typeof (opts) !== 'object')
+		throw new Error('Missing Options for AnalyticsStorage');
+	if (typeof (opts.name) === 'undefined')
+		throw new Error(
+				'Cannot create AnalyticsStorage: missing name in opts param');
+	if (typeof (opts.debugCookie) === 'undefined')
+		opts.debugCookie = false;
+
+	// private settings which wont be stored within the cookie and are intended
+	// to be used by the AnalyticsStorage Instance
+	var _ = {
+		storageName : opts.name,
+		visitTimeoutMins : 30, // timeout of sessions/visit in minutes,
+		defaults : {
+			expiresInMS : 1000 * 60 * 60 * 24 * 30 * 365 * 10 // do not change
+																// This!
+																// Otherwise
+																// current
+																// cookie
+																// expiration
+																// could break!
+		},
+		fieldAlias : {
+			expiresInMS : 'exp', // DO NOT CHANGE
+			val : 'v'
+		}
+	}
+
+	var self = this;
+
+	// each property on data has a value, an expiration length (in milliseconds)
+	// and a ts to match the expiration length against when reading.
+	var data = {
+		pageTimestamp : {
+			val : null,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+		// _alias: 'pt' // DO NOT CHANGE
+		},
+		visitTimestamp : {
+			val : null,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+		// _alias: 'vt' // DO NOT CHANGE
+		},
+		activityTimestamp : {
+			val : null,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+			_fb : 'pageTimestamp', // _fb = fallback if not set
+		// _alias: 'at' // DO NOT CHANGE
+		},
+		pageNumber : {
+			val : 0,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+		// _alias: 'pn' // DO NOT CHANGE
+		},
+		pageNumberAll : {
+			val : 0,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+		// _alias: 'pna' // DO NOT CHANGE
+		},
+		visitNumber : {
+			val : 0,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+		// _alias: 'vn' // DO NOT CHANGE
+		},
+		daysSinceLastVisit : {
+			val : 0,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+		// _alias: 'dslv' // DO NOT CHANGE
+		},
+		currentPage : {
+			val : null,
+			expiresInMS : _.defaults.expiresInMS,
+			ts : null,
+		// _alias: 'cp' // DO NOT CHANGE
+		},
+		clickValues : {
+			val : null,
+			expiresInMS : 15000,
+		// _alias:'cv'
+		}
+	};
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function updates the pageview timestamp within the
+	 *              cookie
+	 * @name updatePageTimestamp
+	 */
+	this.init = function() {
+		var d = new Date();
+
+		self.debug('#init() called');
+		self.debug([ 'current storage values', {
+			pageTimestamp : self.get('pageTimestamp'),
+			pageNumber : self.get('pageNumber'),
+			pageNumberAll : self.get('pageNumberAll'), // wont be resetted on
+														// new visit
+			visitNumber : self.get('visitNumber'),
+			daysSinceLastVisit : self.get('daysSinceLastVisit'),
+			visitTimestamp : self.get('visitTimestamp')
+		} ]);
+
+		// check if pageTimestamp is bigger than 30mins:
+		// if yes:
+		// - increase visitnumber
+		// - set pageNumber to 0
+		// - calculateDaysSinceLastvisit
+		// - setVisitTimestamp
+		if (this.isNewVisit() === true) {
+			self.debug('This is a >> NEW << visit');
+			if (this.isFirstVisit() === true) {
+				this.set('daysSinceLastVisit', -1);
+			} else {
+				this.increment('visitNumber');
+				this.set('daysSinceLastVisit', this.getDaysSinceLastVisit());
+			}
+
+			this.set('pageNumber', 0);
+			this.set('visitTimestamp', Date.now());
+		}
+		// if not:
+		// - increase pagenumber
+		else {
+			self.debug('This is not a new visit');
+			this.increment('pageNumber');
+		}
+
+		this.increment('pageNumberAll');
+
+		// for all: set pageTimestamp, previousPage
+		this.set('pageTimestamp', Date.now());
+		this.refreshActivity();
+		if (document.referrer == "") {
+			this.set("currentPage", "direct")
+		} else if (!locationRegex.test(document.referrer)) {
+			this.set('currentPage', "ext:" + document.referrer);
+		}
+		// current page will be set with the first analytics call containing
+		// page information
+		// this.set('currentPage', window.location.href);
+
+		// finally save the cookie (store it on the page)
+		this.save();
+
+		self.debug([ 'new storage values', {
+			pageTimestamp : self.get('pageTimestamp'),
+			pageNumber : self.get('pageNumber'),
+			pageNumberAll : self.get('pageNumberAll'),
+			visitNumber : self.get('visitNumber'),
+			daysSinceLastVisit : self.get('daysSinceLastVisit'),
+			visitTimestamp : self.get('visitTimestamp'),
+			activityTimestamp : self.get('activityTimestamp')
+		} ]);
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description Returns -1 on first visit, 0 when visit is on same calendar
+	 *              day and number depending on the days between...
+	 * @returns {Boolean}
+	 * @name getDaysSinceLastVisit
+	 */
+	this.getDaysSinceLastVisit = function() {
+		var d = new Date();
+		var days = window.TagManager.getDaysBetweenDates(new Date(this
+				.get('activityTimestamp').val), d);
+		var c = days.length - 1;
+		this.debug([ 'getDaysSinceLastVisit',
+				'activityTimestamp:' + this.get('activityTimestamp'),
+				'days:' + days, 'count:' + c ]);
+
+		return c;
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description Returns a boolean indicating if this is the first visit
+	 * @returns {Boolean}
+	 * @name isFirstVisit
+	 */
+	this.isFirstVisit = function() {
+		return this.get('pageTimestamp').val === null;
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description Returns a boolean indicating if this is a new visit
+	 * @returns {Boolean}
+	 * @name isNewVisit
+	 */
+	this.isNewVisit = function() {
+		var d = new Date();
+		var act = this.get('activityTimestamp').val;
+		if (act === null)
+			return true;
+
+		return d - new Date(act) > (1000 * 60 * _.visitTimeoutMins);
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function returns the data for a property within the
+	 *              data array. Therefor it does look for the index in "mapping"
+	 *              and returns the value at that index within the data array.
+	 * @type {String}
+	 * @returns {Any}
+	 * @name get
+	 */
+	this.get = function(name) {
+		// var n = mapping[name];
+		var g = data[name];
+		if (typeof (g) === 'undefined')
+			throw new Error('Cannot get AnalyticsStorage value for key ' + name
+					+ ': undefined.');
+
+		// check if the value should be expired already and reset it if so
+		var d = Date.now();
+		// console.log(g)
+		// _satellite.notify("Get Cookie Value"+name+" and would expire in
+		// "+g.expiresInMS)
+		// _satellite.notify(" but time spend is "+ d-parseInt(g.ts))
+		if (d - g.ts > g.expiresInMS) {
+			var c = this.set(name, null);
+			return c;
+		}
+		return g;
+	}
+
+	this.debug = function(args) {
+		if (opts.debugCookie == 'true') {
+			if (!(args instanceof Array))
+				args = [ args ];
+			var a = [ 'AnalyticsStorage:' ];
+			a = a.concat(args);
+			console.debug.apply(console, a);
+		}
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function returns the data for a property within the
+	 *              data array. Therefor it does look for the index in "mapping"
+	 *              and returns the value at that index within the data array.
+	 * @type {String}
+	 * @returns {Any}
+	 * @name set
+	 */
+	this.set = function(name, value) {
+		// var n = mapping[name];
+		var g = data[name];
+		if (typeof (g) === 'undefined')
+			throw new Error('Cannot set AnalyticsStorage value for key ' + name
+					+ ': undefined.');
+		data[name].val = value;
+		data[name].ts = Date.now();
+		return data[name];
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function increments the value of the property
+	 * @type {String}
+	 * @returns {AnalyticsStorage}
+	 * @name increment
+	 */
+	this.increment = function(name) {
+		var g = data[name];
+		if (typeof (g) === 'undefined')
+			throw new Error('Cannot increment AnalyticsStorage value for key '
+					+ name + ': undefined.');
+		data[name].val = parseInt(data[name].val) + 1;
+		return this;
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function compiles the cookie data into one string which
+	 *              will be saved as one cookie.
+	 * @returns {String}
+	 * @name compile
+	 */
+	this.compile = function() {
+		var tmp = {};
+		// for (var i in data)
+		// {
+		// var c = data[i];
+		// var n = {};
+		// n[_.fieldAlias.val] = c.val;
+		// if (c.ts !== c.val) n.ts = c.ts; // if val === ts we leave ts empty
+		// if (c.expiresInMs !== _.defaults.expiresInMS)
+		// n[_.fieldAlias.expiresInMS] = c.expiresInMS;
+		// tmp[c._alias] = n;
+		// }
+		return JSON.stringify(data);
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function decompiles the json string into the analytics
+	 *              cookie
+	 * @returns {String}
+	 * @name decompile
+	 */
+	this.decompile = function(json) {
+		var d2 = JSON.parse(JSON.stringify(data));
+		try {
+			data = JSON.parse(json);
+			for ( var i in d2) {
+				if (typeof (data[i]) === 'undefined') {
+					if (typeof (d2[i]._fb) === 'string')
+						data[i] = JSON.parse(JSON.stringify(d2[d2[i]._fb]));
+					else
+						data[i] = d2[i];
+				}
+			}
+		} catch (e) {
+			console.log('Tried JSON parse on', json);
+			throw new Error('Cannot JSON.parse on this data');
+		}
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function loads the analytics cookie from the page
+	 * @name load
+	 */
+	this.refreshActivity = function() {
+		this.set('activityTimestamp', new Date());
+		this.save();
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function loads the analytics cookie from the page
+	 * @name load
+	 */
+	this.load = function() {
+		var json = window.AnalyticsStorage.getLocalStorageByName(_.storageName);
+		if (json == undefined) {
+			// we set the cookie with the name stored in "storageName", with the
+			// compiled AnalyticsStorage as value and 10 years expiration.
+			json = window.AnalyticsStorage.getCookieByName(_.storageName);
+			window.AnalyticsStorage.save(_.storageName, json, null)
+		}
+
+		// if no cookie data is set yet we just leave the "data" on this
+		// instance as it was
+		if (json === undefined || json === null || json === '')
+			return;
+		this.decompile(json);
+	}
+
+	/**
+	 * @memberof AnalyticsStorage
+	 * @description This function compiles the cookie data and saves it as
+	 *              cookie under the set cookie name
+	 * @name save
+	 */
+	this.save = function() {
+		// we set the cookie with the name stored in "storageName", with the
+		// compiled AnalyticsStorage as value and 10 years expiration.
+		window.AnalyticsStorage.save(_.storageName, this.compile(), 3650);
+	}
+
+	return this;
+}
+
+// days are optional - only required for cookies
+window.AnalyticsStorage.save = function(name, value, days) {
+	window.AnalyticsStorage["set" + window.AnalyticsStorage.getType()
+			+ "ByName"](name, value, days)
+
+}
+window.AnalyticsStorage.getType = function() {
+	if (typeof (window.localStorage) !== 'undefined') {
+		return "LocalStorage";
+	}
+	return "Cookie"
+}
+window.AnalyticsStorage.setCookieByName = function(name, value, days) {
+	var expires = '';
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toGMTString();
+	}
+	document.cookie = name + "=" + value + expires + "; path=/";
+}
+window.AnalyticsStorage.setLocalStorageByName = function(name, value) {
+	window.localStorage[name] = value;
+}
+window.AnalyticsStorage.getCookieByName = function(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ')
+			c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0)
+			return c.substring(nameEQ.length, c.length);
+	}
+	return undefined;
+}
+window.AnalyticsStorage.getLocalStorageByName = function(name, value) {
+	if (typeof (window.localStorage) == 'undefined')
+		return undefined;
+	return window.localStorage[name];
+}
+window.AnalyticsStorage.removeCookieByName = function(name) {
+	document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+window.AnalyticsStorage.removeLocalStorageByName = function(name) {
+	window.removeItem(name);
+}
+window.AnalyticsStorage.clearAllCookies = function() {
+	var cookies = document.cookie.split(";");
+	for (var i = 0; i < cookies.length; i++) {
+		window.AnalyticsStorage.removeCookieByName(cookies[i].split("=")[0]);
+	}
+}
+window.AnalyticsStorage.clearAllLocalStorages = function() {
+	throw new Error("Method not supplied within LocalStorage context")
+}
+window.TagManager = function(opts) {
+	var self = this;
+
+	if (typeof (opts) !== 'object')
+		throw new Error('Missing options for TagManager instance');
+
+	// this is the cookie reference
+	this.storage = new AnalyticsStorage(opts);
+	this.storage.load(); // initially load the cookie data on the page
+	this.storage.init();
+
+	// analytics information object used for debugging in an extra report suite
+	this.analyticsInfo = new AnalyticsInfo();
+
+	// callbacks
+	var dataLayerReadyCallbacks = [];
+	var callbacks = {
+		trackAction : []
+	};
+
+	// data layer
+	this.dataLayerKey = 'webAnalytics'; // data layer array
+										// (window[dataLayerKey])
+	this.dataLayerDataKey = this.dataLayerKey + 'Data'; // temporary data layer
+														// data:
+														// window[dataLayerKey +
+														// dataLayerDataSuffix]
+	window[this.dataLayerDataKey] = {};
+
+	// checking data layer presence
+	var triesDlPresence = 0; // counts the intervals the DTM api did check
+								// for the presence of the data layer
+	var maxTriesDlPresence = 120; // how many tries should we do before
+									// aborting the check for the presence of
+									// the data layer?
+	var countTrackActions = 0;
+
+	this.isReady = false;
+	this.dataLayerIsReady = false;
+	this.debugLevel = null;
+
+	/**
+	 * Below is the queue function
+	 */
+	var triggerQueue = [];
+	var queueLock = false;
+	function proceedTrackAction(data) {
+		if (typeof (data) !== 'object')
+			throw new TypeError(
+					'Calling TagManager#trackAction(data) expects object as first paramter.');
+		// if (typeof(fn) !== 'undefined' && typeof(fn) !== 'function') throw
+		// new TypeError('Calling TagManager#trackAction(data, fn) expects
+		// function as second paramter when set.');
+		countTrackActions++;
+		self.debug(countTrackActions + " trackAction Calls have been sent now");
+		function resolve() {
+			self.debug("Will trigger callback for api push..")
+			if (typeof (fn) === 'function')
+				return fn.apply(Function(), arguments);
+		}
+		try {
+			trigger('trackAction', self, [ window.TagManager.clone(data),
+					resolve ]);
+		} catch (e) {
+			console.error('Could not trigger trackAction');
+			console.error(e);
+		}
+		return undefined;
+	}
+	function checkQueue() {
+		// debugger;
+		// console.log("queue timeout/check:," +triggerQueue.length,queueLock)
+		if (triggerQueue.length > 0 && queueLock == false) {
+			// this.trackAction
+			var el = triggerQueue.shift();
+			self.lock(true);
+			window.digitalData = el[1];
+			proceedTrackAction(el[0])
+		}
+		window.setTimeout(checkQueue, 150)
+	}
+	checkQueue();
+
+	/**
+	 * @memberof TagManager
+	 * @description This function returns the local debug mode. As you can set
+	 *              the debug mode on each instance of TagManager this function
+	 *              will check if the debug mode has been set and otherwise
+	 *              return the global debug mode.
+	 * @type Function
+	 * @name getLocalDebugMode
+	 * @private
+	 */
+	this.getLocalDebugMode = function() {
+		if (self.debugLevel !== null)
+			return self.debugLevel;
+		var g = window.TagManager.getGlobalDebugMode();
+		if (g == undefined)
+			return undefined;
+		g = parseInt(g)
+		return g;
+	}
+
+	/**
+	 * @memberof TagManager
+	 * @description Lock the mutex in order to prevent race conditions
+	 * @type Function
+	 * @name lock
+	 * @private
+	 */
+	var _lastLock = Date.now();
+	var _lastUnlock = Date.now();
+	var _lockTimeout = 2000;
+	this.lock = function(val) {
+		if (typeof (val) != "boolean")
+			self
+					.error("Lock expects true/false as argument, got '" + val
+							+ "'")
+		if (val == true) {
+			// we check the timestamps for lock and unlock here to prevent
+			// debugging issues where a deadlock has been produced...
+			_lastLock = Date.now();
+			window
+					.setTimeout(
+							function() {
+								if (_lastLock <= Date.now() - _lockTimeout
+										&& _lastLock > _lastUnlock) {
+									self
+											.warn("The mutex lock has been applied but has not been unlocked within "
+													+ _lockTimeout
+													+ "ms. There might be design issue/deadlock in the implementation (missing 'window.tms.lock(false) somewhere). Nevertheless it has been automatically unlocked now.");
+									self.lock(false);
+								}
+							}, _lockTimeout);
+		} else {
+			_lastUnlock = Date.now();
+		}
+		queueLock = val;
+	}
+
+	/**
+	 * @memberof TagManagera
+	 * @description This is a private function to debug. Note, if isDebugEnabled
+	 *              is set to false, this function wont show any debug messages.
+	 * @type Function
+	 * @param msg
+	 *            {String} The message to print to the console
+	 * @private
+	 */
+	this.debug = function(data, level) {
+    var _ldm=self.getLocalDebugMode();
+    if(_ldm==undefined)return null;
+		// safe the original type for being used later
+		var origType = typeof (data);
+		if (!(data instanceof Array))
+			data = [ data ];
+		if (typeof (level) !== 'number')
+			level = 2;
+		if (_ldm < level)
+			return null;
+		var a = [ '%cAnalytics API:' ];
+    data.unshift("color:#034eaf");
+		a = a.concat(data);
+
+		// check if objects should be printed as json string
+		var jsonPrint = window.TagManager.getGlobalObjectJsonMode();
+		if (typeof (jsonPrint) !== 'undefined' && jsonPrint != null
+				&& jsonPrint != "false" && origType !== 'string') {
+			try {
+				a = JSON.stringify(a, null, 4);
+				a = [ a ];
+			} catch (e) {
+			}
+		}
+
+		// console.log(a);
+		return console.debug.apply(console, a);
+	}
+	/**
+	 * @memberof TagManager
+	 * @description This is a private function to print warn messages on the
+	 *              console. Note, if isDebugEnabled variable is set to false,
+	 *              this function wont show any debug messages.
+	 * @type Function
+	 * @param msg
+	 *            {String} The message to print to the console
+	 * @private
+	 */
+	this.warn = function warn(data) {
+		if (!(data instanceof Array))
+			data = [ data ];
+		if (self.getLocalDebugMode() < 1)
+			return null;
+		var args = [ 'Analytics API:' ];
+		args = args.concat(data);
+		return console.warn.apply(console, args);
+	}
+	/**
+	 * @memberof TagManager
+	 * @description This is a private function to print warn messages on the
+	 *              console. Note, if isDebugEnabled variable is set to false,
+	 *              this function wont show any debug messages.
+	 * @type Function
+	 * @param msg
+	 *            {String} The message to print to the console
+	 * @private
+	 */
+	this.error = function error(data) {
+		if (!(data instanceof Array))
+			data = [ data ];
+		var args = [ 'Analytics API:' ];
+		args = args.concat(data);
+		if (typeof (console.error) == 'undefined')
+			console.error = console.log
+		return console.error.apply(console, args);
+	}
+
+	/**
+	 * @memberof TagManager
+	 * @description This function checks in a given interval if the data layer
+	 *              is present and sets the ready state to true if so.
+	 * @type Function
+	 * @name checkDataLayerPresent
+	 * @private
+	 */
+	function checkDataLayerPresent() {
+		if (triesDlPresence > maxTriesDlPresence)
+			return self
+					.error('Exceeded max amount of tries ('
+							+ (500 * 40 / 1000)
+							+ 's) and still no window.webAnalytics ist present. Aborting now...');
+		// self.debug('Checking if data layer is present
+		// (window.webAnalytics)');
+		if (!(window.webAnalytics instanceof Array)) {
+			// self.debug('Data Layer is not present yet (' + triesDlPresence +
+			// '). Checking again in 1000ms');
+			triesDlPresence++;
+			return window.setTimeout(function() {
+				checkDataLayerPresent();
+			}, 500);
+		}
+		self.debug('Data Layer is present now.');
+		self.dataLayerIsReady = true;
+		while (dataLayerReadyCallbacks.length > 0) {
+			dataLayerReadyCallbacks.shift()();
+		}
+	}
+
+	// initially call the check data layer presence function
+	checkDataLayerPresent();
+
+	/**
+	 * @memberof TagManager
+	 * @description Private trigger to call hooks registered by TagManager.on()
+	 * @type Function
+	 * @param evt
+	 *            {String} The evt to trigger
+	 * @param context
+	 *            {Object} The tagManager instance where the event has been
+	 *            triggered
+	 * @param data
+	 *            {Object} The data being sent with
+	 * @private
+	 */
+	function trigger(evt, context, args) {
+		if (!callbacks[evt])
+			throw new Error('You tried to trigger an event called "' + evt
+					+ '" but this event does not exist!');
+		self.debug('Tracking Instance triggered event: ' + evt, args);
+		if (!(args instanceof Array))
+			args = [ args ];
+		for (var i = 0; i < callbacks[evt].length; i++) {
+			callbacks[evt][i].apply(context, args);
+		}
+	}
+	/**
+	 * @window.TagManagerlic
+	 * @description Register an event listener for event#didTrack (not only on
+	 *              one TagManager instance. This is useful for Mediacom
+	 *              listeners without knowing when and where an instance has
+	 *              been generated.
+	 * @memberof TagManager
+	 * @function on
+	 * @example .on('didTrack', function(obj) { // obj.context -> the tagManager
+	 *          instance where the event has been triggered // obj.data -> the
+	 *          data passed through, i.e. when calling tagManager#trackAction()
+	 *          });
+	 * @param {String}
+	 *            evt The event name - can be 'didTrack'
+	 * @param {Function}
+	 *            fn The function callback being executed when the event has
+	 *            been triggered. The callback is expected to have 2 arguments:
+	 *            obj (for informations on which property has changed with which
+	 *            value) and context (which is the instance of the API created
+	 *            by TagManager.create())
+	 * @todo Implement functionality to remove event listeners
+	 */
+	this.on = function(evt, fn) {
+		if (!callbacks[evt])
+			throw new ReferenceError('The event "' + evt
+					+ '" is not known in TagManager.');
+		var i = callbacks[evt].push(fn);
+		this.debug('Event ' + evt + ' has ' + i + ' registered callbacks now');
+		return {
+			unbind : function() {
+				callbacks[evt].splice(i - 1, 1);
+			}
+		}
+	}
+	/**
+	 * @window.TagManagerlic
+	 * @description Track an action like Play Video, Click Next Button, Start
+	 *              Configuration etc...
+	 * @memberof tagManager
+	 * @function trackAction
+	 * @instance
+	 * @param data
+	 *            {Object} The data object.
+	 */
+	this.trackAction = function(data) {
+		console.log(new Date().toISOString() + " mutex: push item to queue");
+		triggerQueue.push([ data, window.digitalData ]);
+	}
+
+	/**
+	 * @window.TagManagerlic
+	 * @description Notify all dependencies that the Script is ready now
+	 * @memberof tagManager
+	 * @function setReady
+	 * @instance
+	 */
+	this.setReady = function() {
+		if (self.dataLayerIsReady === false)
+			return dataLayerReadyCallbacks.push(self.setReady);
+		self.processQueue();
+		window[self.dataLayerKey].push = self.trackAction;
+		if (self.isReady === true)
+			warn('TagManager#isReady is already set to TRUE (tried setting it again by calling #setReady()). Maybe theres running another script somewhere else?');
+		self.isReady = true;
+		return self;
+	}
+	/**
+	 * @window.TagManagerlic
+	 * @description Get all elements which have been stored in the queue
+	 * @memberof tagManager
+	 * @function setReady
+	 * @instance
+	 */
+	this.processQueue = function() {
+		var q = window[self.dataLayerKey];
+		while (q.length > 0) {
+			var el = q.shift();
+			self.trackAction(el);
+		}
+		return self;
+	}
+	/**
+	 * @window.TagManagerlic
+	 * @description Unbind all event listeners and other instance settings
+	 * @memberof tagManager
+	 * @function destroy
+	 * @instance
+	 */
+	this.destroy = function() {
+		for ( var i in callbacks) {
+			callbacks[i] = [];
+		}
+	}
+
+	this.getEventByAction = function(eventAction) {
+		var self = this;
+		for (var i = 0; i < window[self.dataLayerDataKey].event.length; i++) {
+			if (window[self.dataLayerDataKey].event[i].eventInfo.eventAction == eventAction) {
+				try {
+					return window[self.dataLayerDataKey].event[i];
+				} catch (e) {
+					_satellite.notify(e)
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+
+	this.addEvent = function(evt, val) {
+		_satellite.setVar("_linkTrackEvents", _satellite
+				.getVar("_linkTrackEvents")
+				+ "," + evt);
+		_satellite.setVar("_events", _satellite.getVar("_events") + "," + evt
+				+ val);
+	}
+
+	if (typeof (s) === 'undefined')
+		this.debug('Instantiating TagManager Instance without settings.');
+	this.debug([ 'AnalyticsInfo Object', this.analyticsInfo.getData() ]);
+
+	return this;
+}
+
+// API Version Infos
+window.TagManager.gitCommitHash = 'n/a';
+window.TagManager.buildDate = 'n/a';
+window.TagManager.versionNumber = 'v1.1.1';
+
+/**
+ * @memberof TagManager
+ * @description This function returns the length of the properties on an object,
+ *              similar to Array.length
+ * @type {Object}
+ * @param {Object}
+ *            obj
+ * @name getObjectSize
+ */
+window.TagManager.getObjectSize = function(obj) {
+	var s = 0;
+	for ( var i in obj) {
+		if (obj.hasOwnProperty(i))
+			s++;
+	}
+	return s;
+}
+/**
+ * @memberof TagManager
+ * @description This function makes a clone and returns the object
+ * @type {Object}
+ * @name clone
+ */
+window.TagManager.clone = function(obj, into) {
+	return JSON.parse(JSON.stringify(obj));
+}
+/**
+ * @memberof TagManager
+ * @description This function makes a clone merge of the object into the new
+ *              object
+ * @type {Object}
+ * @name cloneMerge
+ */
+window.TagManager.cloneMerge = function(obj, newObj) {
+	var n = window.TagManager.clone(obj);
+	api$.extend(newObj, n);
+}
+/**
+ * @memberof TagManager
+ * @description This function returns an object with the key of each url param
+ *              and its value
+ * @type {Object}
+ * @name getUrlParams
+ */
+window.TagManager.getUrlParams = function(qs) {
+	if (typeof (qs) === 'undefined')
+		qs = document.location.search;
+	qs = qs.split('+').join(' ');
+
+	var params = {}, tokens, re = /[?&]?([^=]+)=([^&]*)/g;
+	while (tokens = re.exec(qs)) {
+		params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+	}
+
+	return params;
+}
+/**
+ * @memberof TagManager
+ * @description Trigger an api event on the document
+ * @type {Object}
+ * @name triggerApiEvent
+ */
+window.TagManager.triggerApiEvent = function(evt, args) {
+	if (!(args instanceof Array))
+		args = [ args ];
+	var evt = new CustomEvent('trackingApi' + evt, {
+		detail : args
+	});
+	document.dispatchEvent(evt);
+	return window.TagManager;
+}
+/**
+ * @memberof TagManager
+ * @description This function returns the local storage entry with the debug
+ *              mode
+ * @type {Object}
+ * @name getGlobalDebugMode
+ */
+window.TagManager.getGlobalDebugMode = function() {
+	return localStorage.getItem('api_debug_mode');
+};
+/**
+ * @memberof TagManager
+ * @description This function sets the local storage entry with the debug mode
+ * @type {Object}
+ * @name setGlobalDebugMode
+ */
+window.TagManager.setGlobalDebugMode = function(val) {
+	return localStorage.setItem('api_debug_mode', val);
+};
+/**
+ * @memberof TagManager
+ * @description This function returns the local storage entry with the object
+ *              json print mode
+ * @type {Object}
+ * @name getGlobalObjectJsonMode
+ */
+window.TagManager.getGlobalObjectJsonMode = function() {
+	return localStorage.getItem('print_object_json');
+};
+/**
+ * @memberof TagManager
+ * @description This function returns the local storage entry for the cookie
+ *              debug mode
+ * @type {Object}
+ * @name getGlobalCookieDebugMode
+ */
+window.TagManager.getGlobalCookieDebugMode = function() {
+	return localStorage.getItem('debug_storage');
+};
+/**
+ * @memberof TagManager
+ * @description This function returns the dates between two dates. Please note,
+ *              that it will return the dates of the params as well, so counting
+ *              -1 will make sense in most cases.
+ * @type {Object}
+ * @name getGlobalCookieDebugMode
+ */
+window.TagManager.getCalendarDatesBetweenDates = function(d1, d2) {
+	var oneDay = 24 * 3600 * 1000;
+	var d = [];
+	for (d = [], ms = d1 * 1, last = d2 * 1; ms < last; ms += oneDay) {
+		d.push(new Date(ms));
+	}
+	_satellite.notify('calendarDays FINAL' + d)
+	return d;
+}
+/**
+ * @memberof TagManager
+ * @description This function returns the dates between two dates. Please note,
+ *              that it will return the dates of the params as well, so counting
+ *              -1 will make sense in most cases.
+ * @type {Object}
+ * @name getGlobalCookieDebugMode
+ */
+window.TagManager.getDaysBetweenDates = function(d1, d2) {
+	var days = window.TagManager.getCalendarDatesBetweenDates(d1, d2);
+	if (!(days instanceof Array))
+		days = [];
+	return days;
+}
+/**
+ * @memberof TagManager
+ * @description This function loads all the url params and stores it on the
+ *              local storage
+ * @type {Object}
+ * @name parseUrlParams
+ */
+window.TagManager.parseUrlParams = function() {
+	/**
+	 * @description Check if a current value is avaialble for the api debug mode
+	 *              and if so store in the local storage
+	 */
+	var urlParams = window.TagManager.getUrlParams();
+	var currentDebugMode = urlParams.api_debug_mode;
+	if (typeof (currentDebugMode) !== 'undefined') {
+		console.log('Analytics Api: Set Api Debug Mode ' + currentDebugMode);
+		window.TagManager.setGlobalDebugMode(currentDebugMode);
+	}
+
+	var print_object_json = urlParams.print_object_json;
+	if (typeof (print_object_json) !== 'undefined') {
+		console.log('Analytics Api: Set Print Object JSON mode '
+				+ print_object_json);
+		localStorage.setItem('print_object_json', print_object_json);
+	}
+
+	var debug_storage = urlParams.debug_storage;
+	if (typeof (debug_storage) !== 'undefined') {
+		console.log('Analytics Api: Set Debug Storage mode ' + debug_storage);
+		localStorage.setItem('debug_storage', debug_storage);
+	}
+}();
+/**
+ * @memberof TagManager
+ * @description Calculate the byte size of a UTF-8 string
+ * @type {String}
+ * @name getByteSizeOfString
+ */
+window.TagManager.getByteSizeOfString = function(s) {
+	if (typeof (s) !== 'string')
+		s = '';
+	return encodeURI(s).split(/%..|./).length - 1;
+}
+/**
+ * @memberof TagManager
+ * @description Build concatenated string for tracking from object
+ * @type {String}
+ * @name getByteSizeOfString
+ */
+window.TagManager.buildConcatVariable = function(obj) {
+	var reservReplace = function(str) {
+		if (str && typeof str == "string") {
+			var nStr = str.replace(/\|/g, "_");
+			nStr = nStr.replace(/\;/g, ",");
+			return nStr;
+		}
+		return str;
+	};
+	var result = "";
+	for ( var key in obj) {
+		if (!obj.hasOwnProperty(key))
+			continue;
+		result += result === "" ? "" : ";";
+		result += key + "|" + reservReplace(obj[key]);
+	}
+	return result;
+};
+
+/**
+ * @memberof TagManager
+ * @description Get deep value inside an object (reduce annoying chained typeof
+ *              checks before getting variables)
+ * @type {String}
+ * @name getDeepValue
+ */
+
+/**
+ * Initialization !!! The following code creates the default instance of the
+ * page
+ */
+(function() {
+	"use strict";
+
+	// check if jQuery ist defined and has been moved to the new scope.
+	if (typeof (window.api$) === 'undefined')
+		throw new Error(
+				'DTM Class requires jQuery to work properly and be defined on "window.api$".');
+
+	// initialy add a new instance to the main object
+	if (typeof (window.tms) !== 'undefined')
+		console
+				.warn('It seems, that the TagManager API has been intialized already (window.tms not undefined). Overwriting now.');
+	window.tms = new window.TagManager({
+		name : 'dcdata',
+		debugCookie : window.TagManager.getGlobalCookieDebugMode()
+	});
+
+	// alert("Test")
+
+	if (typeof (_satellite) !== 'undefined') {
+		if (window.tms.getLocalDebugMode() >= 3) {
+			window.tms
+					.debug("Debug mode will also print access to Data Elements")
+			var tmp = _satellite.getDataElement;
+			_satellite.getDataElement = function() {
+        window.tms.debug([ "Req. Data Element -",arguments[0]])
+				return tmp.apply(this, arguments)
+			}
+		}
+	}
+
+	// register event listener on trackAction. this hook is triggered whenever
+	// the webAnalytics.push() method is called
+	window.tms
+			.on(
+					'trackAction',
+					function(data) {
+
+						// refresh the visit no matter what user interaction
+						// happenend (page load, click etc...)
+						window.tms.storage.refreshActivity();
+
+						var cloned = JSON.parse(JSON.stringify(data));
+
+						window.TagManager.triggerApiEvent('DidTrackAction');
+
+						try {
+							window.tms.debug([
+									"(eventAction: "
+											+ data.event.map(function(el) {
+												//console.log(el);
+												return el.eventInfo.eventAction
+											}).join(",") + ")",
+                'called trackAction on new api', cloned ]);
+						} catch (e) {
+							window.tms.debug([ 'called trackAction on new api',
+									cloned ]);
+						}
+
+						window.tms
+								.debug("Start clone digitalData into webAnalytics")
+						window[window.tms.dataLayerDataKey] = window.TagManager
+								.clone(window.digitalData);
+						window.tms.debug([ "Cloned window.digitalData ",
+								window.tms.dataLayerDataKey,
+								" into window.webAnalyticsData ",
+								window.digitalData, window.webAnalyticsData ])
+						window.TagManager.cloneMerge(cloned,
+								window[window.tms.dataLayerDataKey]);
+						window.tms.debug([ 'Cloned webAnalytics.push', data,
+								'into window.' + window.tms.dataLayerDataKey,
+								window[window.tms.dataLayerDataKey] ]);
+
+						// if (typeof(data.event) !== 'undefined' &&
+						// typeof(data.event[0]) !== 'undefined' &&
+						// typeof(data.event[0].eventInfo) !== 'undefined' &&
+						// typeof(data.event[0].eventInfo.eventAction) !==
+						// 'undefined' && data.event[0].eventInfo.eventAction
+						// === 'page_load') {
+						// if (typeof(window.digitalData.page) !== 'undefined'
+						// && typeof(window.digitalData.page.pageInfo) !==
+						// 'undefined' &&
+						// typeof(window.digitalData.page.pageInfo.pageID) !==
+						// 'undefined') {
+						// try{
+						// window.tms.storage.set('currentPage',
+						// _satellite.getVar('custom.pageID'));
+						// }catch(e){
+						// window.tms.storage.set('currentPage',
+						// window.digitalData.page.pageInfo.pageID);
+						// }
+						// window.tms.storage.save();
+						// }
+						// }
+
+						if (typeof (data.event) !== 'undefined'
+								&& typeof (data.event[0]) !== 'undefined'
+								&& typeof (data.event[0].eventInfo) !== 'undefined'
+								&& typeof (data.event[0].eventInfo.eventAction) !== 'undefined') {
+							if (data.event[0].eventInfo.eventAction === 'click') {
+								// console.log('click tracking
+								// got:',data.event[0]);
+								window.tms.storage.set('clickValues',
+										data.event[0]);
+								window.tms.storage.save();
+							}
+						}
+
+						// window.TagManager.triggerApiEvent('WillParseApiCall',
+						// [cloned]);
+						window.TagManager.triggerApiEvent('ParseApiCall',
+								[ cloned ]);
+					});
+	// finally process the queue (get all stored elements) and exchange the push
+	// method of the webAnalytics array with the transmitter "trackAction"
+	window.tms.setReady();
+
+	return window.TagManager;
+}());
+
+// }
+// catch(e)
+// {
+// console.error('!@!@!@!@!@! ERROR within Analytics Api:');
+// console.error(e);
+// console.trace();
+// }
+

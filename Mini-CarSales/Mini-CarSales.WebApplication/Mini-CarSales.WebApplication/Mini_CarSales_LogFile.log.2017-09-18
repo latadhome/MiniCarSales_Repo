@@ -1,0 +1,5 @@
+2017-09-18 01:16:53,849 [25] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.The ModelName field is required.The EngineName field is required.The Type field is required.
+2017-09-18 02:12:57,227 [5] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The Type field is required.
+2017-09-18 18:07:31,354 [8] ERROR WebApplication1.Controllers.HomeController - GetAllVehicles :Unable to cast object of type 'WhereListIterator`1[Mini_CarSales.Models.VehicleDetails]' to type 'System.Collections.Generic.List`1[Mini_CarSales.Models.VehicleDetails]'.
+2017-09-18 18:07:41,700 [9] ERROR WebApplication1.Controllers.HomeController - GetAllVehicles :Unable to cast object of type 'WhereListIterator`1[Mini_CarSales.Models.VehicleDetails]' to type 'System.Collections.Generic.List`1[Mini_CarSales.Models.VehicleDetails]'.
+2017-09-18 23:13:06,207 [7] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The Type field is required.

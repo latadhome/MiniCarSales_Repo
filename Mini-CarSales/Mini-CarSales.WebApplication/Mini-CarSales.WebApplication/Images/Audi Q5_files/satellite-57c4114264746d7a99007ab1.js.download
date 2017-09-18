@@ -1,0 +1,294 @@
+// ----------------------------------------------------------------
+
+// this script does the following things:
+// 1. Listen for trackinApuParseApiCall Events. This event is triggered every
+// time a push to the api has been made and the data has been merged into
+// webAnalyticsData.
+// 2. We check if events are set. If not this call is not intended to do
+// anything...
+// 3. we loop through the events and check which events are set (page_load,
+// click etc...).
+// 4. After the loop is done, we check which required action has been set, which
+// could be: trackCustomLink, trackPageView or storeAction.
+// 5. Depending on the results of 4 we call the specific direct call rules.
+// NOTES: The loop of 4 is required for example when the click event is on index
+// 3 but should be merged in the page load event on index 1. With the loop in
+// the first instance we ensure the correct order of the specific direct call
+// rules to be executed.
+
+var IGNORED_ACTIONS = [ "cart_add", "cart_remove", "cart_conflict", "cart_conflict_solved",
+		"cart_conflict_aborted", "cart_conflict_occured", "config_data" ];
+
+document
+		.addEventListener(
+				'trackingApiParseApiCall',
+				function(data) {
+					// if(_satellite.getVar("_mutexLock")==true)return;
+					// console.log("_mutexLock != true")
+					// _satellite.setVar("_mutexLock",true);
+					// console.log("mutex: start")
+					// window.tms.analyticsInfo.onCookieReady(function() {
+					// window.tms.debug('trackingApiParseApiCall: ' + data);
+					if (typeof (data.detail[0]) !== 'undefined'
+							&& data.detail[0].event instanceof Array) {
+						_satellite.setVar("_eventHref", "");
+						var trackCustomLink = [];
+						var trackPageView = [];
+						var trackDownloadLink = [];
+						var storeAction = [];
+						var eventsStrings = [];
+						var trackCustomLinkEventsString = "";
+						var evts = data.detail[0].event;
+						// window.tms.debug(["trackingParseApiCall",data.detail[0].event])
+						// window.tms.debug(data.detail[0])
+						var countVideoCalls = 0;
+						var countCalls = 0;
+						for (var i = 0; i < evts.length; i++) {
+							var evt = evts[i];
+
+							// store the cart id in localstorage/cookie when
+							// config_start appears
+							if (evt.eventInfo.eventAction == "config_start") {
+								_satellite.track("storeNemoCartID")
+							}
+
+							if (typeof (evt.eventInfo.eventAction)
+									&& typeof (evt.eventInfo.eventName)) {
+								// console.log('event:',e.eventAction,e.eventName);
+								window.tms.debug([ "run through event" ]);
+								// Remove PDF Event in case it's the
+								// configuration PDF Service (html page)
+								if (evt.eventInfo.eventAction
+										.indexOf("PDF download") > -1
+										&& /^(.(?!\.pdf))*$/
+												.test(evt.attributes.url)) {
+									window.webAnalyticsData.event = _dtmRemoveElementByAction(
+											window.webAnalyticsData.event,
+											"PDF download");
+									continue;
+								}
+								// Jump over ignored actions
+								if (IGNORED_ACTIONS
+										.indexOf(evt.eventInfo.eventAction) > -1) {
+									window.tms.debug([ "abort ignored:",
+											evt.eventInfo.eventAction ]);
+									window.tms.lock(false);
+									return;
+								}
+								// psyma related events
+								if (/psyma_start|psyma_complete|psyma_introLayer/
+										.test(evt.eventInfo.eventAction)) {
+									evt.eventInfo.type = "psyma";
+									evt.eventInfo.eventName = "psyma";
+									if (typeof (window.digitalData.page) == "undefined") {
+										window.digitalData.page = {};
+									}
+									if (typeof (window.digitalData.page.attributes) == "undefined") {
+										window.digitalData.page.attributes = {};
+									}
+									window.digitalData.page.attributes.psymaID = evt.attributes.userID;
+									window.digitalData.page.attributes.psymaSurveyPage = evt.eventInfo.eventAction;
+									_satellite.track("trackPsymaLayer");
+									_satellite.track("trackPsymaLayerOldRS")
+									return;
+									// trackCustomLink.push(evt);
+									// eventsStrings
+									// .push(evt.eventInfo.eventAction);
+								}
+								if (/psyma_visitor_intention/
+										.test(evt.eventInfo.eventAction)) {
+
+									evt.eventInfo.type = "psyma";
+									evt.eventInfo.eventName = "psyma";
+
+									if (typeof (window.digitalData.page) == "undefined") {
+										window.digitalData.page = {};
+									}
+									if (typeof (window.digitalData.page.attributes) == "undefined") {
+										window.digitalData.page.attributes = {};
+									}
+
+									window.digitalData.page.attributes.psymaID = evt.attributes.userID;
+									window.digitalData.page.attributes.psymaAnswer = evt.attributes.answer;
+									window.digitalData.page.attributes.psymaSurveyPage = evt.eventInfo.eventAction;
+
+									_satellite
+											.track("trackPsymaLayerIntention");
+									// _satellite.track("trackPsymaLayerIntentionOldRS");
+
+									return;
+								}
+								// If layer hide set new page view
+								// when cart_conflict_solved is set we exclude
+								// the the retrigger of the page_load
+								if (evt.eventInfo.eventAction == "layer_hide"
+										|| evt.eventInfo.eventAction == "config_data") {
+									// window.tms.debug("layer_hide given...
+									// simulate page_load")
+									/*
+									 * >> commented this code out as per
+									 * DAAUDI-2425 window.webAnalytics.push({
+									 * event : [ { eventInfo : { eventAction :
+									 * "page_load" } } ] });
+									 */
+									if (evts.length > 1) {
+										window.tms
+												.warn("Another action exists besides 'layer_hide' so we are not able to unlock here.");
+									} else {
+										window.tms.lock(false);
+									}
+
+								} else if (evt.eventInfo.eventAction === 'page_load'
+										|| evt.eventInfo.eventAction == "layer_show") {
+									trackPageView.push(evt);
+									eventsStrings
+											.push(evt.eventInfo.eventAction);
+									countCalls++;
+								} else if (/download|login/
+										.test(evt.eventInfo.eventAction)) {
+									trackDownloadLink.push(evt);
+									eventsStrings
+											.push(evt.eventInfo.eventAction);
+									countCalls++;
+								} else if (evt.eventInfo.eventAction == "click") {
+									// if(evts.length>1){
+									// window.tms.warn("Another action exists
+									// besides 'layer_hide' so we are not able
+									// to unlock here.");
+									// } else {
+									// window.tms.lock(false)
+									// }
+									storeAction.push(evt);
+								} else if (/poa_click/
+										.test(evt.eventInfo.eventAction)) {
+									if (evts.length > 1) {
+										window.tms
+												.warn("Another action exists besides 'layer_hide' so we are not able to unlock here.");
+									} else {
+										window.tms.lock(false);
+									}
+									trackCustomLink.push(evt);
+									eventsStrings
+											.push(evt.eventInfo.eventAction);
+									countVideoCalls++;
+									countCalls++;
+								} else if (/cart_add|config_start|config_save/
+										.test(evt.eventInfo.eventAction)) {
+
+									// console.log(window._query.printDeep(window.webAnalyticsData.product))
+
+									// to prevent that we have a layer and
+									// config_start event pushed
+									// for example when loading a configuration
+									// with audicode
+									if (window._dtmHasDataLayerEvents([
+											"config_start", "layer_show" ])
+											&& evt.eventInfo.eventAction == "config_start") {
+										continue;
+									}
+									if (window._dtmHasDataLayerEvents([
+											"config_save", "layer_show" ])
+											&& evt.eventInfo.eventAction == "config_save") {
+										continue;
+									}
+
+									trackCustomLink.push(evt);
+									eventsStrings
+											.push(evt.eventInfo.eventAction);
+									// we set the customLinkEvent here so we can
+									// use it in the custom.linkName data
+									// element
+									_satellite.setVar("_customLinkEvent", evt);
+								}
+							}
+						}
+						if (countCalls <= 1 || countCalls == countVideoCalls) {
+							if (eventsStrings.length > 0)
+								_satellite.setVar("_eventsDataLayer",
+										eventsStrings.join(","));
+							if (storeAction.length > 0) {
+								_satellite.notify("Set StoreAction");
+								// _satellite.setVar("storeAction_value",
+								// storeAction);
+								console.log("storeAction track");
+								// _satellite.track("storeAction");
+								var json = null;
+								try {
+									json = JSON.stringify(storeAction);
+								} catch (e) {
+									window.tms
+											.warn([ "Invalid click json", val ]);
+								}
+								// Alternative Store Function von TMS nutzen
+								window.localStorage.trackingClick = json;
+
+								// try {
+								// var t = new RegExp(window.location.href);
+								// if (t.test(storeAction.attributes.href)) {
+								// _satellite.track("trackCustomLink");
+								// }
+								// } catch (e) {
+								// console
+								// .log("ERROR storeAction in EventListener: "
+								// + e);
+								// }
+							}
+							if (trackCustomLink && trackCustomLink.length > 0) {
+								_satellite.track("trackCustomLink");
+							}
+							if (trackDownloadLink
+									&& trackDownloadLink.length > 0) {
+								_satellite.track("trackDownloadLink");
+							}
+							if (trackPageView && trackPageView.length > 0) {
+								_satellite.track('trackPageView');
+							}
+						} else {
+							// Initiate Error Servcer Call to error report suite
+							// with events und href of the site.
+							if (evts.length > 1) {
+								window.tms
+										.warn("An ignored action occured besides unignored events so we are not able to unlock here.");
+							} else {
+								window.tms.lock(false);
+							}
+							var errorTxt = "Adobe Analaytics call cannot be sent. Multiple non click events in API push call:";
+							for (var i = 0; i < trackCustomLink.length; i++) {
+								errorTxt += trackCustomLink[i].eventInfo.eventAction
+										+ "/"
+										+ trackCustomLink[i].eventInfo.eventName
+										+ ",";
+							}
+							for (var i = 0; i < trackDownloadLink.length; i++) {
+								errorTxt += trackDownloadLink[i].eventInfo.eventAction
+										+ "/"
+										+ trackDownloadLink[i].eventInfo.eventName
+										+ ",";
+							}
+							for (var i = 0; i < trackPageView.length; i++) {
+								errorTxt += trackPageView[i].eventInfo.eventAction
+										+ "/"
+										+ trackPageView[i].eventInfo.eventName
+										+ ",";
+							}
+							window.webAnalytics
+									.push({
+										event : [ {
+											eventInfo : {
+												eventAction : "generic_error",
+												eventName : errorTxt,
+												type : "error"
+											},
+											attributes : {
+												url : _satellite
+														.getVar("page.pageInfo.destinationURL")
+											}
+										} ]
+									});
+						}
+					} else {
+						window.tms
+								.debug("aborting trackinApiParseApiCall in EventListener (API)");
+					}
+					// });
+				});

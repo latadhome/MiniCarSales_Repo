@@ -4493,26 +4493,26 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .navbar-default .navbar-link {
-  color: #777777;
+  color:black;
 }
 
 .navbar-default .navbar-link:hover {
-  color: #333333;
+  color:black;
 }
 
 .navbar-inverse {
-  background-color: #222222;
-  border-color: #080808;
+  background-color:#FF9500;
+  border-color: red;
 }
 
 .navbar-inverse .navbar-brand {
-  color: #999999;
+  color:black;
 }
 
 .navbar-inverse .navbar-brand:hover,
 .navbar-inverse .navbar-brand:focus {
-  color: #ffffff;
-  background-color: transparent;
+  color:black;
+  background-color:burlywood;
 }
 
 .navbar-inverse .navbar-text {
@@ -5462,7 +5462,7 @@ a.list-group-item:focus {
 
 .panel-primary > .panel-heading {
   color: #ffffff;
-  background-color: #428bca;
+  background-color: lightblue;
   border-color: #428bca;
 }
 

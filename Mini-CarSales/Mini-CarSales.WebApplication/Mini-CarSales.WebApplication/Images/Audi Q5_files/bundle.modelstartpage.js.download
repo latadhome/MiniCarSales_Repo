@@ -1,0 +1,2943 @@
+/*! release#17.55.1 */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("bundle.core"), require("bundle.vendor"));
+	else if(typeof define === 'function' && define.amd)
+		define("bundle.modelstartpage", ["bundle.core", "bundle.vendor"], factory);
+	else if(typeof exports === 'object')
+		exports["bundle.modelstartpage"] = factory(require("bundle.core"), require("bundle.vendor"));
+	else
+		root["bundle.modelstartpage"] = factory(root["bundle.core"], root["bundle.vendor"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_1__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/*!******************************!*\
+  !*** external "bundle.core" ***!
+  \******************************/
+/*! no static exports found */
+/*! exports used: CONTENT, DOM_UTILS, EVENTS, FETCH */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
+
+/***/ }),
+/* 1 */
+/*!********************************!*\
+  !*** external "bundle.vendor" ***!
+  \********************************/
+/*! no static exports found */
+/*! exports used: SIGNAL */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+
+/***/ }),
+/* 2 */
+/*!***********************************************!*\
+  !*** ./components/includes/modelstartpage.js ***!
+  \***********************************************/
+/*! exports provided:  */
+/*! all exports used */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_scroll_highlight_scroll_highlight__ = __webpack_require__(/*! scroll-highlight/scroll-highlight */ 3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_scroll_technology_scroll_technology__ = __webpack_require__(/*! scroll-technology/scroll-technology */ 4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vtp_vtp__ = __webpack_require__(/*! vtp/vtp */ 5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_drawer_drawer__ = __webpack_require__(/*! drawer/drawer */ 6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_numbers_numbers__ = __webpack_require__(/*! numbers/numbers */ 7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_intro_intro__ = __webpack_require__(/*! intro/intro */ 8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_basis_video_basis_video__ = __webpack_require__(/*! basis-video/basis-video */ 9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_basis_gallery_basis_gallery__ = __webpack_require__(/*! basis-gallery/basis-gallery */ 10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_includes_helper_video_performance_helper__ = __webpack_require__(/*! includes/helper/video-performance-helper */ 11);
+// import * as FEATURE_GALLERY_FULLWIDTH from 'feature-gallery-fullwidth/feature-gallery-fullwidth';
+// import * as MEDIATEXT_COMBINATION_SMALL from 'mediatext-combination-small/mediatext-combination-small';
+
+
+
+
+
+
+
+
+ // ought to be called last or at least after the scroll-animations
+
+//__webpack_public_path__ = window.webpack_public_path;
+
+
+
+/***/ }),
+/* 3 */
+/*!*********************************************************!*\
+  !*** ./components/scroll-highlight/scroll-highlight.js ***!
+  \*********************************************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+
+
+
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+/**
+ * some selector variables
+ */
+var _selectorModul = '.nm-module-scroll-highlight',
+	_selectorVideo = '.nm-scroll-highlight-video-player',
+	_selectorHighlightText1 = '.nm-scroll-highlight-highlighttext-one',
+	_selectorHighlightText2 = '.nm-scroll-highlight-highlighttext-two',
+	_selectorTextblockHidden = '.nm-scroll-highlight-textblock.nm-scroll-highlight-hidden',
+	_selectorHighlightTextWrapper = '.nm-scroll-highlight-textoverlay-wrapper';
+
+/**
+ * some module variables
+ */
+var _moduleData,
+	_eventBus,
+	_hiddenTextblocks = null,
+	_minimalFpsForAnimation = 15; //TODO decide for value
+
+/**
+ * public initialize method
+ * @returns {undefined}
+ */
+function init() {
+	var anyModule = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorModul);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(anyModule)) {
+		__.handleTextblockShow();
+		__.handleSetupHighlightTexts(false);
+		__.addEvents();
+		console.log('init: scroll-highlight');
+	}
+}
+
+/** private functions */
+/**
+ * private function adding events
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	// wether a shown video would perform good
+	_eventBus.addListener('video_performance', __.initializeVideos);
+	window.addEventListener("scroll", __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.handleTextblockShow, 40));
+	window.addEventListener('resize', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.handleSetupHighlightTexts.bind(this, true), 100));
+};
+
+/** getter/setter */
+/**
+ * private function get the video of the modul
+ * @param {DOMElement} modul
+ * @returns {DOMElement} video
+ */
+__.getVideoByModule = function(modul) {
+	return __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorVideo, modul);
+};
+/**
+ * private function get the moduleid by some Childelement
+ * @param {DOMElement} element - checildelement of the module
+ * @returns {DOMElement}
+ */
+__.getModuleIdByElement = function(element) {
+	var module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(element, _selectorModul);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(module) === false) {
+		return null;
+	}
+	return module.getAttribute('id');
+};
+/**
+ * private function returning the value for the minimal fps
+ * @param {DOMElement} module - one scroll technology module
+ * @returns {Number} fps
+ */
+__.getMinimalFramesPerSecond = function(module) {
+	var minfps = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(module, 'minfps');
+	if (!!minfps && minfps > 0) {
+		return minfps;
+	}
+	return _minimalFpsForAnimation;
+};
+/**
+ * private function get all number elements still hidden
+ * @returns {Array}
+ */
+__.getHiddenTextblocks = function() {
+	if (!_hiddenTextblocks) {
+		_hiddenTextblocks = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorTextblockHidden);
+	}
+	return _hiddenTextblocks;
+};
+/**
+ * private function get data of the module
+ * @param {String} moduleId
+ * @param {String} key
+ * @returns {String}
+ */
+__.getModuleData = function(moduleId, key) {
+	if (!_moduleData || !_moduleData[moduleId] || !_moduleData[moduleId][key]) {
+		return null;
+	}
+	return _moduleData[moduleId][key];
+};
+/**
+ * private function set data of the module
+ * @param {String} moduleId
+ * @param {String} key
+ * @param {String} value
+ * @returns {undefined}
+ */
+__.setModuleData = function(moduleId, key, value) {
+	if (!_moduleData) {
+		_moduleData = {};
+	}
+	if (!_moduleData[moduleId]) {
+		_moduleData[moduleId] = {};
+	}
+	_moduleData[moduleId][key] = value;
+};
+/**
+ * private function get the start position of the video
+ * @param {DOMElement} video
+ * @returns {Float}
+ */
+__.getStartPositionDesignHighlights = function(video) {
+	return window.innerHeight - (video.clientHeight * 0.75);
+};
+/**
+ * private function get the mapping
+ * @param {DOMElement} video
+ * @returns {Float}
+ */
+__.getPixelDurationMapping = function(video) {
+	return video.duration / __.getStartPositionDesignHighlights(video);
+};
+
+/**
+ * returns the current position of the video in view
+ * pos = -1  -> video-top above viewport-top or below startposition
+ * @return position of video
+ */
+__.getCurrentPositionInView = function(moduleId, video) {
+	var	rect = video.getBoundingClientRect(),
+	startPos = __.getModuleData(moduleId, 'startPosition');
+	if (rect.top >= 0 && startPos >= rect.top) {
+		return startPos - rect.top;
+	}
+	return -1;
+};
+/**
+ * private function setting the highlighttexts up
+ * @param {Boolean} onResize - whether the function was calle while rezize or not
+ * @return {undefined}
+ */
+__.handleSetupHighlightTexts = function(onResize) {
+	var key, module, moduleId, video, posViewPort,
+	modules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorModul);
+
+	for(key in modules) {
+		if(modules.hasOwnProperty(key)){
+			module = modules[key];
+			moduleId = module.getAttribute('id');
+			if (!onResize) {
+				video = __.getVideoByModule(module);
+				__.setInitialHighlightData(module, moduleId, video);
+				posViewPort = __.getModuleData(moduleId, 'startPosition') - video.getBoundingClientRect().top;
+				__.animateHightTexts(moduleId, posViewPort);
+			}
+
+			__.setHighlightHeight(moduleId);
+		}
+	}
+};
+/**
+ * private function set the initial Data for the highlighttexts
+ * @param {DOMElement} module - the module of the video
+ * @param {Number} moduleId - the id of the module
+ * @param {DOMElement} video - the video
+ * @returns {undefined}
+ */
+__.setInitialHighlightData = function(module, moduleId, video) {
+	__.setModuleData(moduleId, 'startPosition', __.getStartPositionDesignHighlights(video));
+	__.setModuleData(moduleId, 'text1', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorHighlightText1, module));
+	__.setModuleData(moduleId, 'text2', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorHighlightText2, module));
+	__.setModuleData(moduleId, 'textOverlayStartPosition', __.getModuleData(moduleId, 'startPosition') * 0.45);
+	__.setModuleData(moduleId, 'textOverlayEndPosition', __.getModuleData(moduleId, 'startPosition') * 0.55);
+	__.setModuleData(moduleId, 'textOverlayPixelMapping', 1 / (__.getModuleData(moduleId, 'textOverlayEndPosition') -  __.getModuleData(moduleId, 'textOverlayStartPosition')));
+};
+/**
+ * private function returning the source of the video based on the screen-width
+ * @param {DOMElement} video
+ * @returns {String} video source
+ */
+__.getVideoSrc = function(video) {
+	var source,
+	screenWidth = window.innerWidth;
+	source = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcxl');
+	if (screenWidth < 1025) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcl') || source);
+	}
+	if (screenWidth < 768) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcm') || source);
+	}
+	if (screenWidth < 415) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcs') || source);
+	}
+	if (!source) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcl') || __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcm') || __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcs'));
+	}
+	return source;
+};
+/**
+ * private function setting the height of the highlight-wrapper
+ * @param {String} moduleId - the id of the module
+ * @return {undefined}
+ */
+__.setHighlightHeight = function(moduleId) {
+	var highlightWrapper,
+	secondHighlight = __.getModuleData(moduleId, 'text2'),
+	firstHighlight = __.getModuleData(moduleId, 'text1');
+
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(firstHighlight)) {
+		highlightWrapper = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(firstHighlight, _selectorHighlightTextWrapper);
+		highlightWrapper.style.minHeight = "0px";
+	}
+
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(secondHighlight) && window.innerWidth < 768) {
+		highlightWrapper.style.minHeight = secondHighlight.clientHeight + "px";
+	}
+};
+/** eventhandler */
+/**
+ * private function handling the visibility of the textblocks
+ * @returns {undefined}
+ */
+__.handleTextblockShow = function() {
+	var textblocks =  __.getHiddenTextblocks();
+	if (textblocks.length < 1) {
+		window.removeEventListener("scroll", __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.handleTextblockShow, 40));
+	} else {
+		for(var key in textblocks) {
+			if (!textblocks.hasOwnProperty(key)) {
+				continue;
+			}
+			if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getVisibleVerticalPercentageInViewport(textblocks[key]) >= 25) {
+				textblocks[key].classList.remove("nm-scroll-highlight-hidden");
+			}
+		}
+		_hiddenTextblocks = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorTextblockHidden);
+	}
+};
+/**
+ * private function handling the xhtmlhttprequest to get the video
+ * @param {String} url
+ * @param {DOMElement} modul
+ * @param {function} loadFunction
+ * @return {undefined}
+ */
+__.handleXMLHTTPRequest = function(url, modul, loadFunction) {
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["FETCH"].getBlob(url, {
+		method: 'get'
+	}).then(function(blob){
+		var vid = URL.createObjectURL(blob);
+		loadFunction(modul, vid);
+	}).catch(function(err) {
+		console.log("Error:" + err.message);
+	});
+};
+/**
+ * private function handling the video if it is ready to be played
+ * @param {Event} event - the canplaythroughevent
+ * @returns {undefined}
+ */
+__.handleVideoCanPlayThrough = function(event) {
+	var video = event.target,
+	moduleId = __.getModuleIdByElement(video);
+	video.removeEventListener("canplaythrough", __.handleVideoCanPlayThrough);
+	video.pause();
+	video.currentTime = 0;
+	video.muted = false;
+
+	__.setModuleData(moduleId, 'pixelDurationMapping', __.getPixelDurationMapping(video));
+	window.addEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.animateModule.bind(this, moduleId, video, true), 40));
+};
+
+/**
+ * private function handling the loaded video
+ * @param {DOMElement} modul - the HTML modul of the video
+ * @param {objectURL} videoSrc - the src of the video
+ * @returns {undefined}
+ */
+__.handleLoadedVideo = function(modul, videoSrc) {
+	var video = __.getVideoByModule(modul);
+	video.src = videoSrc;
+	video.addEventListener("canplaythrough", __.handleVideoCanPlayThrough);
+	video.muted = true;
+	// needs to be set to trigger the canplaythrough eventually
+	video.play();
+};
+/**
+ * private function handle the animation of the module
+ * @param {String} moduleId
+ * @param {DOMElement} video
+ * @param {boolean} animateModule
+ * @returns {undefined}
+ */
+__.animateModule = function(moduleId, video, animateModule) {
+	var posViewPort = __.getCurrentPositionInView(moduleId, video);
+	if (posViewPort >= 0) {
+		if (animateModule === true) {
+			__.animateVideo(moduleId, video, posViewPort);
+		} else if (video.paused && video.currentTime === 0) {
+			video.muted = true;
+			video.play();
+		}
+		__.animateHightTexts(moduleId, posViewPort);
+	} else {
+		if (!animateModule && video.currentTime > 0 && __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getVisibleVerticalPercentageInViewport(video) === 0) {
+			video.pause();
+			video.currentTime = 0;
+		}
+	}
+};
+
+/**
+ * private function handle the animation of the videoSrc
+ * @param {String} moduleId
+ * @param {DOMElement} video
+ * @param {number} posViewPort
+ * @returns {undefined}
+ */
+__.animateVideo = function(moduleId, video, posViewPort) {
+	video.currentTime = __.getModuleData(moduleId, 'pixelDurationMapping') * posViewPort;
+};
+/**
+ * private function handling the animation of the texts
+ * @param {String} moduleId
+ * @param {number} posViewPort
+ * @returns {undefined}
+ */
+__.animateHightTexts = function(moduleId, posViewPort) {
+	var opacity = __.calculateHighlightTextsOpacity(__.getModuleData(moduleId, 'textOverlayPixelMapping'), posViewPort, __.getModuleData(moduleId, 'textOverlayStartPosition'));
+	if (opacity > 1) {
+		opacity = 1;
+	} else if (opacity < 0) {
+		opacity = 0;
+	}
+	__.getModuleData(moduleId, 'text2').style.opacity = opacity;
+	__.getModuleData(moduleId, 'text1').style.opacity = 1 - opacity;
+};
+/**
+ * @description private function calculating the opacity of the highlight texts
+ * @param {Number} pixelMapping - textOverlayPixelMapping
+ * @param {Number} posViewPort - position of the video in the viewport
+ * @param {Number} startPosition - startposition of the animation
+ * @returns {Number} the calculated opacity
+ */
+__.calculateHighlightTextsOpacity = function(pixelMapping, posViewPort, startPosition) {
+	var opacity = Math.round((pixelMapping * (posViewPort - startPosition))*10)/10;
+	if (opacity > 1) {
+		opacity = 1;
+	} else if (opacity < 0) {
+		opacity = 0;
+	}
+	return opacity;
+};
+/**
+ * private function handling the loading of the video
+ * @param {DOMElement} module
+ * @returns {undefined}
+ */
+__.loadVideoForAnimation = function(module, video) {
+	var videoSrc = __.getVideoSrc(video);
+	__.handleXMLHTTPRequest(videoSrc, module, __.handleLoadedVideo);
+};
+/**
+ * private function handling the loading of the video
+ * @param {DOMElement} module
+ * @returns {undefined}
+ */
+__.loadVideo = function(moduleId, video) {
+	var videoSrc = __.getVideoSrc(video);
+	video.src = videoSrc;
+	window.addEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.animateModule.bind(this, moduleId, video, false), 40));
+};
+/**
+ * private function initialitzing the scroll-animation or alternative function for the Videos
+ * @returns {undefined}
+ */
+__.initializeVideos = function(event) {
+	var key, video, module, moduleId,
+	fps = 0,
+	modules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorModul),
+	minfps = __.getMinimalFramesPerSecond(modules[0]);
+	if (!!event.fps) {
+		fps = event.fps;
+	}
+
+	for(key in modules) {
+		if(modules.hasOwnProperty(key)){
+			module = modules[key];
+			moduleId = module.getAttribute('id');
+			video = __.getVideoByModule(module);
+			if (fps >= minfps) {
+				__.loadVideoForAnimation(module, video);
+				// trigger the animation once for an initial state
+				__.animateModule(moduleId, video, true);
+			} else {
+				__.loadVideo(moduleId, video);
+				// trigger the animation once for an initial state
+				__.animateModule(moduleId, video, false);
+			}
+		}
+	}
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	_eventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	init();
+});
+
+
+/***/ }),
+/* 4 */
+/*!***********************************************************!*\
+  !*** ./components/scroll-technology/scroll-technology.js ***!
+  \***********************************************************/
+/*! exports provided: __ */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+
+
+
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+/**
+ * some selector variables
+ */
+var _selectorModul = '.nm-module-scroll-technology',
+	_selectorVideo = '.nm-scroll-technology-video-player',
+	_selectorVideoContainer = '.nm-scroll-technology-video-container',
+	_selectorHighlightText1 = '.nm-scroll-technology-highlighttext-one',
+	_selectorHighlightText2 = '.nm-scroll-technology-highlighttext-two',
+	_selectorTextblockHidden = '.nm-scroll-technology-textblock.nm-scroll-technology-textblock-hidden',
+	_selectorContentWrapper = '.nm-content',
+	_selectorNavigation = '.nm-navigation-main-wrap';
+
+/**
+ * some module variables
+ */
+var _moduleData,
+	_eventBus,
+	_contentWrapper,
+	_topOffset = 0,
+	_defaultPlayBackrate = 5,
+	_hiddenTextblocks = null,
+	_minimalFpsForAnimation = 15;
+
+/** private functions */
+/**
+ * private initialize method
+ * @returns {undefined}
+ */
+__.init = function() {
+	var anyModule = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorModul);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(anyModule)) {
+		__.handleTextblockShow();
+		__.addEvents();
+		__.loadVideos();
+	}
+	console.log('init: scroll-technology');
+};
+/**
+ * @description private function adding events
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	// wether a shown video would perform good
+	_eventBus.addListener('video_performance', __.initializeVideos);
+	window.addEventListener("scroll", __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.handleTextblockShow, 40));
+};
+
+/** getter/setter */
+/**
+ * @description private function get the video of the modul
+ * @param {DOMElement} module - the module of the video
+ * @returns {DOMElement} video
+ */
+__.getVideoByModule = function(module) {
+	return __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorVideo, module);
+};
+/**
+ * @description private function get the moduleid by some Childelement
+ * @param {DOMElement} element - checildelement of the module
+ * @returns {DOMElement} moduleId
+ */
+__.getModuleIdByElement = function(element) {
+	var module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(element, _selectorModul);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(module) === false) {
+		return null;
+	}
+	return module.getAttribute('id');
+};
+/**
+ * private function returning the value for the minimal fps
+ * @param {DOMElement} module - one scroll technology module
+ * @returns {Number} fps
+ */
+__.getMinimalFramesPerSecond = function(module) {
+	var minfps = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(module, 'minfps');
+	if (!!minfps && minfps > 0) {
+		return minfps;
+	}
+	return _minimalFpsForAnimation;
+};
+/**
+ * @description private function get all number elements still hidden
+ * @returns {Array} hiddenTextblocks
+ */
+__.getHiddenTextblocks = function() {
+	if (!_hiddenTextblocks) {
+		_hiddenTextblocks = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorTextblockHidden);
+	}
+	return _hiddenTextblocks;
+};
+/**
+ * @description private function get data of the module
+ * @param {String} moduleId - the id of the module
+ * @param {String} key - the key of the data
+ * @returns {String} data value
+ */
+__.getModuleData = function(moduleId, key) {
+	if (!_moduleData || !_moduleData[moduleId] || !_moduleData[moduleId][key]) {
+		return null;
+	}
+	return _moduleData[moduleId][key];
+};
+/**
+ * @description private function set data of the module
+ * @param {String} moduleId - the id of the module
+ * @param {String} key - the key of the data
+ * @param {String} value - data value
+ * @returns {undefined}
+ */
+__.setModuleData = function(moduleId, key, value) {
+	if (!_moduleData) {
+		_moduleData = {};
+	}
+	if (!_moduleData[moduleId]) {
+		_moduleData[moduleId] = {};
+	}
+	_moduleData[moduleId][key] = value;
+};
+/**
+ * @description returns the current position of the video in view
+ * pos = -1 -> video-top above viewport-top or below startposition
+ * @param {DOMElement} module - the module of the video
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} videoContainer - the container of video
+ * @return {number} position of video
+ */
+__.getCurrentPositionInView = function(module, moduleId, videoContainer) {
+	var	rect = module.getBoundingClientRect(),
+	top = rect.top + __.getModuleData(moduleId, 'videoOffsetTop');
+	if (top <= _topOffset && rect.bottom >= videoContainer.clientHeight + _topOffset) {
+		return -(top - _topOffset);
+	}
+	return -1;
+};
+/**
+ * @description returns the current position of the video in view
+ * pos = -1  -> video-top above viewport-top or below startposition
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} video - the video
+ * @return {number} position of video
+ */
+__.getCurrentVideoPositionInView = function(moduleId, video) {
+	var	rect = video.getBoundingClientRect(),
+	startPos = __.getModuleData(moduleId, 'startPosition');
+	if (rect.top >= 0 && startPos >= rect.top) {
+		return startPos - rect.top;
+	}
+	return -1;
+};
+/**
+ * @description private function setting the initial Data
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} video - the video
+ * @returns {undefined}
+ */
+__.setInitialModuleData = function(moduleId, video) {
+	var pixelDuration,
+	module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(video, _selectorModul);
+
+	// the amount of pixel to be scrollt in order to play the complete video
+	pixelDuration = window.innerHeight / _defaultPlayBackrate * video.duration;
+	__.setModuleData(moduleId, 'pixelDuration', pixelDuration);
+	__.setModuleData(moduleId, 'pixelDurationMapping', video.duration / pixelDuration);
+	__.setModuleData(moduleId, 'videoOffsetTop', video.getBoundingClientRect().top - module.getBoundingClientRect().top); // margin between top of module and top of video
+};
+/**
+ * @description private function setting the initial Data for module alternative
+ * @param {DOMElement} module - the module of the video
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} video - the video
+ * @returns {undefined}
+ */
+__.setInitialAlternativeModuleData = function(module, moduleId, video) {
+	__.setModuleData(moduleId, 'startPosition', window.innerHeight - (video.clientHeight * 0.75));
+	__.setInitializeHighlightTexts(module, moduleId, video, true);
+};
+/**
+ * @description private function setting the initial Data for the highlights
+ * @param {DOMElement} module - the module of the video
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} video - the video of the module
+ * @param {Boolean} isAlternative - whether the alternative is loaded or not
+ * @returns {undefined}
+ */
+__.setInitializeHighlightTexts = function(module, moduleId, video, isAlternative) {
+	__.setModuleData(moduleId, 'text1', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorHighlightText1, module));
+	__.setModuleData(moduleId, 'text2', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorHighlightText2, module));
+	__.setModuleData(moduleId, 'videoOffsetTop', video.getBoundingClientRect().top - module.getBoundingClientRect().top);
+
+	if (isAlternative) {
+		__.setModuleData(moduleId, 'textOverlayStartPosition', __.getModuleData(moduleId, 'startPosition') * 0.45);
+		__.setModuleData(moduleId, 'textOverlayEndPosition', __.getModuleData(moduleId, 'startPosition') * 0.55);
+		__.setModuleData(moduleId, 'textOverlayPixelMapping', 1 / (__.getModuleData(moduleId, 'textOverlayEndPosition') -  __.getModuleData(moduleId, 'textOverlayStartPosition')));
+	} else {
+		__.setModuleData(moduleId, 'textOverlayStartPosition', __.getModuleData(moduleId, 'videoOffsetTop') * 0.45);
+		__.setModuleData(moduleId, 'textOverlayEndPosition', __.getModuleData(moduleId, 'videoOffsetTop') * 0.55);
+		__.setModuleData(moduleId, 'textOverlayPixelMapping', 1 / (__.getModuleData(moduleId, 'textOverlayEndPosition') -  __.getModuleData(moduleId, 'textOverlayStartPosition')));
+	}
+	__.animateHightTexts(moduleId, -video.getBoundingClientRect().top);
+};
+/**
+ * @description private function returning the source of the video based on the screen-width
+ * @param {DOMElement} video - the video
+ * @returns {String} video source
+ */
+__.getVideoSrc = function(video) {
+	var source,
+	screenWidth = window.innerWidth;
+	source = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcxl');
+	if (screenWidth < 1025) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcl') || source);
+	}
+	if (screenWidth < 768) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcm') || source);
+	}
+	if (screenWidth < 415) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcs') || source);
+	}
+	if (!source) {
+		source = (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcl') || __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcm') || __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(video, 'srcs'));
+	}
+	return source;
+};
+// /** eventhandler */
+/**
+ * @description private function handling the visibility of the textblocks
+ * @returns {undefined}
+ */
+__.handleTextblockShow = function() {
+	var key, textblocks =  __.getHiddenTextblocks();
+	if (textblocks.length < 1) {
+		window.removeEventListener("scroll", __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.handleTextblockShow, 40));
+	} else {
+		for(key in textblocks) {
+			if (!textblocks.hasOwnProperty(key)) {
+				continue;
+			}
+			if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getVisibleVerticalPercentageInViewport(textblocks[key]) >= 25) {
+				textblocks[key].classList.remove("nm-scroll-technology-textblock-hidden");
+			}
+		}
+		_hiddenTextblocks = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorTextblockHidden);
+	}
+};
+/**
+ * @description private function handling the xhtmlhttprequest to get the video
+ * @param {String} url - url for the video
+ * @param {DOMElement} module - the module of the video
+ * @param {function} loadFunction - the function executed after successfull loading
+ * @return {undefined}
+ */
+__.handleXMLHTTPRequest = function(url, module, loadFunction) {
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["FETCH"].getBlob(url, {
+		method: 'get'
+	}).then(function(blob){
+		var vid = URL.createObjectURL(blob);
+		loadFunction(module, vid);
+	}).catch(function(err) {
+		console.log("Error:" + err.message);
+	});
+};
+/**
+ * @description private function handling the video if it is ready to be played
+ * @param {Event} event - video canplaythroughevent
+ * @returns {undefined}
+ */
+__.handleVideoCanPlayThrough = function(event) {
+	var video = event.target,
+	videoContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(video, _selectorVideoContainer),
+	moduleId = __.getModuleIdByElement(video),
+	module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(video, _selectorModul);
+	video.removeEventListener("canplaythrough", __.handleVideoCanPlayThrough);
+	video.pause();
+	video.currentTime = 0;
+	video.muted = false;
+	video.autoplay = false;
+
+	__.setInitialModuleData(moduleId, video);
+	__.setupInitialModuleState(module, moduleId, videoContainer);
+	window.addEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.animateModule.bind(this, module, moduleId, video, videoContainer), 15));
+};
+/**
+ * @description private function setting initial positions/height of the modules elements
+ * @param {DOMElement} module - the module of the video
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} videoContainer - the container of video
+ * @returns {undefined}
+ */
+__.setupInitialModuleState = function(module, moduleId, videoContainer) {
+	var rect;
+	module.style.height = module.clientHeight + __.getModuleData(moduleId, 'pixelDuration') + _topOffset + "px";
+	rect = module.getBoundingClientRect(); // needs to be set AFTER setting the height
+	if (rect.top < -__.getModuleData(moduleId, 'videoOffsetTop') && rect.bottom > videoContainer.clientHeight && rect.bottom > videoContainer.getBoundingClientRect().bottom) {
+		__.handleFollowingModulesFixed(module, moduleId, videoContainer);
+	} else {
+		__.handleFollowingModules(module, moduleId, videoContainer);
+	}
+};
+
+/**
+ * @description private function handle the animation of the module
+ * @param {DOMElement} module -the HTML modul of the video
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} video - the video
+ * @returns {undefined}
+ */
+__.animateModule = function(module, moduleId, video, videoContainer) {
+	var posViewPort = __.getCurrentPositionInView(module, moduleId, videoContainer);
+	if (posViewPort >= 0) { // sticky
+		__.animateVideo(moduleId, video, posViewPort);
+		__.animateHightTexts(moduleId, posViewPort);
+		if (!__.getModuleData(moduleId, 'fixed')) {
+			__.handleFollowingModules(module, moduleId, videoContainer);
+			__.handleFollowingModulesFixed(module, moduleId, videoContainer);
+		}
+	} else { // not sticky
+		if (!!__.getModuleData(moduleId, 'fixed') && __.getModuleData(moduleId, 'fixed') === true) {
+			__.handleFollowingModules(module, moduleId, videoContainer);
+		}
+	}
+};
+/**
+ * @description private function handle the animation of the module
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} video - the video
+ * @returns {undefined}
+ */
+__.animateAlternative = function(moduleId, video) {
+	var posViewPort = __.getCurrentVideoPositionInView(moduleId, video);
+	if (posViewPort >= 0 ){
+		if( video.paused && video.currentTime === 0) {
+			video.muted = true;
+			video.play();
+		}
+		__.animateHightTexts(moduleId, posViewPort);
+	} else if (video.currentTime > 0 && __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getVisibleVerticalPercentageInViewport(video) === 0) {
+		video.pause();
+		video.currentTime = 0;
+	}
+};
+/**
+ * @description private function handle the animation of the videoSrc
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} video - the video
+ * @param {number} posViewPort - the position of the video in viewport
+ * @returns {undefined}
+ */
+__.animateVideo = function(moduleId, video, posViewPort) {
+	video.currentTime = __.getModuleData(moduleId, 'pixelDurationMapping') * posViewPort;
+};
+/**
+ * @description private function handling the animation of the texts
+ * @param {String} moduleId - the id of the module
+ * @param {number} posViewPort - the position of the video in viewport
+ * @returns {undefined}
+ */
+__.animateHightTexts = function(moduleId, posViewPort) {
+	var text1, text2,
+	opacity = __.calculateHighlightTextsOpacity(__.getModuleData(moduleId, 'textOverlayPixelMapping'), posViewPort, __.getModuleData(moduleId, 'textOverlayStartPosition'));
+
+	text2 = __.getModuleData(moduleId, 'text2');
+	if (!!text2) {
+		text2.style.opacity = opacity;
+	}
+	text1 = __.getModuleData(moduleId, 'text1');
+	if (!!text1) {
+		text1.style.opacity = 1 - opacity;
+	}
+};
+/**
+ * @description private function calculating the opacity of the highlight texts
+ * @param {Number} pixelMapping - textOverlayPixelMapping
+ * @param {Number} posViewPort - position of the video in the viewport
+ * @param {Number} startPosition - startposition of the animation
+ * @returns {Number} the calculated opacity
+ */
+__.calculateHighlightTextsOpacity = function(pixelMapping, posViewPort, startPosition) {
+	var opacity = Math.round((pixelMapping * (posViewPort - startPosition))*10)/10;
+	if (opacity > 1) {
+		opacity = 1;
+	} else if (opacity < 0) {
+		opacity = 0;
+	}
+	return opacity;
+};
+/**
+ * @description private function handling the distance of the following modules
+ * @param {DOMElement} module - the module of the video
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} videoContainer - the container of the video
+ * @returns {undefined}
+ */
+__.handleFollowingModules = function(module, moduleId, videoContainer) {
+	var diff = 0,
+	nextSiblings = __.getNextSiblings(module, moduleId),
+	rectVideo = videoContainer.getBoundingClientRect();
+
+	if (rectVideo.top > _topOffset) {
+		diff = __.getModuleData(moduleId, 'pixelDuration') + _topOffset;
+	}
+
+	nextSiblings.forEach(function(sibling) {
+		sibling.style.position = "relative";
+		sibling.style.transform = "translateY(" + -diff + "px)";
+		sibling.style.top = "0px";
+	}, this);
+	_contentWrapper.style.paddingBottom = "0px";
+	__.setModuleData(moduleId, 'fixed', null);
+};
+/**
+ * @description private function handling the fixing of the following modules
+ * @param {DOMElement} module - the module of the video
+ * @param {String} moduleId - the id of the module
+ * @param {DOMElement} videoContainer - the container of the video
+ * @returns {undefined}
+ */
+__.handleFollowingModulesFixed = function(module, moduleId, videoContainer) {
+	var	nextSiblings = __.getNextSiblings(module, moduleId),
+	top = videoContainer.clientHeight + _topOffset;
+
+	__.handleFollowingModules(module, moduleId, videoContainer);
+	nextSiblings.forEach(function(sibling) {
+		sibling.style.transform = "translateY(0px)";
+		sibling.style.position = "fixed";
+		sibling.style.top = top + "px";
+		top += sibling.clientHeight;
+	}, this);
+	_contentWrapper.style.paddingBottom = top - videoContainer.clientHeight + _topOffset + "px";
+	__.setModuleData(moduleId, 'fixed', true);
+};
+
+/**
+ * @description private function handling the loading of the video
+ * @returns {undefined}
+ */
+__.loadVideos = function() {
+	var key, video, videoSrc,
+	modules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorModul);
+
+	for (key in modules) {
+		if(modules.hasOwnProperty(key)){
+			video = __.getVideoByModule();
+			videoSrc = __.getVideoSrc(video);
+			__.handleXMLHTTPRequest(videoSrc, modules[key], __.handleLoadedVideo);
+		}
+	}
+};
+/**
+ * @description private function handling the loaded video
+ * @param {DOMElement} module - the HTML modul of the video
+ * @param {objectURL} videoSrc - the src of the video
+ * @returns {undefined}
+ */
+__.handleLoadedVideo = function(module, videoSrc) {
+	var video = __.getVideoByModule(module);
+	video.src = videoSrc;
+};
+/**
+ * @description private function handling the loaded video
+ * @param {DOMElement} module - the HTML modul of the video
+ * @param {DOMElement} moduleId - the id of the module
+ * @param {objectURL} video - the video
+ * @returns {undefined}
+ */
+__.useVideoAlternative = function(module, moduleId, video) {
+	window.addEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.animateAlternative.bind(this, moduleId, video), 100));
+	__.setInitialAlternativeModuleData(module, moduleId, video);
+};
+/**
+ * @description private function handling the loaded video
+ * @param {DOMElement} video - the video
+ * @returns {undefined}
+ */
+__.useVideo = function(video) {
+	if (video.readyState === 4) {
+		__.handleVideoCanPlayThrough({target:video});
+	} else {
+		video.addEventListener("canplaythrough", __.handleVideoCanPlayThrough);
+		video.muted = true;
+		video.autoplay = true;
+		// needs to be set to trigger the canplaythrough eventually
+		video.play();
+	}
+};
+/**
+ * @description private function returning the next siblings of the module
+ * @param {DOMElement} module - the module of the video
+ * @param {String} moduleId - the id of the module
+ * @returns {Array} - Array of following modules
+ */
+__.getNextSiblings = function(module, moduleId) {
+	var nextSiblings = __.getModuleData(moduleId, 'nextSiblings'),
+	sibling;
+
+	if (!!nextSiblings) {
+		return nextSiblings;
+	}
+	nextSiblings = [];
+	sibling = module.nextElementSibling;
+	while (!!sibling) {
+		nextSiblings.push(sibling);
+		sibling = sibling.nextElementSibling;
+	}
+	__.setModuleData(moduleId, 'nextSiblings', nextSiblings);
+	return nextSiblings;
+};
+
+/**
+ * @description private function handling the top position in case there is a sticky navigation
+ * @returns {undefined}
+ */
+__.handleTopPosition = function() {
+	var videoContainer, key,
+	navigation = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorNavigation);
+	_topOffset = navigation.clientHeight;
+
+	if (_topOffset > 0) {
+		videoContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorVideoContainer);
+		for(key in videoContainer) {
+			if(videoContainer.hasOwnProperty(key)){
+				videoContainer[key].style.top = _topOffset + 'px';
+			}
+		}
+	}
+};
+
+/**
+ * @description private function initialitzing the scroll-animation or alternative function for the Videos
+ * @param {Event} event - the videoperformance event
+ * @returns {undefined}
+ */
+__.initializeVideos = function(event) {
+	var key, module, isPerformant,
+	fps = 0,
+	modules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorModul),
+	minfps = __.getMinimalFramesPerSecond(modules[0]);
+	if (!!event.fps) {
+		fps = event.fps;
+	}
+	isPerformant = fps >= minfps;
+
+	if (isPerformant) {
+		__.handleTopPosition();
+	}
+	for(key in modules) {
+		if(modules.hasOwnProperty(key)){
+			module = modules[key];
+			__.initializeVideo(isPerformant, module);
+		}
+	}
+};
+/**
+ * @description private function initialitzing a single video
+ * @param {Boolean} isPerformant - whether the performance is sufficent
+ * @param {DOMElement} module - the module of the video
+ * @returns {undefined}
+ */
+__.initializeVideo = function(isPerformant, module) {
+	var moduleId = module.getAttribute('id'),
+	video = __.getVideoByModule(module);
+	if (isPerformant) {
+		console.log("scroll-technology-module: video performance is sufficient");
+		_contentWrapper = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(module, _selectorContentWrapper);
+		__.useVideo(video);
+		__.setInitializeHighlightTexts(module, moduleId, video, false);
+	} else {
+		video.classList.remove('sticky');
+		__.useVideoAlternative(module, moduleId, video);
+		// trigger the animation once for an initial state
+		__.animateAlternative(moduleId, video);
+	}
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	_eventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	var i, stickyElements = document.getElementsByClassName('sticky');
+	for (i = stickyElements.length - 1; i >= 0; i--) {
+		window.Stickyfill.add(stickyElements[i]);
+	}
+	__.init();
+});
+
+
+/***/ }),
+/* 5 */
+/*!*******************************!*\
+  !*** ./components/vtp/vtp.js ***!
+  \*******************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+
+
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+/**
+ * some selector variables
+ */
+var _selectorDropDownListItem = '.nm-vtp-dropdown-list-item',
+	_selectorDropDownList = '.nm-vtp-dropdown-list',
+	_selectorDropDownCurrentActive = '.nm-vtp-dropdown-current-selected',
+	_selectorDropDownCurrentActiveItem = '.nm-vtp-dropdown-current-selected-item-text',
+	_selectorDropDownContainer = '.nm-vtp-dropdown',
+	_selectorLinkContainer = '.nm-vtp-link-container',
+	_selectorEECContainer = '.nm-vtp-eec-container',
+	_selectorVTPContainer = '.nm-module-vtp';
+
+/** vtp dropdown */
+var	_dropdownContainer,
+	_currentModelId,
+	_domEventDelegate,
+	_scrollPosition;
+
+/**
+ * public initialize method
+ * @returns {undefined}
+ */
+function init() {
+	var selectedItem;
+	_domEventDelegate = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getEventDelegate('body');
+	_dropdownContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorDropDownContainer);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(_dropdownContainer)) {
+		__.setDropDownWidth();
+		selectedItem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorDropDownListItem + '.nm-vtp-selected' ,_dropdownContainer);
+		_currentModelId = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(selectedItem, "modelid");
+		__.addEvents();
+	}
+	console.log('init: vtp');
+}
+
+/** private functions */
+/**
+ * private function adding events
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	_domEventDelegate.on("click", _selectorDropDownCurrentActive, __.handleDropDownStatus);
+	_domEventDelegate.on("click", _selectorDropDownListItem, __.onSelectionChanged);
+	_domEventDelegate.on("mousedown", __.handleClickOutside);
+	document.addEventListener("touchstart", __.handleClickOutside);
+	window.addEventListener("resize", __.setDropDownWidth);
+};
+/**
+ * private function setting the width of the dropdown
+ * @returns {undefined}
+ */
+__.setDropDownWidth = function () {
+	var list;
+	if (window.innerWidth > "767") {
+		list = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorDropDownList);
+		list.style.marginLeft = -window.innerWidth + "px";
+		list.style.display = "block";
+		_dropdownContainer.style.width = list.offsetWidth + "px";
+		list.removeAttribute('style');
+	} else {
+		_dropdownContainer.style.width = "";
+	}
+};
+/**
+ * private function opens/closes the dropdownlist
+ * @returns {undefined}
+ */
+__.handleDropDownStatus = function() {
+	if (_dropdownContainer.classList.contains("nm-vtp-active")) {
+		window.scrollTo(0, _scrollPosition);
+		_dropdownContainer.classList.remove("nm-vtp-active");
+	} else {
+		_scrollPosition = window.pageYOffset;
+		_dropdownContainer.classList.add("nm-vtp-active");
+	}
+};
+/**
+ * private function closes the dropbox on clickoutside
+ * @param {Event} event - the clickevent
+ * @returns {undefined}
+ */
+__.handleClickOutside = function(event) {
+	if (!_dropdownContainer.contains(event.target)){
+		_dropdownContainer.classList.remove("nm-vtp-active");
+	}
+};
+/**
+ * private function handling the selection of a carline
+ * @returns {undefined}
+ */
+__.onSelectionChanged = function() {
+	var modelId = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(this, "modelid"),
+	context = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(this, _selectorVTPContainer);
+	__.showSelectedModel(this);
+	__.handleSelectedState(this);
+	__.handleDropDownStatus();
+	// hide shown elements
+	__.hideCurrentModelContent(context);
+	// show elements with id
+	__.showModelContent(modelId, context);
+	_currentModelId = modelId;
+};
+/**
+ * private function shows the selected item
+ * @param {DOMElement} selectedItem - selected list item
+ * @returns {undefined}
+ */
+__.showSelectedModel = function(selectedItem) {
+	var currentActiveItem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorDropDownCurrentActiveItem, _dropdownContainer);
+	currentActiveItem.innerText = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(selectedItem, "modelname");
+};
+/**
+ * private function setting/removing selected state of item
+ * @param {DOMElement} selectedItem - selected list item
+ * @returns {undefined}
+ */
+__.handleSelectedState = function(selectedItem) {
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorDropDownListItem + '.nm-vtp-selected', _dropdownContainer).classList.remove("nm-vtp-selected");
+	selectedItem.classList.add("nm-vtp-selected");
+};
+/**
+ * private function showModelContent
+ * @param {string} modelId - Id of the selected Model
+ * @param {DOMElement} context - current vtp-modul-container
+ * @returns {undefined}
+ */
+__.showModelContent = function(modelId, context) {
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorLinkContainer + "[data-modelid='" + modelId + "']", context).style.display = "block";
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorEECContainer + "[data-modelid='" + modelId + "']", context).style.display = "block";
+};
+/**
+ * private function hide the content of the current model
+ * @param {DOMElement} context - current vtp-modul-container
+ * @returns {undefined}
+ */
+__.hideCurrentModelContent = function(context) {
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorLinkContainer + "[data-modelid='" + _currentModelId + "']", context).style.display = "none";
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorEECContainer + "[data-modelid='" + _currentModelId + "']", context).style.display = "none";
+};
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	init();
+});
+
+
+/***/ }),
+/* 6 */
+/*!*************************************!*\
+  !*** ./components/drawer/drawer.js ***!
+  \*************************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+
+
+/**
+ * Object holding all private functions
+ */
+
+/**
+ * for each module we save a reference to its dropdown and promise
+ * this is necessary because on drawer module can have a dropdown which includes several layers/content
+ */
+var __ = {
+	promises: {},
+	dropdowns: {},
+	modules: {},
+	initializedModules: []
+};
+__.oDefaults = {
+	pageTitle: '#nm-page-title',
+	layerTitle: '.nm-layer-title',
+	moduleDrawerSelector: '.nm-module-drawer',
+	drawerButtonSelector: '.nm-drawer-button',
+	buttonTextSelector: '.nm-drawer-text',
+	headerSelector: '.nm-drawer-header',
+	bodySelector: '.nm-drawer-body',
+	contentSelector: '.nm-drawer-content',
+	dropdown: {
+		selectorListItem: '.nm-drawer-dropdown-list-item',
+		selectorList: '.nm-drawer-dropdown-list',
+		selectorCurrentActive:'.nm-drawer-dropdown-current-selected',
+		selectorCurrentActiveItem:'.nm-drawer-dropdown-current-selected-item-text',
+		selector: '.nm-drawer-dropdown'
+	}
+};
+
+/** global variable, so we dont have to create a new instance each time we use the eventDelegate
+* this variable is initalized in the function __.initialize()
+*/
+var _domEventDelegate;
+
+/******************************************************/
+/*DROPDOWN BEGIN: Dropdown functions taken from vtp.js*/
+/******************************************************/
+/* private functions */
+__.initDropdown = function(module, moduleId) {
+	var selectedItem;
+	var dropdownContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selector + '-' + moduleId);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(dropdownContainer)) {
+		selectedItem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selectorListItem + '.nm-selected', dropdownContainer);
+		__.dropdowns[moduleId].currentModelId = selectedItem.getAttribute("data-modelid");
+
+		// set dropdown events-handlers
+		_domEventDelegate.on("click", __.oDefaults.dropdown.selectorCurrentActive + '-' + moduleId, function() { __.handleDropDownStatus(moduleId);});
+		_domEventDelegate.on("click", __.oDefaults.dropdown.selectorListItem  + '-' + moduleId, function(event) { __.onSelectionChanged(event, moduleId);});
+		_domEventDelegate.on("mousedown", function(e) { __.handleClickOutside(e, moduleId);});
+		document.addEventListener("touchstart", function(e) { __.handleClickOutside(e, moduleId);});
+	}
+};
+
+/**
+ * private function opens/closes the dropdownlist
+ * @returns {undefined}
+ */
+__.handleDropDownStatus = function(moduleId) {
+	var dropdown = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selector + '-' + moduleId);
+	var module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.moduleDrawerSelector + "[data-module-id='" + moduleId + "'] ");
+	if (dropdown.classList.contains("nm-active")) {
+		window.scrollTo(0, __.dropdowns[moduleId].scrollPosition);
+		dropdown.classList.remove("nm-active");
+		module.classList.remove("nm-dropdown-active");
+	} else {
+		__.dropdowns[moduleId].scrollPosition = window.pageYOffset;
+		dropdown.classList.add("nm-active");
+		module.classList.add("nm-dropdown-active");
+	}
+};
+/**
+ * private function closes the dropbox on clickoutside
+ * @returns {undefined}
+ */
+__.handleClickOutside = function(event, moduleId) {
+	var dropdown = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selector + '-' + moduleId);
+	var module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.moduleDrawerSelector + "[data-module-id='" + moduleId + "'] ");
+	if (!dropdown.contains(event.target)){
+		dropdown.classList.remove("nm-active");
+		module.classList.remove("nm-dropdown-active");
+	}
+};
+
+/**
+ * private function handling the selection of a carline
+ * @returns {undefined}
+ */
+__.onSelectionChanged = function(event, moduleId) {
+	// event target may be the span containing the text, if the click happens exactly on the text.
+	// in this case, we take the span parent as target, because it contains all the attributes and css rules.
+	var target = event.target.nodeName === 'SPAN' ? event.target.parentNode : event.target;
+	var modelId = target.getAttribute("data-modelid");
+	var body = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.moduleDrawerSelector + "[data-module-id='" + moduleId + "'] " + __.oDefaults.bodySelector);
+	__.showSelectedModel(moduleId, target);
+	__.handleSelectedState(moduleId, target);
+	__.handleDropDownStatus(moduleId);
+	// hide shown elements
+	__.hideCurrentModelContent(moduleId);
+	// show elements with id
+	__.showModelContent(moduleId, modelId);
+	__.calculateAndSetBodyMaxHeight(body);
+	__.dropdowns[moduleId].currentModelId = modelId;
+};
+
+/**
+ * private function shows the selected item
+ * @param {DOMElement} selectedItem - selected list item
+ * @returns {undefined}
+ */
+__.showSelectedModel = function(moduleId, selectedItem) {
+	var dropdownContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selector + '-' + moduleId);
+	var currentActiveItem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selectorCurrentActiveItem, dropdownContainer);
+	currentActiveItem.innerText = selectedItem.getAttribute("data-modelname");
+};
+/**
+ * private function setting/removing selected state of item
+ * @param {DOMElement} selectedItem - selected list item
+ * @returns {undefined}
+ */
+__.handleSelectedState = function(moduleId, selectedItem) {
+	var dropdownContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selector + '-' + moduleId);
+	__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.dropdown.selectorListItem + '.nm-selected', dropdownContainer).classList.remove("nm-selected");
+	selectedItem.classList.add("nm-selected");
+};
+/**
+ * private function showModelContent
+ * @param {string} moduleId
+ * @param {string} modelId - Id of the selected Model
+ * @returns {undefined}
+ */
+__.showModelContent = function(moduleId, modelId) {
+	var selector = __.oDefaults.contentSelector + "[data-modelid='" + modelId + "']";
+	var context = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.moduleDrawerSelector + "[data-module-id='" + moduleId + "']");
+	var modelContent = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(selector, context);
+	modelContent.style.display = "block";
+};
+/**
+ * private function hide the content of the current model
+ * @param {string} moduleId
+ * @returns {undefined}
+ */
+__.hideCurrentModelContent = function(moduleId) {
+	var selector = __.oDefaults.contentSelector + "[data-modelid='" + __.dropdowns[moduleId].currentModelId + "']";
+	var context = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.moduleDrawerSelector + "[data-module-id='" + moduleId + "']");
+	var modelContent = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(selector, context);
+	modelContent.style.display = "none";
+};
+/**************/
+/*DROPDOWN END*/
+/**************/
+
+__.setTemplateInDom = function(body, container) {
+	return function(template) {
+		var globalEventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+		container.innerHTML = template;
+
+		// search for current page title to set it into the layer title
+		var pageTitleElement = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.pageTitle);
+		var pageTitle = !!pageTitleElement ? pageTitleElement.innerHTML : undefined;
+
+		// if there is no page title, no need to go further
+		if (!pageTitle) {
+			return;
+		}
+
+		// search for the layer title element to change its value
+		var layerTitleElement = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.layerTitle, container);
+		if(!!layerTitleElement) {
+			layerTitleElement.innerHTML = pageTitle;
+		}
+
+		globalEventBus.emit(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].LAYER_LOADED, {element:container});
+	};
+};
+
+__.handleContentWrapper = function(moduleId) {
+	return function(body){
+		var contentDivs = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.contentSelector, body);
+		contentDivs.forEach(function(contentDiv) {
+			var url = contentDiv.getAttribute("data-content-url");
+			var modelId = contentDiv.getAttribute("data-modelid");
+			__.promises[moduleId][modelId] = {};
+			__.promises[moduleId][modelId] = __.loadContentTemplateContent(url).then(__.setTemplateInDom(body, contentDiv));
+		});
+	};
+};
+
+__.loadContentTemplateContent = function(url) {
+	return new Promise(function(resolve, reject){
+		// for LOCAL testing use AJAX.getContent --> AJAX.getContent(url_, false).then(function(content){
+		//AJAX.getContent(url, false).then(function(content){
+		__WEBPACK_IMPORTED_MODULE_0_bundle_core__["CONTENT"].getContent(url, false).then(function(content){
+			console.log("CONTENT url content: ", url);
+			resolve(content);
+		}).catch(function(error){
+			console.log("CONTENT url content: ", url, error);
+			reject(error);
+		});
+	});
+};
+
+__.handleButtonClick = function(context) {
+	var isDrawerOpen = context.classList.contains('nm-open');
+	if(isDrawerOpen) {
+		context.classList.remove('nm-open');
+		__.closeDrawer(context);
+	} else {
+		context.classList.add('nm-open');
+		__.openDrawer(context);
+	}
+};
+
+__.openDrawer = function(context) { // eslint-disable-line max-params
+	var firstContentDiv, body, header, headerBottomPosition, scrollToPosition, moduleId;
+	scrollToPosition = window.pageYOffset;
+
+	moduleId = context.getAttribute('data-module-id');
+	__.modules[moduleId].scrollToPosition = scrollToPosition;
+
+	//get the matching module to the clicked Button
+	body = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.bodySelector, context);
+	header = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.headerSelector, context);
+	firstContentDiv = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.contentSelector, body);
+
+	__.calculateAndSetBodyMaxHeight(body);
+	// get the first model-id and set it as current modelid for the given module
+	var firstModelId = firstContentDiv.getAttribute("data-modelid");
+	__.dropdowns[moduleId].currentModelId = firstModelId;
+
+	//store module position before opening
+	headerBottomPosition = header.getBoundingClientRect().top;
+	//store position in a data attrbute for later
+	//context.setAttribute("data-position-restore", headerBottomPosition);
+	var moduleTheme = context.getAttribute('data-theme');
+	body.style.backgroundColor = moduleTheme === 'light' ? '#b3b3b3' : '#4c4c4c';
+};
+
+__.closeDrawer = function(context) { // eslint-disable-line max-params
+	var body, closeBtn, textContainer, header, openBtn, moduleId;
+	header = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.headerSelector, context);
+	closeBtn = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.drawerButtonSelector, context);
+	textContainer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.buttonTextSelector, header);
+	body = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.bodySelector, context);
+
+	// content is not shown any more
+	body.style.maxHeight = 0;
+	moduleId = context.getAttribute('data-module-id');
+	window.scrollTo(0, __.modules[moduleId].scrollToPosition);
+	closeBtn.classList.remove('nm-fixed-button');
+
+	// timeout is needed to execute the code after animation has been done
+	setTimeout(function() {
+		var initColor = context.getAttribute('data-init-color');
+		context.style.backgroundColor = initColor;
+	}, 500);
+};
+__.onContentScroll = function(closeButton, startFixingButton, module, body) {
+	var scrollTop, moduleBottomPosition;
+	if (module.classList.contains('nm-open')) {
+		scrollTop = document.body.scrollTop || window.pageYOffset || window.scrollY;
+		// position of the module bottom in the viewport
+		moduleBottomPosition = module.getBoundingClientRect().bottom;
+
+		if (scrollTop > startFixingButton && moduleBottomPosition > 140) {
+			closeButton.classList.add('nm-fixed-button');
+			closeButton.classList.remove('nm-absolute-button');
+		} else {
+			closeButton.classList.add('nm-absolute-button');
+			closeButton.classList.remove('nm-fixed-button');
+		}
+	}
+};
+
+__.calculateAndSetBodyMaxHeight = function(body) {
+	var bodyMaxHeight = body.scrollHeight;
+	body.style.maxHeight = bodyMaxHeight + 'px';
+};
+
+__.scrollListener = function(context, body, header, btnSelector) {
+	var button = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(btnSelector);
+	return function() {
+		var headerBottomPosition = header.getBoundingClientRect().top;
+		var topPage = document.getElementsByTagName('body')[0].getBoundingClientRect().top;
+		headerBottomPosition = -1 * (topPage - headerBottomPosition);
+		__.onContentScroll(button, headerBottomPosition, context, body);
+	};
+};
+
+__.resizeListener = function(module, body) {
+	return function() {
+		if(module.classList.contains('nm-open')) {
+			__.calculateAndSetBodyMaxHeight(body);
+		}
+	};
+};
+
+/*
+ * private function adding events-handlers
+ */
+__.addEvents = function(context) {
+	var body, header;
+
+	header = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.headerSelector, context);
+
+	body = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.bodySelector, context);
+
+	//handle open clicks
+	var moduleId = context.getAttribute('data-module-id');
+	var btnSelector = __.oDefaults.moduleDrawerSelector + "[data-module-id='" + moduleId + "'] " + __.oDefaults.drawerButtonSelector;
+	_domEventDelegate.on("click", btnSelector, function(e) {__.handleButtonClick(context);});
+	//handle scroll move
+	window.addEventListener("scroll", __.scrollListener(context, body, header, btnSelector));
+	//handle height changes on resize
+	window.addEventListener("resize", __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].debounce(__.resizeListener(context, body), 200));
+};
+
+__.initContent = function(module, moduleId) {
+	var bodys = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.bodySelector, module);
+	bodys.forEach(__.handleContentWrapper(moduleId));
+};
+
+/*
+ * public initialize method for all existing module instances
+ * @returns
+ */
+__.initialize = function() {
+	var moduleList = document.querySelectorAll(__.oDefaults.moduleDrawerSelector);
+	for (var i = 0; i < moduleList.length; i++) {
+		var module = moduleList[i];
+		if (module) {
+			var moduleId = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(module, 'data-module-id');
+
+			// if module has already been initialized than don't initialize it a second time
+			// to avoid event-handlers to be set multiple times.
+			if (__.initializedModules.indexOf(moduleId) === -1) {
+				__.dropdowns[moduleId] = {};
+				__.promises[moduleId] = {};
+				__.initDropdown(module, moduleId);
+
+				// marks the module as initialized
+				__.initializedModules.push(moduleId);
+				__.modules[moduleId] = {};
+			}
+			__.addEvents(module);
+
+			// initContent needs to wait for VERSION_LOAD_COMPLETE to be able to load the data
+			// thats why it may be called multiple times.
+			__.initContent(module, moduleId);
+		}
+	}
+};
+
+/*
+ * private init method
+ * @returns
+ */
+function init() {
+	var drawer = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.moduleDrawerSelector);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(drawer)) {
+		console.log('init: drawer');
+		__.initialize();
+	}
+}
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	_domEventDelegate = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getEventDelegate('body');
+	var globalEventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	/* NOT USING EVENT VERSION_LOAD_COMPLETE anymore
+	 * Changed EVENT from VERSION_LOAD_COMPLET to APP_INITIALIZED, so it is secure that there will be a version-number
+	 */
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].APP_INITIALIZED, init);
+
+	/* for inpage-navi page-change */
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].PAGE_READY, init);
+
+	/**** for LOCAL USAGE out-comment init() ****/
+	//init();
+});
+
+
+
+
+/***/ }),
+/* 7 */
+/*!***************************************!*\
+  !*** ./components/numbers/numbers.js ***!
+  \***************************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+
+
+
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+/**
+ * some selector variables
+ */
+var _selectorNumbers = '.nm-module-numbers',
+	_selectorNumbersHidden = '.nm-module-numbers.nm-number-hidden';
+
+var _hiddenNumbers = null;
+/**
+ * public initialize method
+ * @returns {undefined}
+ */
+function init() {
+	var numbers = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorNumbers);
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].isElement(numbers)) {
+		_hiddenNumbers = null;
+		__.handleShowNumbers();
+		__.addEvents();
+	}
+	console.log('init: numbers');
+}
+
+/** private functions */
+/**
+ * private function adding events
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	window.addEventListener("scroll", __.handleScrollEvent);
+};
+/**
+ * private function get all number elements still hidden
+ * @returns {Array} hiddennumbers
+ */
+__.getHiddenNumbers = function() {
+	if (!_hiddenNumbers) {
+		_hiddenNumbers = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorNumbersHidden);
+	}
+	return _hiddenNumbers;
+};
+/**
+ * private function handling the scrollevent
+ * @returns {undefined}
+ */
+__.handleScrollEvent = function() {
+	__.handleShowNumbers();
+};
+/**
+ * private function handling the visibility of the numbers
+ * @returns {undefined}
+ */
+__.handleShowNumbers = function() {
+	var key, numbers = __.getHiddenNumbers();
+	if (numbers.length < 1) {
+		window.removeEventListener("scroll", __.handleScrollEvent);
+	} else {
+		for(key in numbers) {
+			if (!numbers.hasOwnProperty(key)) {
+				continue;
+			}
+			if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getVisibleVerticalPercentageInViewport(numbers[key]) >= 25) {
+				__.showNumbers(numbers[key]);
+			}
+		}
+		_hiddenNumbers = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorNumbersHidden);
+	}
+};
+/**
+ * private function showing the number
+ * @param {DOMElement} numberElm - the number Element
+ * @returns {undefined}
+ */
+__.showNumbers = function(numberElm) {
+	numberElm.classList.remove('nm-number-hidden');
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	var globalEventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].PAGE_READY, init);
+	init();
+});
+
+
+/***/ }),
+/* 8 */
+/*!***********************************!*\
+  !*** ./components/intro/intro.js ***!
+  \***********************************/
+/*! exports provided: __ */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+
+
+
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+/**
+ * some selector variables
+ */
+ __.oDefaults = {
+	selectorModule : '.nm-module-intro',
+	classShowModule : 'nm-j-intro-show'
+};
+
+/**
+ * public initialize method
+ * @returns {undefined}
+ */
+function init() {
+	__.addEvents();
+	__.checkModuleVisibility();
+	console.log('init: model-band');
+}
+
+/** private functions */
+/**
+ * private function adding events
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	window.addEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].throttle(__.scrollHandler, 200));
+};
+
+/**
+ * private function for getting the current module
+ * @param {HTMLElement} target_ - event target
+ * @returns {HTMLElement} module container/context
+ */
+__.getCurrentModule = function(target_) {
+	var currentModule = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(target_, __.oDefaults.selectorModul);
+	return currentModule;
+};
+
+/**
+ * private function for handling the page scroll
+ * @param {}
+ * @returns {undefined} nothing
+ */
+__.scrollHandler = function() {
+	__.checkModuleVisibility();
+};
+
+/**
+ * private function to check if module is visible
+ * @param {HTMLElement} module
+ * @returns {undefined} nothing
+ */
+__.checkModuleVisibility = function(module_) {
+	var introModules = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorModule);
+	introModules.forEach(function(module) {
+		var moduleVisible = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getVisibleVerticalPercentageInViewport(module);
+		if (moduleVisible > 25) {
+			module.classList.add(__.oDefaults.classShowModule);
+		}
+	});
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	var globalEventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].PAGE_READY, init);
+	init();
+});
+
+
+/***/ }),
+/* 9 */
+/*!***********************************************!*\
+  !*** ./components/basis-video/basis-video.js ***!
+  \***********************************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+/**
+ *
+ * Konzept: https://kb.dasburo.com/x/JCQUB
+ * Stand: Version 21 / 2017-03-14
+ *
+ * markup requirements:
+ * mandatory:
+ *		module - has class 'nm-basis-video'
+ * 		playbutton - has a class 'nm-basis-video-play-button'
+ * 		video-wrapper - the video has a wrapper with the class 'nm-basis-video-player'
+ * optional:
+ * 		skipbutton - if existent, has a class 'nm-basis-video-skip-button'
+ *
+ */
+
+
+
+
+ // unit-test relevant
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+/**
+ * some selector variables
+ */
+var _selectorVideo = 'video',
+	_selectorModule = '.nm-basis-video',
+	_selectorVideoContainer = '.nm-basis-video-player',
+	_selectorVideoPlayButton = '.nm-basis-video-play-button',
+	_selectorVideoSkipButton = '.nm-basis-video-skip-button';
+
+var _domEventDelegate;
+
+/**
+ * public function initializing the module
+ * @returns {undefined}
+ */
+function init() {
+	__.addEvents();
+	__.getVideoModules().forEach(__.handleVideoAutoplay);
+}
+/**
+ * private functions
+ */
+/**
+ * private function returning all relevant video modules
+ * @return {[DOMElement]} array of modules
+ */
+__.getVideoModules = function() {
+	var elements = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(_selectorModule);
+	if (!elements) {
+		elements = [];
+	}
+	return elements;
+};
+/**
+ * private function returning the video of a module
+ * @param {DOMElement} module - the video module
+ * @return {DOMElement} the video
+ */
+__.getVideoByModule = function(module) {
+	return __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorVideo, module);
+};
+/**
+ * private function returning the container of the video
+ * @param {DOMElement} module - the video module
+ * @return {DOMElement} the container of the video
+ */
+__.getVideoContainerByModule = function(module) {
+	return __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(_selectorVideoContainer, module);
+};
+/**
+ * @description private function verifying whether then video should be played in the autoplaymodus or not
+ * @param {DOMElement} videoContainer - the container of the video
+ * @returns {boolean} - is autoplay or not
+ */
+__.isAutoplayVideo = function(videoContainer) {
+	if (__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getDataAttribute(videoContainer, 'autoplay')){
+		return true;
+	}
+	return false;
+};
+
+/**
+ * private function adding events
+ * @param {DOMElement} module - the video module
+ * @returns {undefined}
+ */
+__.addEvents = function() {
+	//ended
+	__.getVideoModules().forEach(function(module) {
+		var video = __.getVideoByModule(module);
+		video.addEventListener('ended', __.handleVideoEnded.bind(this, module));
+	});
+
+	// viewport events
+	window.addEventListener('scroll', __.handleScrollDependendVideoStop);
+	window.addEventListener('scroll', __.handleScrollDependendVideoPlay);
+
+	// skip
+	_domEventDelegate.on('mousedown', _selectorModule + ' ' + _selectorVideoSkipButton, __.skipVideoPlayByButton);
+	_domEventDelegate.on('touchstart', _selectorModule + ' ' + _selectorVideoSkipButton, __.skipVideoPlayByButton);
+
+	// play via button
+	_domEventDelegate.on('mousedown', _selectorModule + ' ' + _selectorVideoPlayButton, __.startVideoPlayByButton);
+	_domEventDelegate.on('touchstart', _selectorModule + ' ' + _selectorVideoPlayButton, __.startVideoPlayByButton);
+};
+
+/**
+ * handles the autoplay
+ * @param {DOMElement} module - the video module
+ * @returns {undefined}
+ */
+__.handleVideoAutoplay = function(module) {
+	var video = __.getVideoByModule(module),
+	videoContainer = __.getVideoContainerByModule(module);
+	//preload seems to dont work always on mobile devices, thats why we use load() additionally
+	video.load();
+	if (__.isAutoplayVideo(videoContainer)){
+		//if (video.readyState > 3 && DOM_UTILS.getVisibleVerticalPercentageInViewport(videoContainer) === 100) {
+		if (video.readyState > 3 && __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getViewportPercentageCovered(videoContainer) >= 50) {
+			__.startVideoPlay(module);
+		} else {
+			video.addEventListener("canplaythrough", __.startVideoPlayByCanPlayThrough);
+		}
+	}
+};
+/**
+ * private function handles the playmode as in autoplay/ playbutton
+ * @param {Event} event - the clickevent on the button
+ * @returns {undefined}
+ */
+__.startVideoPlayByButton = function (event) {
+	var module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(event.target, _selectorModule);
+	if(!!module) {
+		__.startVideoPlay(module);
+	}
+};
+/**
+ * private function handles startplay triggered by event
+ * @param {Event} event - the canplaythrough event
+ * @returns {undefined}
+ */
+__.startVideoPlayByCanPlayThrough = function (event) {
+	var module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(event.target, _selectorModule);
+	//if (!!module && DOM_UTILS.getVisibleVerticalPercentageInViewport(__.getVideoContainerByModule(module)) === 100) {
+	if (!!module && __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getViewportPercentageCovered(__.getVideoContainerByModule(module)) >= 50) {
+		__.startVideoPlay(module);
+	}
+};
+/**
+ * private function handles the playmode as in autoplay/ playbutton
+ * @param {DOMElement} module - the video module
+ * @returns {undefined}
+ */
+__.startVideoPlay = function (module) {
+	var video, settingMuted;
+	if (!!module) {
+		video = __.getVideoByModule(module);
+		settingMuted = video.muted;
+		__.getVideoByModule(module).removeEventListener("canplaythrough", __.startVideoPlayByCanPlayThrough);
+		__.getVideoContainerByModule(module).classList.add("nm-basis-video-playing");
+		video.muted = true; // bypassing the android restriction for autoplaying video
+		video.play();
+		video.muted = settingMuted;
+	}
+};
+/**
+ * private function handles the skipping of the video
+ * @param {Event} event - the clickevent on the button
+ * @returns {undefined}
+ */
+__.skipVideoPlayByButton = function(event) {
+	var module = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].closest(event.target, _selectorModule);
+	if (!!module) {
+		__.skipVideoPlay(module);
+	}
+};
+/**
+ * private function handles the skipping of the video
+ * @param {DOMElement} module - the video module
+ * @returns {undefined}
+ */
+__.skipVideoPlay = function(module) {
+	var video;
+	if (!!module) {
+		video = __.getVideoByModule(module);
+		video.pause();
+		video.currentTime = 0;
+		__.handleVideoEnded(module);
+	}
+};
+/**
+ * private function handling the video ended state
+ * @param {DOMElement} module - the video module
+ * @returns {undefined}
+ */
+__.handleVideoEnded = function(module) {
+	var videoContainer;
+	if(!!module) {
+		videoContainer = __.getVideoContainerByModule(module);
+		videoContainer.classList.remove("nm-basis-video-playing");
+		if (__.isAutoplayVideo(videoContainer)) {
+			videoContainer.classList.add("nm-basis-video-autoplay-played");
+		}
+	}
+};
+/**
+ * private function handling the video playing if in viewport
+ * @returns {undefined}
+ */
+__.handleScrollDependendVideoPlay = function() {
+	__.getVideoModules().forEach(function(module){
+		var video = __.getVideoByModule(module),
+		videoContainer = __.getVideoContainerByModule(module);
+		//if (__.isAutoplayVideo(videoContainer) && video.currentTime === 0 && DOM_UTILS.getVisibleVerticalPercentageInViewport(videoContainer) === 100 ){
+		if (__.isAutoplayVideo(videoContainer) && video.currentTime === 0 && __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getViewportPercentageCovered(videoContainer) >= 50 ){
+			if (video.readyState > 3) {
+				__.startVideoPlay(module);
+			} else {
+				video.addEventListener("canplaythrough", __.startVideoPlayByCanPlayThrough);
+			}
+		}
+	});
+};
+/**
+ * private function handling the videostoping if out of veiwport
+ * @returns {undefined}
+ */
+__.handleScrollDependendVideoStop = function() {
+	__.getVideoModules().forEach(function(module){
+		var video = __.getVideoByModule(module),
+		videoContainer = __.getVideoContainerByModule(module);
+		//if (video.currentTime > 0 && DOM_UTILS.getVisibleVerticalPercentageInViewport(videoContainer) === 0) {
+		if (video.currentTime > 0 && __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getViewportPercentageCovered(videoContainer) < 50) {
+			__.skipVideoPlay(module);
+		}
+	});
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	var globalEventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].PAGE_LOADED, init);
+	_domEventDelegate = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getEventDelegate('body');
+	init();
+});
+
+
+/***/ }),
+/* 10 */
+/*!***************************************************!*\
+  !*** ./components/basis-gallery/basis-gallery.js ***!
+  \***************************************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+/**
+ *
+ * Konzept: https://kb.dasburo.com/x/JCQUB
+ * Stand: Version 21 / 2017-03-14
+ *
+ * markup requirements:
+ * mandatory:
+ *	module - has class 'nm-basis-video'
+ *		playbutton - has a class 'nm-basis-video-play-button'
+ *		video-wrapper - the video has a wrapper with the class 'nm-basis-video-player'
+ *
+ */
+
+
+
+
+
+ // unit-test relevant
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+/**
+ * some selector variables
+ */
+ __.oDefaults = {
+	selectorTagVideo: 'video',
+	selectorModule: '.nm-basis-gallery',
+	selectorNavigationArea: '.nm-basis-gallery-navigation-area',
+	selectorNavigationArrowForward: '.nm-basis-gallery-navigation-arrow-forward',
+	selectorNavigationArrowBack: '.nm-basis-gallery-navigation-arrow-back',
+	selectorNavigationBar: '.nm-basis-gallery-navigation-bar',
+	selectorVideoPlayButton: '.nm-basis-gallery-play-button',
+	selectorVideo: '.nm-basis-gallery-video',
+	selectorVideoStillFrame: '.nm-basis-gallery-stillframe',
+	selectorButtonOverlay: '.nm-basis-gallery-player-overlay',
+	selectorMediaContainerList: '.nm-basis-gallery-slider-container-list',
+	selectorMediaContainerListVideo: '.nm-basis-gallery-slider-container-list .nm-basis-gallery-video',
+	selectorMediaContainerListStillFrame: '.nm-basis-gallery-slider-container-list .nm-basis-gallery-stillframe'
+};
+
+var dir = {
+	LEFT: 'left',
+	RIGHT: 'right'
+};
+
+var touchStartCoords = {x: -1, y: -1};
+// swipeStart
+var startTime = 0;
+/**
+ * Object holding for all modules the current element
+ */
+var currentElements = {};
+
+var _domEventDelegate;
+
+/**
+ * public function initializing the module
+ * @returns {undefined}
+ */
+function init() {
+	__.getGalleryModules().forEach(function(galleryModule){
+		__.initModule(galleryModule);
+	});
+}
+
+/**
+ * private function returning all relevant gallery modules
+ * @return {[DOMElement]} array of modules
+ */
+__.getGalleryModules = function() {
+	var elements = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorModule);
+	if (!elements) {
+		elements = [];
+	}
+	return elements;
+};
+
+/**
+ * private function initializes the given module
+ * @return nothing
+ */
+__.initModule = function(module){
+	var moduleId = module.getAttribute('data-module-id');
+	var navigationAreasList = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorNavigationArea, module);
+	var videoList = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorTagVideo,module);
+	console.log('init galleryModule: ', moduleId);
+	if(navigationAreasList.length > 0 ){
+		for (var i=0; i < navigationAreasList.length; i++) {
+			currentElements[moduleId] = 0;
+			var navigationArea = navigationAreasList[i];
+			var previousButton = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorNavigationArrowBack, navigationArea);
+			var nextButton = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorNavigationArrowForward, navigationArea);
+			var navigationBar = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorNavigationBar, navigationArea);
+			__.setNavigationHandlers(previousButton, nextButton, moduleId, navigationArea, navigationBar);
+			__.setSwipeHandlers(previousButton, nextButton, navigationArea, navigationBar, moduleId);
+			__.setVideoManualPlayHandlers(module);
+			__.stopNotActiveVideoSlide(module);
+			__.showsArrowsIfNecessary(moduleId, previousButton, nextButton, navigationBar);
+		}
+	} else {
+		currentElements[moduleId] = 0;
+		__.setVideoManualPlayHandlers(moduleId);
+	}
+
+	// viewport events
+	if(videoList && videoList.length > 0) {
+		//manualley load videos to ensure that they are playable
+		videoList.forEach(function(video){ video.load();});
+		//set handler for autmatically video playing on scroll
+		window.addEventListener('scroll', function() {__.handleScrollVideo(module, videoList);});
+	}
+};
+
+/*
+ * Sets the handlers relative to the slider
+ */
+__.setNavigationHandlers = function(previousButton, nextButton, moduleId, navigationArea, navigationBar){ // eslint-disable-line max-params
+	previousButton.onclick = function() {
+		__.moveNavigationElem(moduleId, dir.LEFT, previousButton, nextButton, navigationArea, navigationBar);
+		//window.alert('previous-'+moduleId);
+	};
+	nextButton.onclick = function() {
+		__.moveNavigationElem(moduleId, dir.RIGHT, previousButton, nextButton, navigationArea, navigationBar);
+		//window.alert('next-'+moduleId);
+	};
+};
+
+/*
+ * move the navigation elem in the given direction
+ */
+__.moveNavigationElem = function (moduleId, direction, previousButton, nextButton, navigationArea, navigationBar) { // eslint-disable-line max-params
+	var elem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorNavigationBar, navigationArea);
+	var directionOffset = direction === dir.RIGHT ? 1 : -1;
+	var currentIndex = currentElements[moduleId];
+	var nextIndex = currentIndex + directionOffset;
+	var newElementPosition = __.getElementPosition(nextIndex, navigationBar).left;
+	var previousArrow = previousButton.getBoundingClientRect().right;
+	var diff, leftElement, rightElement, offset;
+	if (direction === dir.RIGHT) {
+		leftElement = __.getElementPosition(currentIndex, navigationBar);
+		rightElement = __.getElementPosition(currentIndex+1, navigationBar);
+		diff = rightElement.left - leftElement.left;
+		offset = currentIndex === 0 && nextIndex === 1 ? 48 : 0;
+	} else {
+		leftElement = __.getElementPosition(currentIndex-1, navigationBar);
+		rightElement = __.getElementPosition(currentIndex, navigationBar);
+		diff = -(rightElement.left - leftElement.left);
+		offset = currentIndex === 1 && nextIndex === 0 ? -48 : 0;
+	}
+	var leftPosition = __.getElemMarginLeft(elem);
+	// ensure that the element is not behind the left arrow but next to it.
+	var navigationAreaWidth = navigationArea.getBoundingClientRect().width;
+	var newPosition = leftPosition - diff + offset;
+	elem.style.marginLeft = newPosition + 'px';
+	elem.style.transition = 'margin-left .5s ease-out 0s';
+	currentElements[moduleId] = nextIndex;
+	// the move is animated and takes a few milliseconds.
+	// We ensure that the navigations buttons update is executed the after move action by using a timeout
+	setTimeout(function(){
+	__.updateNavigationButtons(navigationBar, previousButton, nextButton);
+	}, 510);
+};
+
+__.showArrows = function(nextButton){
+	nextButton.style.display = 'block';
+};
+
+__.isShowingArrowsNeccessary = function (navigationBar) {
+	var navbarScrollWidth = navigationBar.scrollWidth;
+	var navbarClientWidth = navigationBar.clientWidth;
+	if(window.innerWidth < 1024) {
+		if(navbarScrollWidth < navbarClientWidth){
+			return false;
+		}
+		if(navbarScrollWidth === navbarClientWidth){
+			return false;
+		}
+		if (navbarScrollWidth > navbarClientWidth) {
+			return true;
+		}
+	}
+};
+
+/*
+ * Checks whether the arrows should be shown (e.g. only two or three navigationtabs with short text, who fit all in one line)
+ */
+__.showsArrowsIfNecessary = function(moduleId, previousButton, nextButton, navigationBar){
+	if (__.isShowingArrowsNeccessary(navigationBar)) {
+		__.showArrows(nextButton);
+	}
+};
+
+/**
+ * Returns the left position of the navigation being at the given index.
+ */
+__.getElementPosition = function (elementIndex, navigationBar) {
+	//var liElements = document.querySelectorAll('#nm-mediatext-combination-navigation-bar-' + componentId + ' li');
+	var liElements = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray('li', navigationBar);
+	var element = liElements[elementIndex];
+	return element.getBoundingClientRect();
+};
+
+/*
+ * Returns the margin left of the given elem
+ */
+__.getElemMarginLeft = function(elem) {
+	var marginLeft = elem.style.marginLeft.replace('px','');
+	marginLeft = marginLeft === '' ? 0 : parseFloat(marginLeft);
+	return marginLeft;
+};
+
+/*
+ * hide or show the next and previous navigation buttons according to the current position
+ * of the navigation elem within its parent
+ */
+__.updateNavigationButtons = function(navigationBar, previousButton, nextButton) {
+	var showNextButton = __.isMoveRightPossible(navigationBar);
+	var showPreviousButton = __.isMoveLeftPossible(navigationBar);
+	previousButton.style.display = showPreviousButton ? 'block' : 'none';
+	nextButton.style.display = showNextButton ? 'block' : 'none';
+};
+
+/*
+ * Checks whether a move to the right is possible (e.g. if we haven't reached the end of the list)
+ */
+__.isMoveRightPossible = function(navigationBar) {
+	// var lastElem = document.querySelector('#nm-mediatext-combination-navigation-bar-' + componentId + ' li:last-child');
+	var lastElem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement('li:last-child', navigationBar);
+	/*if the right border of the last elem is bigger than the right border of its parent
+	it means that we can go further right, so we show the next button */
+	var elemRectRight = lastElem.getBoundingClientRect().right;
+	var elemParentRectRight = navigationBar.getBoundingClientRect().right;
+	return elemRectRight > elemParentRectRight;
+};
+/*
+ * Checks whether a move to the left is possible (e.g. if we haven't reached the beginning of the list)
+ */
+__.isMoveLeftPossible = function(navigationBar) {
+	/* if the left border of the first elem is smaller than the left border of its parent
+	it means that we can go further left, so we show the previous button */
+	//var firstElem = document.querySelector('#nm-mediatext-combination-navigation-bar-' + componentId + ' li:first-child');
+	var firstElem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement('li:first-child', navigationBar);
+	var elemRectLeft = firstElem.getBoundingClientRect().left;
+
+	// -
+	// -
+	// -
+	// TODO: needs to be optimized
+	// -
+	// -
+	// -
+	var elemParentRectLeft = firstElem.parentNode.parentNode.getBoundingClientRect().left;
+	//console.log("parentNOde: ", firstElem.parentNode.parentNode);
+	return elemRectLeft < elemParentRectLeft;
+};
+
+/*
+ * Sets x and y coordination values and sets startTime when the swipe event starts
+ */
+__.swipeStart = function(event) {
+	var swipeEvent = event ? event : window.event;
+	swipeEvent = ('changedTouches' in swipeEvent) ? swipeEvent.changedTouches[0] : swipeEvent;
+	if (swipeEvent) {
+		touchStartCoords = {
+			x: swipeEvent.pageX,
+			y: swipeEvent.pageY
+		};
+		startTime = new Date().getTime();
+	}
+};
+/*
+ * Prevents standard click-behaviour
+ */
+__.swipeMove = function (event){
+	var swipeEvent = event ? event : window.event;
+	swipeEvent.preventDefault();
+};
+/*
+ * Moves the internalElment if the swipe-conditions are fullfilled
+ */
+__.swipeEnd = function(event, moduleId, previousButton, nextButton, navigationArea, navigationBar) { // eslint-disable-line max-params
+	var	diffTouchCoords = {};
+	var usedTime = 0;
+	var	allowedMinDistanceX = 25;
+	var allowedMinDistanceY = 25;
+	var allowedMaxSwipeTime = 1000;
+	var swipeEvent = event ? event : window.event;
+	swipeEvent = ('changedTouches' in swipeEvent) ? swipeEvent.changedTouches[0] : swipeEvent;
+	// If there is no swipe event, we will do nothing
+	if (!swipeEvent) {
+		return;
+	}
+	// Time used/passed since the start of the swipe movement
+	usedTime = new Date().getTime() - startTime;
+	// If current event happens a long time after the start event, it is not a swipe so we will do nothing
+	if (usedTime > allowedMaxSwipeTime){
+		return;
+	}
+	// Diff from start to end points of the swipe-movement
+	diffTouchCoords = {
+		x: swipeEvent.pageX - touchStartCoords.x,
+		y: swipeEvent.pageY - touchStartCoords.y
+	};
+	// If the distance of the movement is too small, it is not a swipe so we will do nothing
+	if (!(Math.abs(diffTouchCoords.x) >= allowedMinDistanceX && Math.abs(diffTouchCoords.y) <= allowedMinDistanceY)) {
+		return;
+	}
+	if (diffTouchCoords.x < 0) {
+		// If the x-movement is smaller than zero it is a movement to the right
+		if (__.isMoveRightPossible(navigationBar)) {
+			// the move is executed only if there is some element more on the right
+			// if we are at the end of the list, we don't do anything
+			__.moveNavigationElem(moduleId, dir.RIGHT, previousButton, nextButton, navigationArea, navigationBar);
+		}
+	} else {
+		// Else the x-movement is bigger than zero and this means it is a movement to the left
+		if (__.isMoveLeftPossible(navigationBar)) {
+			// the move is executed only if there is some element more on the left
+			// if we are at the beginning of the list, we don't do anything
+			__.moveNavigationElem(moduleId, dir.LEFT, previousButton, nextButton, navigationArea, navigationBar);
+		}
+	}
+};
+/*
+ * Sets the handlers relative to the swipe movements.
+ */
+__.setSwipeHandlers = function(previousButton, nextButton, navigationArea, navigationBar, moduleId){ // eslint-disable-line max-params
+	if(window.innerWidth < 1024) {
+		// swipe handlers are only set if the sliders has more elements than the one shown
+		// (e.g. it has some arrows to see previous/next elements)
+		if(__.isShowingArrowsNeccessary(navigationBar)){
+			/*
+			 * Sets to the given element an listener for the given swipeEvents
+			 *
+			 */
+			__.addMultipleListeners = function (element, swipeEvents, listener) {
+				var i;
+				for (i=0; i < swipeEvents.length; i++) {
+					element.addEventListener(swipeEvents[i], listener, false);
+				}
+			};
+			__.addMultipleListeners(navigationArea, ['mousedown', 'touchstart'], __.swipeStart);
+			__.addMultipleListeners(navigationArea, ['mousemove', 'touchmove'], __.swipeMove);
+			__.addMultipleListeners(navigationArea, ['mouseup', 'touchend'], function (event) {
+				__.swipeEnd(event, moduleId, previousButton, nextButton, navigationArea, navigationBar);
+			});
+		}
+	}
+};
+
+/* 
+ * Checks if the given video is playable and plays it if it is
+ */
+__.playVideo = function(video){
+	if(video.readyState >= 3){
+		video.play();
+	}
+	else{
+		video.addEventListener("canplaythrough", function(){
+			console.log("canplaythrough");
+			video.play();
+		});
+	}
+};
+
+/* private functions */
+__.setVideoManualPlayHandlers = function(module){
+	var listPlayButtons = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorVideoPlayButton, module);
+	listPlayButtons = [].slice.call(listPlayButtons);
+	listPlayButtons.forEach(function(buttonElem) {
+		var elemId = buttonElem.getAttribute('data-id');
+		var videoElem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorVideo + '-' + elemId, module);
+		var stillFrameElem = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorVideoStillFrame + '-' + elemId, module);
+		var buttonOverlay = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorButtonOverlay + '-' + elemId, module);
+		buttonElem.addEventListener('click', function(event) {
+			__.playVideo(videoElem);
+			buttonElem.style.display = 'none';
+			if(!!buttonOverlay) {
+				buttonOverlay.style.display = 'none';
+			}
+			if(!!stillFrameElem) {
+				stillFrameElem.style.display = 'none';
+			}
+			event.stopPropagation();
+		});
+		videoElem.onended = function() {
+			buttonElem.style.display = 'block';
+			if(!!buttonOverlay){
+				buttonOverlay.style.display = 'block';
+			}
+			if(!!stillFrameElem) {
+				stillFrameElem.style.display = 'block';
+			}
+		};
+		videoElem.onpause = function() {
+			buttonElem.style.display = 'block';
+			if(!!buttonOverlay) {
+				buttonOverlay.style.display = 'block';
+			}
+		};
+	});
+};
+
+// when clicking on another list media items, be sure to execute the following steps:
+//   - stop any video which is currently running
+//   - start the current video if it has the autoplay flag
+__.stopNotActiveVideoSlideChangeHandler = function(module, listVideos, elemId){
+	return function() {
+			var video, stillFrame;
+		// check all other videos and stop them
+		var otherVideos = Array.apply(null, listVideos).filter(function(el) {
+			return el.getAttribute('data-id') !== elemId;
+		});
+		otherVideos.forEach(function(otherVideo) {
+			otherVideo.pause();
+			otherVideo.currentTime = 0;
+			otherVideo.setAttribute('data-active', false);
+		});
+		// if the current media item is video, and if it has the autoplay flag,
+		// the video should be started now.
+		var currentVideo = Array.apply(null, listVideos).filter(function(el) {
+			return el.getAttribute('data-id') === elemId;
+		});
+		if (currentVideo && currentVideo.length !== 0) {
+			video = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorMediaContainerListVideo + '-' + elemId, module);
+			stillFrame = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorMediaContainerListStillFrame + '-' + elemId, module);
+			video.setAttribute('data-active', true);
+			if (video && video.getAttribute('data-autoplay')) {
+				__.playVideo(video);
+				if(!!stillFrame) {
+					stillFrame.style.display = 'none';
+				}
+			}
+			else{
+				if(!!stillFrame) {
+					stillFrame.style.display = 'block';
+				}
+			}
+		}
+	};
+};
+
+__.stopNotActiveVideoSlide = function(module){
+	var listMediaItems = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorMediaContainerList + ' li', module);
+	var listVideos = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElementsArray(__.oDefaults.selectorMediaContainerList + ' video', module);
+	listVideos = [].slice.call(listVideos);
+	listMediaItems = [].slice.call(listMediaItems);
+	listMediaItems.forEach(function(elem) {
+		var elemId = elem.getAttribute('data-id');
+		var checkbox = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement('.nm-basis-gallery-input[data-input-id="' + elemId + '"]', module);
+		checkbox.addEventListener('change', __.stopNotActiveVideoSlideChangeHandler(module, listVideos, elemId));
+	});
+};
+
+__.handleScrollVideo = function(module, videos) {
+	var stillFrame, elemId;
+	// get the video of the module which is currently active
+	var activeVideo = videos.filter(function(video) {
+		return video.getAttribute('data-active') === "true";
+	})[0];
+
+	if(!activeVideo) {
+		// there may be no active video. for example, if only pictures are shown.
+		// in this case, we don't need to do anything
+		return;
+	}
+
+	var videoVisibility = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getViewportPercentageCovered(activeVideo);
+	// var videoVisibility = DOM_UTILS.getVisibleVerticalPercentageInViewport(activeVideo);
+
+	elemId = activeVideo.getAttribute('data-id');
+	stillFrame = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getElement(__.oDefaults.selectorMediaContainerListStillFrame + '-' + elemId, module);
+
+	// if the video of the module covers less than 50% of the viewport, it should be paused
+	if (videoVisibility < 50) {
+		activeVideo.pause();
+		// autoplay videos should be reset to time=0
+		if (activeVideo.getAttribute('data-autoplay')) {
+			activeVideo.currentTime = 0;
+		}
+		if (!!stillFrame) {
+			stillFrame.style.display = 'block';
+		}
+	// if the video of the module covers more than 50% of the viewport, it should be played
+	} else {
+		// the video is restarted automatically only if it's an autoplay video
+		if (activeVideo.getAttribute('data-autoplay') && activeVideo.currentTime === 0) {
+			if (!!stillFrame) {
+				stillFrame.style.display = 'none';
+			}
+			__.playVideo(activeVideo);
+		}
+	}
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	var globalEventBus = __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter();
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].PAGE_LOADED, init);
+	globalEventBus.on(__WEBPACK_IMPORTED_MODULE_0_bundle_core__["EVENTS"].LAYER_LOADED, init);
+	_domEventDelegate = __WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].getEventDelegate('body');
+	init();
+});
+
+
+/***/ }),
+/* 11 */
+/*!****************************************************************!*\
+  !*** ./components/includes/helper/video-performance-helper.js ***!
+  \****************************************************************/
+/*! exports provided: __, init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export __ */
+/* unused harmony export init */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core__ = __webpack_require__(/*! bundle.core */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bundle_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bundle_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor__ = __webpack_require__(/*! bundle.vendor */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_bundle_vendor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__);
+
+
+
+
+
+/**
+ * Object holding all private functions
+ */
+var __ = {};
+
+var _start,
+	_requestId,
+	_performanceVideo,
+	_performanceTestTime = 1000,
+	_numberUpdates = 0,
+	_minFPS = 15,
+	_maxTests = 5,
+	_currentTestCount = 0,
+	_frameToggle = 0;
+
+/**
+* @function init
+* @description public initialize method
+* @returns {undefined}
+*/
+function init() {
+	__.handleVideoPerformanceTest();
+	console.log('init: video-performance-helper');
+}
+
+/**
+* @description private function returning the current count of the testing
+* @return {Number} the current count of testings
+*/
+__.getCurrentTestCount = function() {
+	return _currentTestCount;
+};
+/**
+ * @description private function handling the testing of the video performance
+ * @return {undefined}
+ */
+__.handleVideoPerformanceTest = function() {
+	var lastFps = __.getLastFPS();
+	if (!!lastFps && lastFps >= _minFPS) {
+		__.emitVIdeoPerformance(lastFps);
+	} else {
+		__.setTestVideo();
+		__.addTestVideoEvents();
+	}
+};
+
+/**
+ * @description private function getting the last value for fps
+ * @param {Number} fps - last frames per second
+ * @returns {undefined}
+ */
+__.storeLastFPS = function(fps) {
+	if (!!fps && fps >= 0) {
+		localStorage.setItem('lastVideoFps', fps);
+	}
+};
+
+/**
+ * @description private function getting the last value for fps
+ * @returns {Number} last frames per second
+ */
+__.getLastFPS = function() {
+	var fps = parseInt(localStorage.getItem('lastVideoFps'), 10);
+	return !!fps ? fps : 0;
+};
+
+/**
+ * @description private function setting up the testvideo
+ * @returns {undefined}
+ */
+__.setTestVideo = function(){
+	_performanceVideo = document.createElement('video');
+	_performanceVideo.setAttribute('data-video-notracking', 'true');
+	_performanceVideo.src = "data:video/mp4;base64,AAAAGGZ0eXBtcDQyAAAAAG1wNDFpc29tAAAAJ3V1aWRcpwj7Mo5CBahhZQ7KCpWWAAAACzYuMi4wOTIwMC4wAAAE9W1kYXQAAAAAAAAAEAAAAAIJEAAAADMGBS8C+GFQ/HBBcrcySPOnKj00TWljcm9zb2Z0IEguMjY0IEVuY29kZXIgVjEuNS4zAIAAAADsBgXoy7ITkphzQ9qopsdCmDVs9XNyYzozIGg6NjQgdzo2NCBmcHM6MjQuMDAwIHBmOjY2IGx2bDo1IGI6MCBicXA6MyBnb3A6NzIgaWRyOjcyIHNsYzoxIGNtcDowIHJjOjEgcXA6MjYgcmF0ZToxMDAwMDAwIHBlYWs6MCBidWZmOjM3NTAwMCByZWY6MiBzcmNoOjMyIGFzcmNoOjEgc3VicDoxIHBhcjo2IDMgMyBybmQ6MCBjYWJhYzowIGxwOjIgY3RudDowIGF1ZDoxIGxhdDowIHdyazo4IHZ1aToxIGx5cjoxIDw8AIAAAAAaZYiAS///8PRQABAj94rffWK111111111114AAAACCTAAAAAGYZoDl4RgAAAAAgkwAAAABmGaBZeEYAAAAAIJMAAAAAZhmgeXhGAAAAACCTAAAAAGYZoJl4RgAAAAAgkwAAAABmGaC5eEYAAAAAIJMAAAAAZhmg2XhGAAAAACCTAAAAAGYZoPl4RgAAAAAgkwAAAABmGaEZeEYAAAAAIJMAAAAA9hmhOFf4y7u7u7u7u7vCEAAAACCTAAAAAHYZoVgl4RgAAAAAIJMAAAAAdhmheDXhGAAAAAAgkwAAAAB2GaGYEXhGAAAAACCTAAAAAHYZobgVeEYAAAAAIJMAAAAAdhmh2BV4RgAAAAAgkwAAAAB2GaH4FXhGAAAAACCTAAAAAHYZohgVeEYAAAAAIJMAAAAAdhmiOBV4RgAAAAAgkwAAAAB2GaJYFXhGAAAAACCTAAAAAHYZongVeEYAAAAAIJMAAAAAdhmimBV4RgAAAAAgkwAAAAB2GaK4FXhGAAAAACCTAAAAAHYZotgVeEYAAAAAIJMAAAAAdhmi+BV4RgAAAAAgkwAAAAcWGaMYFX+bwA8CAUJIEAJCdnag21TCIRHwDAIIPtmI/l4AeAgECCBECYnZmwNtXzfD/4f9vzQ//4Is8fH4hcwf/9h6Xv5/O+fzv8mAHgIBAgiQAmJmdsDbV+Yf/+g9L2eIX7gB4EAoSRIgSEzM2Btq/8AAAAAgkwAAAAB2GaM4FXhGAAAAACCTAAAAAHYZo1gVeEYAAAAAIJMAAAAAdhmjeBV4RgAAAAAgkwAAAAB2GaOYFXhGAAAAACCTAAAAAHYZo7gVeEYAAAAAIJMAAAAAdhmj2BV4RgAAAAAgkwAAAAB2GaP4FXhGAAAAACCTAAAAAHYZpBgVeEYAAAAAIJMAAAAAdhmkOBV4RgAAAAAgkwAAAAB2GaRYFXhGAAAAACCTAAAAAHYZpHgVeEYAAAAAIJMAAAAAdhmkmBV4RgAAAAAgkwAAAAB2GaS4FXhGAAAAACCTAAAAAHYZpNgVeEYAAAAAIJMAAAAAdhmk+BV4RgAAAAAgkwAAAAB2GaUYFXhGAAAAACCTAAAAAHYZpTgVeEYAAAAAIJMAAAAAdhmlWBV4RgAAAAAgkwAAAAB2GaV4FXhGAAAAACCTAAAAAHYZpZgVeEYAAAAAIJMAAAAAdhmluBV4RgAAAAAgkwAAAAB2GaXYFXhGAAAAACCTAAAAAHYZpfgVeEYAAAAAIJMAAAAAdhmmGBV4RgAAADgW1vb3YAAABsbXZoZAAAAADVB6mK1QepigAAXcAAAL9nAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAALJdHJhawAAAFx0a2hkAAAAAdUHqYrVB6mKAAAAAQAAAAAAAL9nAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAABAAAAAQAAAAAACZW1kaWEAAAAgbWRoZAAAAADVB6mK1QepigAAXcAAAL9nVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAAhBtaW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAHQc3RibAAAAJRzdHNkAAAAAAAAAAEAAACEYXZjMQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAABAAEAASAAAAEgAAAAAAAAAAQpBVkMgQ29kaW5nAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj//wAAAC5hdmNDAULAFP/hABdnQsAUlbEJoQAAAwABAAADADANoIhG4AEABGjKjyAAAAAYc3R0cwAAAAAAAAABAAAAMQAAA+gAAAAcc3RzYwAAAAAAAAABAAAAAQAAADEAAAABAAAA2HN0c3oAAAAAAAAAAAAAADEAAAFLAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAZAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAB7AAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAEQAAABEAAAARAAAAFHN0Y28AAAAAAAAAAQAAAE8AAAAUc3RzcwAAAAAAAAABAAAAAQAAAER1ZHRhAAAANG1ldGEAAAAAAAAAIGhkbHIAAAAAAAAAAG1kaXIAAAAAAAAAAAAAAAAAAAAIaWxzdAAAAAhYdHJh";
+	_performanceVideo.autoplay = true; // needed for safari ios in order to trigger the canplay event
+	_performanceVideo.style.display = 'none';
+	document.body.appendChild(_performanceVideo);
+};
+
+/**
+ * @description private function adding events to the test video
+ * @returns {undefined}
+ */
+__.addTestVideoEvents = function() {
+	setTimeout(function(){
+		if (_performanceVideo.readyState >= 4) {
+			__.checkVideoPerformance();
+		} else {
+			_performanceVideo.addEventListener('canplay', __.checkVideoPerformance);
+		}
+	}, 100);
+};
+
+/**
+ * @description private function emitting the performance event
+ * @param {Number} fps - the frames per second to emit
+ * @returns {undefined}
+ */
+__.emitVIdeoPerformance = function(fps) {
+	var emitFps = (!!fps && fps >= 0) ? fps : 0;
+	__WEBPACK_IMPORTED_MODULE_1_bundle_vendor__["SIGNAL"].getEmitter().emit('video_performance', {'fps' : emitFps});
+	console.log("FPS: "+ fps);
+};
+
+/**
+ * @description private function returning the average fps rate
+ * @param {Timestamp} start - starttime of the test
+ * @param {Number} numberUpdates - the number of timeupdates
+ * @returns {Float} fps
+ */
+__.getAverageFPS = function(start, numberUpdates) {
+	if (!start || !numberUpdates || start <=0 || numberUpdates <=0) {
+		return 0;
+	}
+	return 1000 / Math.round((new Date().getTime() - start) / numberUpdates);
+};
+/**
+ * @description private function toggling the frames of a video
+ * @returns {undefined}
+ */
+__.toggleVideoFrames = function() {
+	_performanceVideo.currentTime = _frameToggle;
+	if (_frameToggle < _performanceVideo.duration) {
+		_frameToggle += 0.1;
+	} else {
+		_frameToggle = 0;
+	}
+	_requestId = requestAnimationFrame(__.toggleVideoFrames);
+};
+/**
+ * @description private function checking the video performance by creating a video element
+ * and checking on the preiod of time between timeupdates *
+ * @returns {undefined}
+ */
+__.checkVideoPerformance = function() {
+	_currentTestCount++;
+	_performanceVideo.removeEventListener('canplay', __.checkVideoPerformance);
+	_start = new Date().getTime();
+	_performanceVideo.addEventListener('timeupdate', __.increaseNumberUpdates);
+	_requestId = requestAnimationFrame(__.toggleVideoFrames);
+	setTimeout(__.handleResult, _performanceTestTime);
+};
+
+/**
+ * @description private function increasing the update count
+ * @returns {undefined}
+ */
+__.increaseNumberUpdates = function() {
+	_numberUpdates++;
+};
+
+/**
+ * @description private function handling the result of the performance check
+ * @returns {undefined}
+ */
+__.handleResult = function() {
+	var fps = __.getAverageFPS(_start, _numberUpdates),
+	currentTestCount = __.getCurrentTestCount();
+
+	// store fps
+	if (fps >= _minFPS) {
+		__.storeLastFPS(fps);
+	}
+
+	// emit first result
+	if (currentTestCount === 1) {
+		cancelAnimationFrame(_requestId);
+		document.body.removeChild(_performanceVideo);
+		__.emitVIdeoPerformance(fps);
+	}
+
+	// continue testing
+	if (fps < _minFPS && currentTestCount < _maxTests) {
+		_numberUpdates = 0;
+		__.checkVideoPerformance();
+	}
+};
+
+__WEBPACK_IMPORTED_MODULE_0_bundle_core__["DOM_UTILS"].handleDocumentReady(function() {
+	init();
+});
+
+
+/***/ })
+/******/ ]);
+});
+//# sourceMappingURL=bundle.modelstartpage.js.map

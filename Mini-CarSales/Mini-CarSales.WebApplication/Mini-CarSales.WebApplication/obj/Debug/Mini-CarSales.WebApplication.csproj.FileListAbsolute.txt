@@ -73,3 +73,7 @@ C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApp
 C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApplication\bin\Unity.WebApi.dll
 C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApplication\bin\log4net.dll
 C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApplication\bin\log4net.xml
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApplication\bin\PagedList.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApplication\bin\PagedList.Mvc.dll
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApplication\bin\PagedList.xml
+C:\Lata\CarSales\Mini-CarSales\Mini-CarSales.WebApplication\Mini-CarSales.WebApplication\bin\PagedList.Mvc.xml

@@ -1,2 +1,4 @@
-2017-09-18 01:16:53,849 [25] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.The ModelName field is required.The EngineName field is required.The Type field is required.
-2017-09-18 02:12:57,227 [5] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The Type field is required.
+2017-09-19 00:17:55,870 [26] ERROR Mini_CarSales.WebApplication.Controllers.Api.VehicleApiController - AddVehicleDetails :The MakeName field is required.
+2017-09-19 00:46:54,038 [7] ERROR WebApplication1.Controllers.HomeController - Update Vehicle :Invalid column name 'SUV'.
+2017-09-19 00:54:06,059 [5] ERROR WebApplication1.Controllers.HomeController - Update Vehicle :Violation of UNIQUE KEY constraint 'unique_vehicle'. Cannot insert duplicate key in object 'dbo.VehicleDetails'. The duplicate key value is (1, 1, 1, 1, 5, 5).
+The statement has been terminated.
